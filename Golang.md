@@ -1,4 +1,4 @@
- Go Functions
+ ### Go Functions
  
  ```
  func printPrice(product string, price float64, taxRate float64) {
@@ -109,3 +109,73 @@ printSuppliers("Kayak", supplierNames...)
 This technique avoids unpacking slice into individual values
 
 
+#### Using Pointers as Function Parameters
+
+```
+func swap(first, second *int) {
+ temp: = first
+ first := second
+ second := temp
+}
+```
+
+#### Returning Multiple Function Results
+
+```
+package main
+
+import "fmt"
+
+func swap(f, s int) (int, int) {
+	return s, f
+}
+
+func main() {
+	v1, v2 := 10, 20
+	v1, v2 = swap(v1, v2)
+	fmt.Println("After swap ", v1, v2)
+}
+
+```
+
+#### Naming the return result of a function
+
+```
+package main
+
+import "fmt"
+
+func swap(f, s int) (first, second int) {
+	first = s
+	second = f
+	return
+}
+
+func main() {
+	v1, v2 := 10, 20
+	v1, v2 = swap(v1, v2)
+	fmt.Println("After swap ", v1, v2)
+}
+
+```
+
+#### Using blank identifier to discard the result
+
+```
+package main
+
+import "fmt"
+
+func someFunc(f, s int) (discard, accept int) {
+	discard = f
+	accept = s
+	return
+}
+
+func main() {
+
+	_, a := someFunc(20, 10)
+	fmt.Println("a: ", a)
+}
+
+```
