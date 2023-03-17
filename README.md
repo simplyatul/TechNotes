@@ -1,1 +1,3 @@
-# TechNotes
+# Tech Notes
+
+This repo is dedictaed for listing notes of various topic... 
