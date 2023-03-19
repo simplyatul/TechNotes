@@ -305,3 +305,5 @@ Literal functions can also be used as arguments to other functions
 
 
 ### Function Closure
+
+Clousre => Literal functions can refer a variable from the surrounding code
