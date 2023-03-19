@@ -179,3 +179,129 @@ func main() {
 }
 
 ```
+
+#### defer keyword
+used to schedule function call before the current function return
+e.g. close open files, netwrok connection
+multiple defer calls can be used in same function
+
+```
+package main
+
+import "fmt"
+
+func testDefer() {
+	fmt.Println("In testDefer")
+	defer fmt.Println("First Defer")
+	// some work....
+	defer fmt.Println("second Defer")
+}
+
+func main() {
+	fmt.Println("Hello")
+	testDefer()
+}
+```
+
+Output
+```
+Hello
+In testDefer
+second Defer
+First Defer
+```
+
+### Function Types
+
+This means functions have a data type
+They can be assigned to a variable
+
+
+```
+package main
+
+import "fmt"
+
+func callMe() {
+	fmt.Println("In callMe")
+}
+
+func callOther() {
+	fmt.Println("In callOther")
+}
+
+func main() {
+	fmt.Println("Hello")
+	var fn func()
+	fmt.Println("Function assigned:", fn == nil)
+	fn = callMe
+	fn()
+	fn = callOther
+	fn()
+	fmt.Println("Function assigned:", fn == nil)
+}
+
+```
+Go comparison operators cannot be used to compare functions
+but they can be used to determine whether a function has been assigned to a variable
+
+Functions can be passed as a paramater to the function and can return a value of type function as well
+
+```
+package main
+import "fmt"
+type calcFunc func(float64) float64
+func calcWithTax(price float64) float64 {
+    return price + (price * 0.2)
+}
+func calcWithoutTax(price float64) float64 {
+    return price
+}
+func printPrice(product string, price float64, calculator calcFunc) {
+    fmt.Println("Product:", product, "Price:", calculator(price))
+}
+func selectCalculator(price float64) calcFunc {
+    if (price > 100) {
+        return calcWithTax
+    }
+    return calcWithoutTax
+}
+func main() {
+    products := map[string]float64 {
+        "Kayak" : 275,
+        "Lifejacket": 48.95,
+    }
+    for product, price := range products {
+        printPrice(product, price, selectCalculator(price))
+    }
+}
+```
+
+Type aliasing => can assign a name to a function signature
+
+```
+type calcFunc func(float64) float64
+```
+
+### Literal Function
+
+```
+package main
+
+import "fmt"
+
+func main() {
+	sum := func(a, b int) int {
+		return a + b
+	}
+	fmt.Println("sum: ", sum(10, 20))
+}
+
+```
+
+Go does not support arrow function syntax
+Functions don’t have to be assigned to variables and can be used just like any other literal value
+Literal functions can also be used as arguments to other functions
+
+
+### Function Closure
