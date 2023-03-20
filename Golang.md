@@ -299,11 +299,62 @@ func main() {
 
 ```
 
-Go does not support arrow function syntax
-Functions don’t have to be assigned to variables and can be used just like any other literal value
-Literal functions can also be used as arguments to other functions
+Go does not support arrow function syntax  
+Functions don’t have to be assigned to variables and can be used just like any other literal value  
+Literal functions can also be used as arguments to other functions  
 
+### Anonymous Functions
+
+```
+package main
+
+import (
+	"fmt"
+)
+
+func give_me_a_func() func(string) {
+	return func(message string) {
+		fmt.Println(message)
+	}
+}
+
+func main() {
+	print := give_me_a_func()
+	print("Hi")
+
+}
+
+```
 
 ### Function Closure
 
-Clousre => Literal functions can refer a variable from the surrounding code
+Clousre
+- Literal functions can refer a variable from the surrounding code
+- is an inner function that has access to the variables in the scope in which it was created. 
+- This applies even when the outer function finishes execution and the scope gets destroyed.
+
+
+```
+package main
+
+import "fmt"
+
+func inc() func() int {
+	i := 10
+	return func() int {
+		i++
+		return i
+	}
+}
+
+func main() {
+	fmt.Println("Hello")
+	next := inc()
+	fmt.Println(next()) // prints 11
+	fmt.Println(next()) // prints 12
+	fmt.Println(next()) // prints 13
+}
+
+```
+
+
