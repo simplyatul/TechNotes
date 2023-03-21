@@ -547,3 +547,40 @@ DataTypes: p: *main.Product *p: main.Product
 Name: Hat Category: Skiing Price 42.5
 ```
 
+
+Go doesn’t have built-in support for performing a deep copy
+
+```
+package main
+import "fmt"
+type Product struct {
+    name, category string
+    price float64
+    *Supplier
+}
+type Supplier struct {
+    name, city string
+}
+func newProduct(name, category string, price float64, supplier *Supplier) *Product {
+    return &Product{name, category, price -10, supplier}
+}
+
+func main() {
+    acme := &Supplier { "Acme Co", "New York"}
+    p1 := newProduct("Kayak", "Watersports", 275, acme)
+    p2 := *p1
+    p1.name = "Original Kayak"
+    p1.Supplier.name = "BoatCo"
+    for _, p := range []Product { *p1, p2 } {
+        fmt.Println("Name:", p.name, "Supplier:",
+            p.Supplier.name, p.Supplier.city)
+    }
+}
+```
+
+Output
+
+```
+Name: Original Kayak Supplier: BoatCo New York
+Name: Kayak Supplier: BoatCo New York
+```
