@@ -357,4 +357,193 @@ func main() {
 
 ```
 
+### Go Struct
+
+#### Anonymous Struct Types
+
+```
+package main
+
+import "fmt"
+
+func writeName(val struct {
+	name, category string
+	price          float64
+}) {
+	fmt.Println("Name:", val.name)
+}
+
+func main() {
+	type Product struct {
+		name, category string
+		price          float64
+	}
+
+	type Item struct {
+		name     string
+		category string
+		price    float64
+	}
+	prod := Product{name: "Ball", category: "Cricket", price: 275.50}
+
+	writeName(prod)
+	item := Item{name: "Racket", category: "Tennis", price: 75000}
+	writeName(item)
+	writeName(Product(item)) // e.g of converting between struct types
+
+	type OtherItem struct {
+		n string
+		c string
+		p float64
+	}
+	// otheritem := OtherItem{n: "King", c: "Chess", p: 55}
+	// writeName(otheritem) //  cannot use otheritem (variable of type OtherItem) as struct{name string; category string; price float64} value in argument to writeName
+	// writeName(Product(otheritem)) // cannot convert otheritem (variable of type OtherItem) to type Product
+}
+
+```
+
+Output
+
+```
+Name: Ball
+Name: Racket
+Name: Racket
+```
+
+### Embedded fields in struct
+
+Only one embedded field can be defined bec field names must be unique
+
+```
+package main
+import "fmt"
+func main() {
+    type Product struct {
+        name, category string
+        price float64
+    }
+    type StockLevel struct {
+        Product
+        Alternate Product	// assigning a name
+        count int
+    }
+    stockItem := StockLevel {
+        Product: Product { "Kayak", "Watersports", 275.00 },
+        Alternate: Product{"Lifejacket", "Watersports", 48.95 },
+        count: 100,
+    }
+    fmt.Println("Name:", stockItem.Product.name)
+    fmt.Println("Alt Name:", stockItem.Alternate.name)
+}
+```
+
+Go follows pointers to struct fields without needing an asterisk character, 
+
+```
+package main
+
+import "fmt"
+
+type Product struct {
+	name, category string
+	price          float64
+}
+
+func printProdName(p *Product) {
+	fmt.Println("Name:", (*p).name)
+	fmt.Println("Name:", p.name)
+
+	fmt.Printf("DataTypes\np: %T\n*p: %T\n", p, *p)
+}
+
+func main() {
+	racket := Product{
+		name:     "Racket",
+		category: "Tennis",
+		price:    850,
+	}
+	printProdName(&racket)
+
+	ball := &Product{
+		name:     "Ball",
+		category: "Cricket",
+		price:    220.30,
+	}
+
+	printProdName(ball)
+
+}
+
+```
+
+Output
+```
+Name: Racket
+Name: Racket
+DataTypes
+p: *main.Product
+*p: main.Product
+Name: Ball
+Name: Ball
+DataTypes
+p: *main.Product
+*p: main.Product
+
+```
+
+
+### Construtor function
+
+```
+package main
+
+import "fmt"
+
+type Product struct {
+	name, category string
+	price          float64
+}
+
+func newProduct(name, category string, price float64) *Product {
+	return &Product{name, category, price} // Returns the struct pointer
+}
+
+func newProduct1(name, category string, price float64) Product {
+	return Product{name, category, price} // Return by value
+}
+
+func main() {
+	productsArray := [2]Product{
+		newProduct1("Kayak", "Watersports", 275),
+		newProduct1("Hat", "Skiing", 42.50),
+	}
+
+	fmt.Printf("DataTypes: productsArray: %T\n", productsArray)
+
+	productsPointrArray := [2]*Product{
+		newProduct("Kayak", "Watersports", 275),
+		newProduct("Hat", "Skiing", 42.50),
+	}
+
+	fmt.Printf("DataTypes: productsPointrArray: %T\n", productsPointrArray)
+
+	for _, p := range productsPointrArray {
+		fmt.Printf("DataTypes: p: %T *p: %T\n", p, *p)
+		fmt.Println("Name:", p.name, "Category:", p.category, "Price", p.price)
+	}
+}
+
+```
+
+Output
+
+```
+DataTypes: productsArray: [2]main.Product
+DataTypes: productsPointrArray: [2]*main.Product
+DataTypes: p: *main.Product *p: main.Product
+Name: Kayak Category: Watersports Price 275
+DataTypes: p: *main.Product *p: main.Product
+Name: Hat Category: Skiing Price 42.5
+```
 
