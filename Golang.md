@@ -584,3 +584,47 @@ Output
 Name: Original Kayak Supplier: BoatCo New York
 Name: Kayak Supplier: BoatCo New York
 ```
+
+
+#### Zero value for struct type
+
+```
+package main
+
+import "fmt"
+
+type Product struct {
+	name, category string
+	price          float64
+	*Supplier
+}
+
+type Supplier struct {
+	name, city string
+}
+
+func main() {
+	var prod Product
+	var prodPtr *Product
+	fmt.Println("Value: ", prod.name == "", prod.category == "", prod.price == 0, prod.Supplier == nil)
+	fmt.Println("Pointer:", prodPtr == nil)
+
+	// fmt.Println("Pointer:", prodPtr.Supplier == nil)
+	// SIGSEGV: invalid memory address or nil pointer dereference
+
+	var prod1 Product = Product{Supplier: &Supplier{}}
+	fmt.Println("Value: ", prod1.Supplier)
+	fmt.Println("Value: ", prod1.Supplier == nil)
+}
+
+```
+
+Output
+
+```
+Value:  true true true true
+Pointer: true
+Value:  &{ }
+Value:  false
+
+```
