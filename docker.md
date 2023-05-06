@@ -66,18 +66,44 @@ docker exec -it [container-name] /bin/bash
 sudo service docker restart
 ```
 
+## Remove only stopped containers
 
 ```bash
+docker rm $(docker ps -q -f status=exited)
 ```
+
+## Stop running containers
+```bash
+docker stop $(docker ps -qa)
+```
+
+## Remove stopped containers
+```bash
+docker rm $(docker ps -qa)
+```
+
+## Stop and Remove all running containers 
+```bash
+docker stop $(docker ps -qa); docker rm $(docker ps -qa)
+```
+
+## Remove all docker images
+```bash
+docker rmi $(docker images -q)
+```
+
+## Copy a file from Host to Container
+```bash
+docker cp /tmp/a <container_name>:/
+```
+
+## Copy a file from Container to Host
+```bash
+docker cp <container_name>:/b /tmp
+```
+
+## Print container stats
 
 ```bash
+docker stats --no-stream
 ```
-
-
-```bash
-```
-
-
-```bash
-```
-
