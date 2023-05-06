@@ -13,7 +13,12 @@ cn=<container name>
 c_pid=`docker container inspect -f "{{.State.Pid}}" ${cn}`
 nsenter -t ${c_pid} -n netstat -lt 
 ```
+Or use the single command
 
+```bash
+sudo nsenter -t `docker inspect -f "{{.State.Pid}}" <containerid>` -n netstat
+
+```
 nsenter => run program in different namespaces  
 Above command is useful evenif netstat is not installed in the container
 
