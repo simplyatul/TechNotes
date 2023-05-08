@@ -107,3 +107,9 @@ docker cp <container_name>:/b /tmp
 ```bash
 docker stats --no-stream
 ```
+
+## Build the docker image from (git) repo url and the tag (v1.1)
+docker build -t godevsetup:1.1 https://github.com/simplyatul/godevsetup.git#v1.1
+
+## Run the container and expose a port 
+docker run -dit --name goserver -p 8080:8080 godevsetup:1.1

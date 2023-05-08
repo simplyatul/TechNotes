@@ -20,13 +20,13 @@ gsettings set org.gnome.desktop.interface clock-show-weekday true
 ## Usefull Tools
 ### General
 ```
-apt install net-tools, vim, curl, git, kdiff3, tree, traceroute, make
+sudo apt install net-tools, vim, curl, git, kdiff3, tree, traceroute, make, dos2unix
 ```
 
 ### VPN
 
 ```
-apt install network-manager-openconnect network-manager-openconnect-gnome
+sudo apt install network-manager-openconnect network-manager-openconnect-gnome
 ```
 
 ### Nvidea 
@@ -36,7 +36,7 @@ sudo apt install nvidia-prime
 
 ### SSH Server
 ```
-apt install openssh-server
+sudo apt install openssh-server
 systemctl enable --now ssh
 ```
 

@@ -1,0 +1,45 @@
+if has("win32") || has("win16")
+    source $VIMRUNTIME\mswin.vim
+endif
+set ic
+se nu
+set tabstop=4
+syntax on
+set hlsearch
+set expandtab
+set shiftwidth=4
+set softtabstop=4
+set ruler
+setlocal spell spelllang=en_us
+colorscheme slate
+set guifont=Courier_New:h11:cANSI
+" makes y and p copy and paste to the “global” buffer/clipboard  
+" set clipboard+=unnamed
+
+"atul: script to open large fils faster
+let g:bigFile = 1024 * 1024 * 500
+let curr_fname = expand("%")
+let ftype = getftype(curr_fname)
+if ftype == "file"
+    "echo "Opening Normal file"
+    let fsize = getfsize(curr_fname)
+    " size > 50 MB
+    if fsize > g:bigFile
+        " echo "File size >" g:bigFile
+        :setl noswapfile
+        :setl nowritebackup 
+        :setl nowrite
+    endif
+endif
+
+" Ending // means that the directory information will be saved 
+" in the filename.
+if has("win32") || has("win16")
+    set backupdir=C:\temp//
+    set directory=C:\temp//
+    set undodir=C:\temp//
+else
+    set backupdir=/c/temp
+    set directory=/c/temp
+    set undodir=/c/temp
+endif
