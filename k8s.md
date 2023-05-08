@@ -2,6 +2,11 @@
 
 ## List k8s API Resources
 ```bash
-k api-resources -o wide
+kubectl api-resources -o wide
 ```
 
+## Interacti with specific cluster
+```bash
+kubectl cluster-info --context <cluster-name>
+```
+Check  ~/.kube/config for the cluster-name
