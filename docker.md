@@ -125,5 +125,5 @@ docker network ls
 
 ## IP address of docker container
 ```bash
-docker container inspect local-dev-control-plane --format '{{ .NetworkSettings.Networks.kind.IPAddress }}'
+docker container inspect <container-name> --format '{{ .NetworkSettings.Networks.kind.IPAddress }}'
 ```
