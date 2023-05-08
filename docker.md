@@ -109,7 +109,21 @@ docker stats --no-stream
 ```
 
 ## Build the docker image from (git) repo url and the tag (v1.1)
+```bash
 docker build -t godevsetup:1.1 https://github.com/simplyatul/godevsetup.git#v1.1
+```
 
 ## Run the container and expose a port 
+```bash
 docker run -dit --name goserver -p 8080:8080 godevsetup:1.1
+```
+
+## List the docker networks
+```bash
+docker network ls
+```
+
+## IP address of docker container
+```bash
+docker container inspect local-dev-control-plane --format '{{ .NetworkSettings.Networks.kind.IPAddress }}'
+```
