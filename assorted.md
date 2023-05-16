@@ -65,3 +65,17 @@ dnf repoquery -l csnappy-devel.x86_64
 
 Ref/Credits:
 https://stackoverflow.com/questions/104055/how-to-list-the-contents-of-a-package-using-yum
+
+
+## Create file with size 1 GB, random data
+
+```bash
+dd if=/dev/urandom of=sample.txt bs=1M count=1024 iflag=fullblock
+```
+
+## Find a package of a binary in Ubuntu
+
+```bash
+dpkg -S /usr/bin/dig
+bind9-dnsutils: /usr/bin/dig
+```
