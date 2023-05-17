@@ -20,7 +20,7 @@ gsettings set org.gnome.desktop.interface clock-show-weekday true
 ## Usefull Tools
 ### General
 ```
-sudo apt install net-tools vim curl git kdiff3 tree traceroute make dos2unix iproute2 bind9-dnsutils yamllint
+sudo apt install vim curl git kdiff3 tree traceroute make dos2unix yamllint net-tools iproute2 bind9-dnsutils iputils-ping
 ```
 net-tools => netstat  
 iproute2 => ip  

@@ -75,3 +75,9 @@ export KUBE_EDITOR="/usr/bin/nano"
 ```bash
 kubectl scale deployment.apps/godevsetup --replicas=5
 ```
+
+## List the pods along with the Nodes on which they are running
+
+```bash
+kubectl get pod -o custom-columns=POD:metadata.name,NODE:spec.nodeName --sort-by spec.nodeName
+```
