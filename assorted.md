@@ -79,3 +79,8 @@ dd if=/dev/urandom of=sample.txt bs=1M count=1024 iflag=fullblock
 dpkg -S /usr/bin/dig
 bind9-dnsutils: /usr/bin/dig
 ```
+
+## Allow all selected characters to be highlighted in Notepad++
+
+Settings -> Preferences -> Highlighting
+Uncheck the "Match whole word only" under Smart Highlighting.
