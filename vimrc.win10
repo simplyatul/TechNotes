@@ -10,10 +10,11 @@ set expandtab
 set shiftwidth=4
 set softtabstop=4
 set ruler
-setlocal spell spelllang=en_us
+" setlocal spell spelllang=en_us
+" instead use :set spell/:set nospell when require
 colorscheme slate
 set guifont=Courier_New:h11:cANSI
-" makes y and p copy and paste to the ìglobalî buffer/clipboard  
+" makes y and p copy and paste to the ‚Äúglobal‚Äù buffer/clipboard  
 " set clipboard+=unnamed
 
 "atul: script to open large fils faster
