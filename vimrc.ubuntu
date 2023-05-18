@@ -7,7 +7,8 @@ set expandtab
 set shiftwidth=4
 set softtabstop=4
 set ruler
-setlocal spell spelllang=en_us
+" setlocal spell spelllang=en_us
+" instead use :set spell/:set nospell when require
 colorscheme slate
 set guifont=Courier_New:h11:cANSI
 " makes y and p copy and paste to th global buffer/clipboard  
