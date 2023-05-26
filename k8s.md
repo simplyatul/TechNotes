@@ -81,3 +81,23 @@ kubectl scale deployment.apps/godevsetup --replicas=5
 ```bash
 kubectl get pod -o custom-columns=POD:metadata.name,NODE:spec.nodeName --sort-by spec.nodeName
 ```
+
+## Prints the specific columns
+```bash
+kubectl get namespaces
+NAME                 STATUS   AGE
+default              Active   36m
+kube-node-lease      Active   36m
+kube-public          Active   36m
+kube-system          Active   36m
+local-path-storage   Active   36m
+```
+
+```bash
+kubectl get namespaces -o=jsonpath='{range.items[*]}{.metadata.name} {"\n"}{end}'
+default 
+kube-node-lease 
+kube-public 
+kube-system 
+local-path-storage 
+```
