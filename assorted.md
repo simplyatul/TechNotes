@@ -84,3 +84,10 @@ bind9-dnsutils: /usr/bin/dig
 
 Settings -> Preferences -> Highlighting
 Uncheck the "Match whole word only" under Smart Highlighting.
+
+
+## Set the locale on Ubuntu
+```bash
+sudo rm -rf /etc/localtime
+sudo ln -s /usr/share/zoneinfo/Asia/Kolkata /etc/localtime
+```
