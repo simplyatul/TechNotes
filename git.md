@@ -1,5 +1,13 @@
 # Documenting git commands/notes 
 
+## Set name and email
+
+```bash
+ git config --global user.email "atulthosar@gmail.com"
+ git config --global user.name "Atul Thosar"
+```
+Remove --global flag in case you want to set name/email for local repository only
+
 ## Undo last commit (w/o removing the files)
 ```bash
 git reset --soft HEAD~1
