@@ -29,7 +29,7 @@ irrespective of app language
 
 
 ## Differnt ways to address service-to-service communication over the unrelible network
-what if service A can not communicate to service B or having issues connectioning with service B
+What if service A can not communicate to service B or having issues connectioning with service B
 
 - Client-side load balancing
 - Service discovery => periodically updates list of healthy endpoints 
@@ -52,4 +52,22 @@ Control Plane
 - One more piece of software (proxy) added along with each service/app instance
 - Becomes imp piece of the services as all calls traverse through the service mesh
 - Introduces another lay of complexity
+
+## Istiod Functions
+- Security
+  - Uses SPIFFE specification
+  - handles certificate attestation, signing, delivery, rotation
+
+## General Notes
+Envoy - Service Proxy  
+istiod - Control Plane  
+xDS API - Allows to configure Service Proxy dynamically
+
+## Acronyms
+xDS - Discovery Services (Blankate name)  
+LDS - Listener Discovery Service  
+EDS - Endpoint Discovery Service  
+RDS - Route Discovery Service  
+SPIFFE - Secure Production Identity Framework For Everyone (https://spiffe.io)  
+
 
