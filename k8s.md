@@ -1,5 +1,33 @@
 # Documenting k8s/kubernetes commands/notes 
 
+## Run a pod and delete the it once the command finishes
+```bash
+kubectl run -i -n default --rm --restart=Never dummy --image=curlimages/curl --command -- sh -c 'cat /etc/resolv.conf'
+search default.svc.cluster.local svc.cluster.local cluster.local
+nameserver 10.96.0.10
+options ndots:5
+pod "dummy" deleted
+```
+
+## Run a pod and keep it running
+```bash
+kubectl run -n default nginx --image=nginx
+pod/nginx created
+```
+Or
+```bash
+kubectl run -n default curl --image=curlimages/curl -i --tty -- sh
+If you don't see a command prompt, try pressing enter.
+/ $ 
+```
+
+Re-attch to the pod
+
+```bash
+kubectl attach curl -c curl -i -t -n default
+```
+
+
 ## List k8s API Resources
 ```bash
 kubectl api-resources -o wide
@@ -100,4 +128,19 @@ kube-node-lease
 kube-public 
 kube-system 
 local-path-storage 
+```
+
+## Get the current namespace of current context using kubectl
+```bash
+kubectl config view --minify --output 'jsonpath={..namespace}'; echo
+```
+
+--minify => Remove all information not used by current-context from the output
+
+; echo => makes output more readable
+
+## Point kubectl to a specific namespace
+
+```bash
+kubectl config set-context $(kubectl config current-context) --namespace=istioinaction
 ```

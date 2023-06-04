@@ -91,3 +91,13 @@ Uncheck the "Match whole word only" under Smart Highlighting.
 sudo rm -rf /etc/localtime
 sudo ln -s /usr/share/zoneinfo/Asia/Kolkata /etc/localtime
 ```
+
+## Reduce the image size
+
+```bash
+sudo apt-get install imagemagick
+
+convert -resize 60% source.png dest.jpg
+```
+
+resize 60% => dest.jpg will be 60% of source.png
