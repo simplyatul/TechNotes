@@ -101,3 +101,10 @@ convert -resize 60% source.png dest.jpg
 ```
 
 resize 60% => dest.jpg will be 60% of source.png
+
+## Install dig and nslookup on Alpine Linux
+
+```bash
+apk update
+apk add bind-tools
+```
