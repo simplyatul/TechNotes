@@ -58,6 +58,23 @@ Control Plane
   - Uses SPIFFE specification
   - handles certificate attestation, signing, delivery, rotation
 
+## Resiliency Technique
+Suppose Service A calling Service B's APIs
+
+- Latency issue = Service B not responding in time
+  - Service A may go to other Service B pod or go to other region or zone
+- Servie B throwing errors intermittently
+  - Service A wanna perform retries
+- Service B throwing errors frequently
+  - System want to remove that instance/pod from the mesh => Circuit Breaking
+  - This avoids overloading Service B (instance) and hence avoids cascading filures too
+
+## Resiliency Patterns
+- Client-side load balancing
+- Locality-aware load balancing
+- Timeouts and retries
+- Circuit breaking
+
 ## General Notes
 Envoy - Service Proxy  
 istiod - Control Plane  
