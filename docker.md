@@ -61,7 +61,7 @@ docker run busybox nslookup google.com
 docker exec -it [container-name] /bin/bash
 ```
 
-## restart docker
+## restart docker service
 ```bash
 sudo service docker restart
 ```

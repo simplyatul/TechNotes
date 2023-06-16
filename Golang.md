@@ -1,4 +1,13 @@
- ### Go Functions
+### VS (Visual Studio) Code Settings
+```bash
+"go.testFlags": ["-count=1", "-v"]
+```
+Above line added in ~/.config/Code/User/settings.json  
+-count=1 => turns off test caching  
+-v => verbose output
+
+
+### Go Functions
  
  ```
  func printPrice(product string, price float64, taxRate float64) {
