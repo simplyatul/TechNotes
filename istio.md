@@ -80,6 +80,80 @@ Envoy - Service Proxy
 istiod - Control Plane  
 xDS API - Allows to configure Service Proxy dynamically
 
+## Get the log level of Istio Ingress Pod
+```bash
+istioctl proxy-config log -n istio-system istio-ingressgateway-8d56c999d-745db
+istio-ingressgateway-8d56c999d-745db.istio-system:
+active loggers:
+  admin: info
+  alternate_protocols_cache: info
+  aws: info
+  assert: info
+  backtrace: info
+  cache_filter: info
+  client: info
+  config: info
+  connection: info
+  conn_handler: info
+  decompression: info
+  dns: info
+  dubbo: info
+  envoy_bug: info
+  ext_authz: info
+  ext_proc: info
+  rocketmq: info
+  file: info
+  filter: info
+  forward_proxy: info
+  grpc: info
+  happy_eyeballs: info
+  hc: info
+  health_checker: info
+  http: info
+  http2: info
+  hystrix: info
+  init: info
+  io: info
+  jwt: info
+  kafka: info
+  key_value_store: info
+  lua: info
+  main: info
+  matcher: info
+  misc: info
+  mongo: info
+  multi_connection: info
+  oauth2: info
+  quic: info
+  quic_stream: info
+  pool: info
+  rate_limit_quota: info
+  rbac: info
+  rds: info
+  redis: info
+  router: info
+  runtime: info
+  stats: info
+  secret: info
+  tap: info
+  testing: info
+  thrift: info
+  tracing: info
+  upstream: info
+  udp: info
+  wasm: info
+  websocket: info
+```
+
+## Set the log level of Istio Ingress
+```bash
+# Set the log level to debug for all modules
+istioctl proxy-config log -n istio-system istio-ingressgateway-8d56c999d-745db.istio-system --level debug
+
+# Set the log level to debug for specific modules
+istioctl proxy-config log -n istio-system istio-ingressgateway-8d56c999d-745db.istio-system --level http:debug,dns:debug,router:debug
+```
+
 ## Acronyms
 xDS - Discovery Services (Blankate name)  
 LDS - Listener Discovery Service  
