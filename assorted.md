@@ -108,3 +108,33 @@ resize 60% => dest.jpg will be 60% of source.png
 apk update
 apk add bind-tools
 ```
+
+## Code navigation - ctags, cscope
+```bash
+cd ~/source-code
+
+find . -name "*.c" -o -name "*.ccc" -o -name "*.h"  > cscope.files
+
+ctags -B -L cscope.files
+# outputs tags file in your current directory
+
+cscope -q -R -b -i cscope.files
+# outputs cscope.in.out, cscope.out, and cscope.po.out in your current directory
+
+cscope -d
+# starts the Cscope browser
+# press Ctrl-d to exit.
+
+```
+### ctags flags
+
+-B => Use backward searching patterns  
+-L => Read from <file> a list of file names for which tags should be generated.
+
+### cscope flags
+
+-q => build a faster (but larger) database.  
+-R => search for symbols recursively.  
+-b => builds the database only, but does not start the Cscope browser.  
+-i cscope.files => specifies the list of source files.  
+
