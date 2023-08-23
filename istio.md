@@ -51,7 +51,7 @@ Control Plane
 ## Drawbacks to using a service mesh
 - One more piece of software (proxy) added along with each service/app instance
 - Becomes imp piece of the services as all calls traverse through the service mesh
-- Introduces another lay of complexity
+- Introduces another layer of complexity
 
 ## Istiod Functions
 - Security
