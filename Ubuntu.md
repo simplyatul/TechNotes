@@ -60,4 +60,12 @@ $ gsettings set org.gnome.shell.extensions.dash-to-dock isolate-workspaces true
 Gnome Tweaks -> Windows tilebar -> Placement -> Right
 ```
 
+## Search the package along with available versions
 
+```
+apt list -a libboost-atomic-dev
+Listing... Done
+libboost-atomic-dev/jammy 1.74.0.3ubuntu7 amd64
+
+libboost-atomic-dev/jammy 1.74.0.3ubuntu7 i386
+```
