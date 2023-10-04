@@ -69,3 +69,28 @@ libboost-atomic-dev/jammy 1.74.0.3ubuntu7 amd64
 
 libboost-atomic-dev/jammy 1.74.0.3ubuntu7 i386
 ```
+
+## Make a remove connection to Ubuntu from Windows
+
+**Worked with Ubuntu 22.04.2 LTS (Jammy)**
+
+```
+sudo apt install xrdp
+sudo ufw allow 3389
+sudo systemctl status xrdp
+```
+
+**Remember to logout**
+
+Logging out (locally) is the most important part. If you login by physically going to the computer and connecting keyboard, mouse, monitor etc. then xrdp won't work until you logout.
+
+To change the appearance of the desktop from the default gnome to Ubuntu, create the hidden file ```/home/$USER/.xsessionrc``` with the following content:
+
+```
+export GNOME_SHELL_SESSION_MODE=ubuntu
+export XDG_CURRENT_DESKTOP=ubuntu:GNOME
+export XDG_CONFIG_DIRS=/etc/xdg/xdg-ubuntu:/etc/xdg
+```
+
+Ref: https://askubuntu.com/questions/1407444/ubuntu-22-04-remote-desktop-headless/1409120#1409120
+
