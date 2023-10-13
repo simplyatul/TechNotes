@@ -5,7 +5,7 @@ Open source implementation of a service mesh.
 ## Service Mesh
 - Distributed application infrastructure
 - Handles network traffic on behalf of the App
-- Transparant and out-of-process
+- Transparent and out-of-process
 - Made up of Data + Control Plane. Together they provide 
   - Observability
   - Security
@@ -28,8 +28,8 @@ irrespective of app language
 - Resilient => Timeouts, retries, circuit breaking 
 
 
-## Differnt ways to address service-to-service communication over the unrelible network
-What if service A can not communicate to service B or having issues connectioning with service B
+## Different ways to address service-to-service communication over the unreliable network
+What if service A can not communicate to service B or having issues connecting with service B
 
 - Client-side load balancing
 - Service discovery => periodically updates list of healthy endpoints 
@@ -67,7 +67,7 @@ Suppose Service A calling Service B's APIs
   - Service A wanna perform retries
 - Service B throwing errors frequently
   - System want to remove that instance/pod from the mesh => Circuit Breaking
-  - This avoids overloading Service B (instance) and hence avoids cascading filures too
+  - This avoids overloading Service B (instance) and hence avoids cascading failures too
 
 ## Resiliency Patterns
 - Client-side load balancing
@@ -155,7 +155,7 @@ istioctl proxy-config log -n istio-system istio-ingressgateway-8d56c999d-745db.i
 ```
 
 ## Acronyms
-xDS - Discovery Services (Blankate name)  
+xDS - Discovery Services (Blanket name)
 LDS - Listener Discovery Service  
 EDS - Endpoint Discovery Service  
 RDS - Route Discovery Service  
