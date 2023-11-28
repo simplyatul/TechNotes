@@ -1,0 +1,12 @@
+clusters:
+- name: hello_world_service
+# name has to be unique across all clusters.
+  load_assignment:
+    cluster_name: hello_world_service
+    endpoints:
+    - lb_endpoints:
+      - endpoint:
+          address:
+            socket_address:
+              address: 127.0.0.1
+              port_value: 8000

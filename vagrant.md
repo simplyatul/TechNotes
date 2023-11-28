@@ -1,4 +1,7 @@
-# Vagrant useful commands
+# Intro
+- Vagrant box's location is ~/.vagrant.d/boxes
+
+## Vagrant useful commands
 
 ### Create a VM
 Assuming Vagrant file is present in CWD.
@@ -23,12 +26,10 @@ vagrant ssh
 ```bash
 vagrant box list
 ```
-
 ### Destroys the VM
 ```bash
 vagrant destroy
 ```
-
 ## Run a privisioner (out of others) on running/halted VM 
 
 ```bash

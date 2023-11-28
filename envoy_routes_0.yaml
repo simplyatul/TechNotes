@@ -1,0 +1,26 @@
+route_config:
+  name: sample_route_config
+  virtual_hosts:
+  - name: tetrate_host
+  # name is used for emitting statistics and not used for routing.
+    domains: ["tetrate.io"]
+    # incoming req is routed to this domain if 
+    # req's Host/Authority header is set to tetrate.io
+    routes:
+  
+  - name: test_host
+    domains: ["test.tetrate.io", "qa.tetrate.io"]
+    # If multiple domains are defined in array
+    # then the search/match order is -
+    # 1. Exact domain names (e.g. tetrate.io)
+    # 2. Suffix domain wildcards (e.g. *.tetrate.io)
+    # 3. Prefix domain wildcards (e.g. tetrate.*)
+    # 4. Special wildcard matching any domain (*)
+    routes:
+    - match:
+        prefix: "/"
+      route:
+        cluster: hello_world_service
+    # how to match req prefix and what to do next
+    # with the req (e.g. redirect, forward, rewrite, send a direct response, etc.).
+
