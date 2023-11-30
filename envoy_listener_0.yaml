@@ -6,3 +6,41 @@ static_resources:
         address: 0.0.0.0
         port_value: 10000
     filter_chains: [{}]
+
+route_config:
+  name: my_route_config 
+  virtual_hosts:
+  - name: bar_route
+    domains: ["bar.io"]
+    routes:
+    - match:
+        prefix: "/"
+      route:
+        priority: HIGH
+        cluster: bar_io
+  - name: foo_route
+    domains: ["foo.io"]
+    routes:
+    - match:
+        prefix: "/"
+      route:
+        # priority is default
+        cluster: foo_io
+
+
+route_config:
+  name: my_route_config 
+  virtual_hosts:
+  - name: hello_route
+    domains: ["hello.com"]
+    routes:
+    - match:
+        prefix: "/api"
+      route:
+        cluster: api_cluster
+    - match:
+        prefix: "/api/v1"
+      route:
+        cluster: api_v1_cluster
+
+

@@ -26,6 +26,9 @@ Jotting down the Envoy Fundamentals and much more...
     - HTTP L7 (HCM)
 - Extensible Design
     - Can write your own filters
+    - By default, filters are written in C++, but other ways exists too
+        - Lua script
+        - WASM => WebAssembly
 
 # Features
 - Support HTTP/1.1 and HTTP/2
@@ -63,13 +66,13 @@ Jotting down the Envoy Fundamentals and much more...
 - Endpoints
 
 ## Listener Filters
-    - 3 types of filters
-        - Listeners
-            - Kicks in as soon as packet received
-            - Generally operates on Packet header
-            - e.g. Proxy listener filter, TLS inspector filter, etc
-        - Network
-        - HTTP
+- 3 types of filters
+    - Listeners
+        - Kicks in as soon as packet received
+        - Generally operates on Packet header
+        - e.g. Proxy listener filter, TLS inspector filter, etc
+    - Network
+    - HTTP
 ## Clusters
 - Group of similar upstream hosts
 - Clusters are defined at the same level as listeners using the clusters field.
@@ -80,13 +83,113 @@ Jotting down the Envoy Fundamentals and much more...
     - Protocol options for handling HTTP requests
     - optional filter to apply to all outgoing connections
 
-# HTTP Connection Management (HCM)
-- is one of filter
-- converts raw bytes into HTTP level messages
+# HTTP/2 Terminology
+- Stream => bidirectional flow of bytes in a connection
+- Stream carries one or more messages
+- Message is sequence of frames that map to HTTP request/response message
+- frame => smallest unit of communication in HTTP/2
+- frame contains
+    - header
+        - contains stream id to which it belong
+    - message payload
+
+# HTTP Connection Management Filter (HCM)
+- Network Level filter
+- Converts raw bytes into HTTP level messages
 - can have multiple http filters within the single HCM filter
 - last filter in the chain must be router filter
+- Supports HTTP functionality like logging, request ID generation and tracing, header manipulation, route table management, statistics, etc.
 
 ## Usage
 - Routing/forwarding
 - Rate limiting
 - Buffering
+
+## HTTP Filter
+- Used within HCM
+- Working on HTTP messages w/o knowing underlying protocol (HTTP/1.1 or HTTP/2.0, etc) and multiplexing capabilities
+- 3 Types of HTTP Filters
+    - Encoder
+    - Decoder
+    - Encoder and Decoder
+- Filter order matters
+```
+http_filters:
+- filter_1
+- filter_2
+- filter_3
+```
+- Request path: filter_1 -> filter_2 -> filter_3
+- Response Path: filter_3 -> filter_2 -> filter_1
+
+- Built-in HTTP Filters
+    - CORS, CSRF, health check, JWT authentication, etc
+    - Check [Full List](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/http_filters#http-filters)
+
+## HTTP Routing
+
+## Example of Routing and Matching
+- Consider the following config
+
+```yaml
+route_config:
+  name: my_route_config 
+  virtual_hosts:
+  - name: bar_route
+    domains: ["bar.io"]
+    routes:
+    - match:
+        prefix: "/"
+      route:
+        priority: HIGH
+        cluster: bar_io
+  - name: foo_route
+    domains: ["foo.io"]
+    routes:
+    - match:
+        prefix: "/"
+      route:
+        # priority is default
+        cluster: foo_io
+```
+- Incoming requests' Host (HTTP/1.1) or Authority (HTTP/2.0) or SNI (TLS) header values are matched against domains value
+- Once the domain is selected, route is identified using prefix value
+- Do consider order of the route. Consider following example
+
+```yaml
+route_config:
+  name: my_route_config 
+  virtual_hosts:
+  - name: hello_route
+    domains: ["hello.com"]
+    routes:
+    - match:
+        prefix: "/api"
+      route:
+        cluster: api_cluster
+    - match:
+        prefix: "/api/v1"
+      route:
+        cluster: api_v1_cluster
+```
+- as per above config, https://hello.com/api/v1 is routed to api_cluster and not to api_v1_cluster
+- simple workaround is to reverse the order of declaration
+- Following table explains the matching rules
+
+| Route match   | Description   | Example |
+| :---------- | :-------------- | :---------- |
+| prefix  | The prefix must match the beginning of the :path header | /hello matches hello.com/hello, hello.com/helloworld, and hello.com/hello/v1 |
+| path | The path must exactly match the :path header | /hello matches hello.com/hello, but not hello.com/helloworld or hello.com/hello/v1 |
+| safe_regex | The provided regex must match the :path header | /\d{3} matches any 3 digit number after /. For example, hello.com/123, but not hello.com/hello or hello.com/54321 |
+| connect_matcher | Matcher only matches CONNECT requests | |
+
+- prefix and path matching is case-sensitive. 
+- However, we can set case_sensitive to false as well.
+- case_sensitive setting does not apply to safe_regex matching.
+
+# Credits
+The above information is gathered/learned from different sources. Listing them out here.
+
+[Envoy Tetrate Course](https://academy.tetrate.io/courses/take/envoy-fundamentals/)
+
+
