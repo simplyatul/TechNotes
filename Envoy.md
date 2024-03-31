@@ -187,6 +187,22 @@ route_config:
 - However, we can set case_sensitive to false as well.
 - case_sensitive setting does not apply to safe_regex matching.
 
+## Traffic Splitting
+- Splits traffic bet routes in the same virtual host to diff upstream clusters
+- Two approaches
+    - using runtime %s
+        - useful for canary releases or progressive/gradual shift traffic
+    - using weighted clusters
+
+## Header Manipulation
+- One can manipulate requests/responses headers in following order
+    - Weighted cluster-level headers
+    - Route-level headers
+    - Virtual host-level headers
+    - Global-level headers
+- The order means Envoy might overwrite a header set on the weighted cluster level by headers configured at the higher level (route, virtual host, or global).
+
+
 # Credits
 The above information is gathered/learned from different sources. Listing them out here.
 

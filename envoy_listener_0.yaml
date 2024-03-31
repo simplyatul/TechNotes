@@ -28,19 +28,3 @@ route_config:
         cluster: foo_io
 
 
-route_config:
-  name: my_route_config 
-  virtual_hosts:
-  - name: hello_route
-    domains: ["hello.com"]
-    routes:
-    - match:
-        prefix: "/api"
-      route:
-        cluster: api_cluster
-    - match:
-        prefix: "/api/v1"
-      route:
-        cluster: api_v1_cluster
-
-
