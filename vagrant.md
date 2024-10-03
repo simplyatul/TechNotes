@@ -30,8 +30,14 @@ vagrant box list
 ```bash
 vagrant destroy
 ```
-## Run a privisioner (out of others) on running/halted VM 
+## Run a provisioner (out of others) on running/halted VM
 
 ```bash
 vagrant up --provision-with kind
+```
+
+## List all Vagrant managed VMs VM
+
+```bash
+vagrant global-status
 ```
