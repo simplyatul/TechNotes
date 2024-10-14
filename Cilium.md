@@ -44,9 +44,24 @@ Cilium is eBPF based network observability and security tool. On high level, it 
 - Runtime enforcement
 - Can run w/o Cilium as well
 
+## Cilium Internals
+
+### Cilium Configs
+- Store in k8s ConfigMap => cilium-config
+```bash
+kubectl get -n kube-system configmap cilium-config -o yaml | yq .data.enable-ipv6
+true
+```
+- One can use Cilium CLI to fetch the same
+```bash
+cilium config view | grep enable-ipv6
+enable-ipv6             true
+```
+- Cilium CLI tool interface with K8s API Server as necessary, similar to that of kubectl
 
 ## References
 - History of Cilium
     - https://www.youtube.com/watch?v=wv_9YxdC49Y
     - By Thomas Graf, Co-Creator of Cilium
 
+- EBook: Kubernetes Networking and Cilium by Nico Vibert

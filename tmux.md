@@ -58,6 +58,11 @@ prefix + ,
 ```bash
 prefix + %
 ```
+## Close a pane
+```bash
+prefix + x
+```
+
 
 ## List panes
 ```bash
