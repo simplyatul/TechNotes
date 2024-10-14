@@ -142,9 +142,14 @@ kubectl config view --minify --output 'jsonpath={..namespace}'; echo
 ## Point kubectl to a specific namespace
 
 ```bash
-kubectl config set-context $(kubectl config current-context) --namespace=istioinaction
+kubectl config set-context $(kubectl config current-context) --namespace=custom-ns
 ```
-
+## Get the current context information
+```bash
+kubectl config get-contexts $(kubectl config current-context)
+CURRENT   NAME               CLUSTER            AUTHINFO           NAMESPACE
+*         kind-k8s-samples   kind-k8s-samples   kind-k8s-samples   default
+```
 ## Understand object API fields
 
 ```bash

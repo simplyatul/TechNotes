@@ -1,3 +1,6 @@
+# MIT License
+# Copyright (c) 2023 Atul Thosar (atulthosar@gmail.com)
+
 set ic
 se nu
 set tabstop=4
@@ -14,7 +17,7 @@ set guifont=Courier_New:h11:cANSI
 " makes y and p copy and paste to th global buffer/clipboard  
 " set clipboard+=unnamed
 
-"atul: script to open large fils faster
+"Script to open large files faster and in readonly mode
 let g:bigFile = 1024 * 1024 * 500
 let curr_fname = expand("%")
 let ftype = getftype(curr_fname)

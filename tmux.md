@@ -4,6 +4,29 @@
 ```bash
 Ctrl + b
 ```
+## Tmux config file content
+```bash
+cat ~/.tmux.conf
+
+set -g mouse on
+setw -g mode-keys vi
+```
+## Copy to tmux buffer using mouse
+```
+Select the text using mouse.
+Keep left button pressed
+And hit Enter
+
+Now to paste use
+Prefix + ]
+```
+## Copy text to system clipboard
+
+```
+Press Shift Key
+Select the text using mouse.
+Right Click + Copy Or Ctrl + Insert
+```
 ## List Sessions
 ```bash
 tmux ls

@@ -127,3 +127,9 @@ docker network ls
 ```bash
 docker container inspect <container-name> --format '{{ .NetworkSettings.Networks.kind.IPAddress }}'
 ```
+
+## Dockerfile of a trivial busybox container
+```bash
+FROM busybox
+ENTRYPOINT while true; do echo 'SSD OK'; sleep 5; done
+```
