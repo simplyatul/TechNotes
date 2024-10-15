@@ -120,6 +120,15 @@ nvidia
 # nvidia-settings
 ```
 
+## curl => print http response code only
+```bash
+curl -s -o /dev/null -w "%{http_code}\n%{local_ip}\n" https://google.com
+301
+
+-s => silent
+-o <file> -> output to file
+-w, --write-out <format>
+```
 ### Ref:  
 - https://askubuntu.com/questions/1456758/external-monitor-not-detected-in-ubuntu-20-04  
 - https://documentation.ubuntu.com/server/how-to/graphics/install-nvidia-drivers/

@@ -216,4 +216,17 @@ kubectl logs pod/nginx -c nginx
 
 -c => Container name
 ```
+## Create DNS utils pod
+```bash
+kubectl run dnsutils --image=tutum/dnsutils --command -- sleep infinity
+pod/dnsutils created
 
+# Usage => Find IP address associated with headleass service
+kubectl exec pod/dnsutils -- nslookup nginx-hl-srv
+Server:		10.96.0.10
+Address:	10.96.0.10#53
+
+Name:	nginx-np-srv.default.svc.cluster.local
+Address: 10.96.98.155
+
+```
