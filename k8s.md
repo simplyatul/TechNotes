@@ -228,5 +228,73 @@ Address:	10.96.0.10#53
 
 Name:	nginx-np-srv.default.svc.cluster.local
 Address: 10.96.98.155
+```
 
+## Create a k8s resource (e.g. ConfigMap) using command and extract yaml file
+```bash
+kubectl create configmap fortune-config --from-literal=sleep-interval=25 --from-literal=foo=bar
+configmap/fortune-config created
+
+kubectl get configmaps fortune-config -o yaml
+apiVersion: v1
+data:
+  foo: bar
+  sleep-interval: "25"
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2024-10-16T04:23:02Z"
+  name: fortune-config
+  namespace: default
+  resourceVersion: "141051"
+  uid: f984d187-ea20-49c0-b92d-1e2df583eb97
+```
+## How to access K8s API Server APIs
+
+```bash
+kubectl cluster-info
+Kubernetes control plane is running at https://127.0.0.1:38919
+CoreDNS is running at https://127.0.0.1:38919/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+
+# Above cluster is created using KinD
+```
+
+Accessing API Server fails bec it needs authentication
+
+```bash
+curl https://127.0.0.1:38919 -k
+{
+  "kind": "Status",
+  "apiVersion": "v1",
+  "metadata": {},
+  "status": "Failure",
+  "message": "forbidden: User \"system:anonymous\" cannot get path \"/\"",
+  "reason": "Forbidden",
+  "details": {},
+  "code": 403
+}
+```
+
+Solution: Use kubectl proxy.
+kubectl proxy accepts HTTP connections on your local machine and proxies them to the API server while taking care of authentication.
+```bash
+kubectl proxy &
+[2] 18900
+Starting to serve on 127.0.0.1:8001
+```
+
+```bash
+curl 127.0.0.1:8001
+{
+  "paths": [
+    "/.well-known/openid-configuration",
+    "/api",
+    "/api/v1",
+    "/apis",
+    ...
+    ...
+    ...
+  ]
+}
 ```
