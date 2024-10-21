@@ -20,7 +20,7 @@ sudo nsenter -t `docker inspect -f "{{.State.Pid}}" <containerid>` -n netstat
 
 ```
 nsenter => run program in different namespaces  
-Above command is useful evenif netstat is not installed in the container
+-n => network ns
 
 ## Free up the space
 
@@ -54,11 +54,17 @@ docker images --filter "dangling=true"
 ```bash
 docker run busybox nslookup google.com
 ```
+Once nslookup finishes, container will be stopped.
+
+## Run Busybox container and let it run
+```bash
+docker run --name bb -dt busybox
+```
 
 ## Enter into already running container
 
 ```bash
-docker exec -it [container-name] /bin/bash
+docker exec -it bb /bin/sh
 ```
 
 ## restart docker service

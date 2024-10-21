@@ -13,6 +13,17 @@ pod "dummy" deleted
 ```bash
 kubectl run -n default nginx --image=nginx
 pod/nginx created
+
+Or
+
+kubectl run alpine-pod --image alpine --restart Never -- /bin/sleep 999999
+pod/alpine-pod created
+
+kubectl exec pod/alpine-pod -- ps aux
+PID   USER     TIME  COMMAND
+    1 root      0:00 /bin/sleep 999999
+   13 root      0:00 ps aux
+
 ```
 Or
 ```bash
@@ -297,4 +308,18 @@ curl 127.0.0.1:8001
     ...
   ]
 }
+```
+
+## Access etcd.
+Following commands verified on a KinD setup
+
+```bash
+kubectl exec -it -n kube-system etcd-k8s-samples-control-plane -- etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/healthcheck-client.crt --key=/etc/kubernetes/pki/etcd/healthcheck-client.key endpoint health
+https://127.0.0.1:2379 is healthy: successfully committed proposal: took = 4.11813ms
+```
+
+To locate/access pod definition
+```bash
+kubectl exec -it -n kube-system etcd-k8s-samples-control-plane -- etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/healthcheck-client.cr
+t --key=/etc/kubernetes/pki/etcd/healthcheck-client.key get /registry/pods/default/nginx-dep-7579c6ff58-7bgpv
 ```
