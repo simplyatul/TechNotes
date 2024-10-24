@@ -91,24 +91,115 @@ Ref: https://askubuntu.com/questions/1407444/ubuntu-22-04-remote-desktop-headles
 
 ## Nvidia Graphics Card 
 
-### Issue: Ubuntu 22.04 could not detect external monitor
+### Issue: Ubuntu 24.04.1 could not detect external monitor
 - This happened suddenly on one fine day
-- Solution: Updated nvidia-driver-535 to nvidia-driver-470
-    - Did not update the /etc/default/grub file btw
 
-### Utilities to install
-```
-# apt install nvidia-prime
-# apt install nvidia-settings
-```
-### Identify Nvidia Graphics Card Type
-```
+### Troubleshooting
+
+Identify Nvidia Graphics Card Type
+```bash
 # lspci -nn |grep 'VGA' 
 00:02.0 VGA compatible controller [0300]: Intel Corporation Alder Lake-P Integrated Graphics Controller [8086:46a6] (rev 0c)
 01:00.0 VGA compatible controller [0300]: NVIDIA Corporation GA107BM [GeForce RTX 3050 Ti Mobile] [10de:25e0] (rev a1)
 ```
-### Other useful commands 
+
+```bash
+root@atul-lap:/home/atul# # Before connecting HDMI cable to Laptop
+root@atul-lap:/home/atul# 
+root@atul-lap:/home/atul# dmesg | grep -i 'hdmi\|nvidia'
+[    2.298421] nvidia: loading out-of-tree module taints kernel.
+[    2.298427] nvidia: module license 'NVIDIA' taints kernel.
+[    2.298430] nvidia: module license taints kernel.
+[    2.362862] nvidia-nvlink: Nvlink Core is being initialized, major device number 510
+[    2.363996] nvidia 0000:01:00.0: enabling device (0006 -> 0007)
+[    2.364350] nvidia 0000:01:00.0: vgaarb: VGA decodes changed: olddecodes=io+mem,decodes=none:owns=none
+[    2.413728] NVRM: loading NVIDIA UNIX x86_64 Kernel Module  550.107.02  Wed Jul 24 23:53:00 UTC 2024
+[    2.639268] nvidia-modeset: Loading NVIDIA Kernel Mode Setting Driver for UNIX platforms  550.107.02  Wed Jul 24 23:24:27 UTC 2024
+[    2.670367] [drm] [nvidia-drm] [GPU ID 0x00000100] Loading driver
+[    3.121258] input: HDA NVidia HDMI/DP,pcm=3 as /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card0/input20
+[    3.123817] input: HDA NVidia HDMI/DP,pcm=7 as /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card0/input21
+[    3.124013] input: HDA NVidia HDMI/DP,pcm=8 as /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card0/input22
+[    3.124053] input: HDA NVidia HDMI/DP,pcm=9 as /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card0/input23
+[    3.524145] [drm:nv_drm_load [nvidia_drm]] *ERROR* [nvidia-drm] [GPU ID 0x00000100] Failed to allocate NvKmsKapiDevice
+[    3.524248] [drm:nv_drm_register_drm_device [nvidia_drm]] *ERROR* [nvidia-drm] [GPU ID 0x00000100] Failed to register device
+[    3.756562] nvidia_uvm: module uses symbols nvUvmInterfaceDisableAccessCntr from proprietary module nvidia, inheriting taint.
+[    3.802019] nvidia-uvm: Loaded the UVM driver, major device number 507.
+[    4.634102] skl_hda_dsp_generic skl_hda_dsp_generic: hda_dsp_hdmi_build_controls: no PCM in topology for HDMI converter 3
+[    4.651167] input: sof-hda-dsp HDMI/DP,pcm=3 as /devices/pci0000:00/0000:00:1f.3/skl_hda_dsp_generic/sound/card1/input37
+[    4.651187] input: sof-hda-dsp HDMI/DP,pcm=4 as /devices/pci0000:00/0000:00:1f.3/skl_hda_dsp_generic/sound/card1/input38
+[    4.651207] input: sof-hda-dsp HDMI/DP,pcm=5 as /devices/pci0000:00/0000:00:1f.3/skl_hda_dsp_generic/sound/card1/input39
+root@atul-lap:/home/atul# 
+root@atul-lap:/home/atul# 
+root@atul-lap:/home/atul# 
+root@atul-lap:/home/atul# # After connecting HDMI cable to Laptop
+root@atul-lap:/home/atul# 
+root@atul-lap:/home/atul# dmesg | grep -i 'hdmi\|nvidia'
+[    2.298421] nvidia: loading out-of-tree module taints kernel.
+[    2.298427] nvidia: module license 'NVIDIA' taints kernel.
+[    2.298430] nvidia: module license taints kernel.
+[    2.362862] nvidia-nvlink: Nvlink Core is being initialized, major device number 510
+[    2.363996] nvidia 0000:01:00.0: enabling device (0006 -> 0007)
+[    2.364350] nvidia 0000:01:00.0: vgaarb: VGA decodes changed: olddecodes=io+mem,decodes=none:owns=none
+[    2.413728] NVRM: loading NVIDIA UNIX x86_64 Kernel Module  550.107.02  Wed Jul 24 23:53:00 UTC 2024
+[    2.639268] nvidia-modeset: Loading NVIDIA Kernel Mode Setting Driver for UNIX platforms  550.107.02  Wed Jul 24 23:24:27 UTC 2024
+[    2.670367] [drm] [nvidia-drm] [GPU ID 0x00000100] Loading driver
+[    3.121258] input: HDA NVidia HDMI/DP,pcm=3 as /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card0/input20
+[    3.123817] input: HDA NVidia HDMI/DP,pcm=7 as /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card0/input21
+[    3.124013] input: HDA NVidia HDMI/DP,pcm=8 as /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card0/input22
+[    3.124053] input: HDA NVidia HDMI/DP,pcm=9 as /devices/pci0000:00/0000:00:01.0/0000:01:00.1/sound/card0/input23
+[    3.524145] [drm:nv_drm_load [nvidia_drm]] *ERROR* [nvidia-drm] [GPU ID 0x00000100] Failed to allocate NvKmsKapiDevice
+[    3.524248] [drm:nv_drm_register_drm_device [nvidia_drm]] *ERROR* [nvidia-drm] [GPU ID 0x00000100] Failed to register device
+[    3.756562] nvidia_uvm: module uses symbols nvUvmInterfaceDisableAccessCntr from proprietary module nvidia, inheriting taint.
+[    3.802019] nvidia-uvm: Loaded the UVM driver, major device number 507.
+[    4.634102] skl_hda_dsp_generic skl_hda_dsp_generic: hda_dsp_hdmi_build_controls: no PCM in topology for HDMI converter 3
+[    4.651167] input: sof-hda-dsp HDMI/DP,pcm=3 as /devices/pci0000:00/0000:00:1f.3/skl_hda_dsp_generic/sound/card1/input37
+[    4.651187] input: sof-hda-dsp HDMI/DP,pcm=4 as /devices/pci0000:00/0000:00:1f.3/skl_hda_dsp_generic/sound/card1/input38
+[    4.651207] input: sof-hda-dsp HDMI/DP,pcm=5 as /devices/pci0000:00/0000:00:1f.3/skl_hda_dsp_generic/sound/card1/input39
+root@atul-lap:/home/atul# 
 ```
+### Issue
+
+The NVIDIA driver is loaded correctly, but there are errors related to the NVIDIA DRM (Direct Rendering Manager)
+```bash
+[drm:nv_drm_load [nvidia_drm]] *ERROR* [nvidia-drm] [GPU ID 0x00000100] Failed to allocate NvKmsKapiDevice
+[drm:nv_drm_register_drm_device [nvidia_drm]] *ERROR* [nvidia-drm] [GPU ID 0x00000100] Failed to register device
+```
+
+### Solution Worked (Suggested by ChatGPT)
+Disable NVIDIA DRM
+
+```bash
+vi /etc/default/grub
+
+# Append nvidia-drm.modeset=0 to GRUB_CMDLINE_LINUX_DEFAULT. So it should look like
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash nvidia-drm.modeset=0"
+
+sudo update-grub
+sudo reboot
+```
+
+### Other possible solutions
+
+Clean out the current NVIDIA drivers and reinstall 
+
+```bash
+sudo apt-get remove --purge '^nvidia-.*'
+sudo apt autoremove
+sudo apt clean
+
+sudo apt-get install nvidia-driver-550
+
+# Or install old drivers if above do not work
+sudo apt install nvidia-driver-525
+```
+
+### Utilities to install
+```bash
+# apt install nvidia-prime
+# apt install nvidia-settings
+```
+### Other useful commands 
+```bash
 # prime-select 
 Usage: /usr/bin/prime-select nvidia|intel|on-demand|query
 
@@ -118,7 +209,21 @@ nvidia
 # nvidia-smi
 
 # nvidia-settings
+
+# sudo lshw -C display
+
+# forcing the system to detect the external monitor:
+# xrandr --auto
+
+# journalctl -xe | grep nvidia
+
 ```
+
+### Ref:  
+- https://askubuntu.com/questions/1456758/external-monitor-not-detected-in-ubuntu-20-04  
+- https://documentation.ubuntu.com/server/how-to/graphics/install-nvidia-drivers/
+- ChatGPT
+
 
 ## curl => print http response code only
 ```bash
@@ -129,6 +234,3 @@ curl -s -o /dev/null -w "%{http_code}\n%{local_ip}\n" https://google.com
 -o <file> -> output to file
 -w, --write-out <format>
 ```
-### Ref:  
-- https://askubuntu.com/questions/1456758/external-monitor-not-detected-in-ubuntu-20-04  
-- https://documentation.ubuntu.com/server/how-to/graphics/install-nvidia-drivers/
