@@ -24,3 +24,63 @@ List the number of lines added, removed by a particular user
 ```bash
 git log --author="Atul Thosar" --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf "added lines: %s removed lines: %s total lines: %s\n", add, subs, loc }'
 ```
+
+## Merge Vs Rebase
+
+```mermaid
+---
+title: Initial commit history of main and Feature Branch (FB1)
+---
+gitGraph
+ commit id: "C0"
+ commit id: "C1"
+ branch FB1
+ commit id: "F0"
+ checkout main
+ commit id: "C2"
+ checkout FB1
+ commit id: "F1"
+ checkout main
+ commit id: "C3"
+```
+
+### If merged performed then history will look like
+```mermaid
+---
+title: Commit history after merge
+---
+gitGraph
+ commit id: "C0"
+ commit id: "C1"
+ commit id: "FB1 / F0"
+ commit id: "C2"
+ commit id: "FB1 / F1"
+ commit id: "C3"
+ commit id: "Merge Commit"
+```
+
+### If rebase performed then history will look like
+```mermaid
+---
+title: Commit history after rebase
+---
+gitGraph
+ commit id: "C0"
+ commit id: "C1"
+ commit id: "C2"
+ commit id: "C3"
+ commit id: "FB1 / F0"
+ commit id: "FB1 / F1"
+```
+### If rebase performed with squashing then history will look like
+```mermaid
+---
+title: Commit history after rebase with squashing 
+---
+gitGraph
+ commit id: "C0"
+ commit id: "C1"
+ commit id: "C2"
+ commit id: "C3"
+ commit id: "FB1 / squash commit"
+```
