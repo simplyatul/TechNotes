@@ -80,6 +80,19 @@ dpkg -S /usr/bin/dig
 bind9-dnsutils: /usr/bin/dig
 ```
 
+## Location of installed packages (.deb files) in Ubuntu
+```bash
+ls /var/cache/apt/archives/
+```
+
+# Find the contents of the package in Ubuntu
+```bash
+# download package first
+sudo apt-get --download-only install linux-tools-common
+
+# check the contents of a package
+sudo dpkg --contents /var/cache/apt/archives/linux-tools-common_5.15.0-126.136_all.deb
+```
 ## Allow all selected characters to be highlighted in Notepad++
 
 Settings -> Preferences -> Highlighting
