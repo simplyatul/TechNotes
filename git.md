@@ -8,6 +8,9 @@
 ```
 Remove --global flag in case you want to set name/email for local repository only
 
+```bash
+git config --global code.editor "vim"
+```
 ## Undo last commit (w/o removing the files)
 ```bash
 git reset --soft HEAD~1

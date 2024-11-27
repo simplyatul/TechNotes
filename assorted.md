@@ -151,3 +151,8 @@ cscope -d
 -b => builds the database only, but does not start the Cscope browser.  
 -i cscope.files => specifies the list of source files.  
 
+## gcc to print all linked libraries
+
+```bash
+gcc hello.c -Xlinker --verbose
+```

@@ -65,6 +65,11 @@ libboost-atomic-dev/jammy 1.74.0.3ubuntu7 amd64
 libboost-atomic-dev/jammy 1.74.0.3ubuntu7 i386
 ```
 
+## List of installed packages
+```bash
+apt list --installed 
+```
+
 ## Make a remote connection to Ubuntu from Windows
 
 **Worked with Ubuntu 22.04.2 LTS (Jammy)**

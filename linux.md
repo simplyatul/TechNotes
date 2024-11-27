@@ -42,7 +42,10 @@ chmod 00755 a.out && stat -c '%A %a %n' a.out
 chmod 04755 a.out && stat -c '%A %a %n' a.out
 # -rwsr-xr-x 4755 a.out
 
-# s=> setuid bit set
+# s   => setuid bit set
+# %a  => permission bits in octal
+# %A  => permission bits and file type in human readable form
+# %n  => file name
 ```
 
 ## trace a program

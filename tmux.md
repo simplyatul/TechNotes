@@ -10,6 +10,7 @@ cat ~/.tmux.conf
 
 set -g mouse on
 setw -g mode-keys vi
+set -g history-limit 100000
 ```
 ## Copy to tmux buffer using mouse
 ```
@@ -27,6 +28,15 @@ Press Shift Key
 Select the text using mouse.
 Right Click + Copy Or Ctrl + Insert
 ```
+
+## Copy scroll-back of pane into the file
+```bash
+Prefix + :
+capture-pane -S - + return # - means start at the beginning of history
+Prefix + :
+save-buffer filename.txt + return
+```
+
 ## List Sessions
 ```bash
 tmux ls
@@ -62,9 +72,9 @@ prefix + c
 
 ## Search in scroll back history
 ```bash
-Ctrl+ b [ => enables scroll back history
-Ctrl + s => then type search string. Hit enter
-         => press n/shift n to search next/backward
+prefix + [ => enables scroll back history
+Ctrl + s + / => then type search string. Hit enter
+         => press n/Shift n to search next/backward
 ```
 
 ## Rename window
