@@ -11,6 +11,11 @@ cat ~/.tmux.conf
 set -g mouse on
 setw -g mode-keys vi
 set -g history-limit 100000
+
+# Set new panes/window to open in current directory
+bind c new-window -c "#{pane_current_path}"
+bind '"' split-window -c "#{pane_current_path}"
+bind % split-window -h -c "#{pane_current_path}"
 ```
 ## Copy to tmux buffer using mouse
 ```

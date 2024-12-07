@@ -48,7 +48,7 @@ chmod 04755 a.out && stat -c '%A %a %n' a.out
 # %n  => file name
 ```
 
-## trace a program
+## List all syscalls a program makes
 
 ```bash
 strace -c cat /dev/null
@@ -75,7 +75,7 @@ strace -c cat /dev/null
 ------ ----------- ----------- --------- --------- ----------------
 100.00    0.000775          16        46         1 total
 
-# trace particular calls
+# trace particular system calls
 strace -c -e brk,openat cat /dev/null
 % time     seconds  usecs/call     calls    errors syscall
 ------ ----------- ----------- --------- --------- ----------------
@@ -84,4 +84,36 @@ strace -c -e brk,openat cat /dev/null
 ------ ----------- ----------- --------- --------- ----------------
 100.00    0.000070          10         7           total
 
+```
+
+## Capture syscalls in a file
+
+```bash
+$ strace -ttt -ff --output=s-cat.log cat /dev/null
+
+# -ff => Combine the effects of --follow-forks and --output-separately options
+# -ttt => number of seconds since the epoch + microseconds
+
+# 7277 is process id of cat command
+
+$ head s-cat.log.7277 
+1733033570.327626 execve("/usr/bin/cat", ["cat", "/dev/null"], 0x7ffcc10c2170 /* 60 vars */) = 0
+1733033570.328617 brk(NULL)             = 0x5f379810f000
+1733033570.328749 mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x76de9cf3f000
+1733033570.328807 access("/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+1733033570.328935 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+1733033570.328992 fstat(3, {st_mode=S_IFREG|0644, st_size=95715, ...}) = 0
+1733033570.329040 mmap(NULL, 95715, PROT_READ, MAP_PRIVATE, 3, 0) = 0x76de9cf27000
+1733033570.329091 close(3)              = 0
+1733033570.329137 openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+1733033570.329179 read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\220\243\2\0\0\0\0\0"..., 832) = 832
+```
+
+## Convert human readable time to epoch time
+```bash
+$ date -d '@1733033570'
+Sunday 01 December 2024 11:42:50 AM IST
+
+$ date --date='@1733033570'
+Sunday 01 December 2024 11:42:50 AM IST
 ```

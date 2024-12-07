@@ -2,6 +2,16 @@
 
 ## iptables/ip6tables
 
+### Concepts
+
+- DNAT
+    - technique of translating the Destination IP address of a packet, or to change it simply put
+    - used together with SNAT to allow several hosts to share a single Internet routable IP address
+- IP packets are called datagrams, while TCP packets are called segments
+- DSCP => Differentiated Services Code Point (RFC 2474)
+
+- 4 Tables => Raw, Nat, Mangle and Filter 
+
 ### Chains
 
 - INPUT

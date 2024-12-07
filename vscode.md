@@ -15,3 +15,11 @@ Ctrl+Shift+F => Search in all files
 ```bash
 "editor.insertSpaces": true,
 ```
+
+## Open folder in new window
+
+- On Windows/Linux - File > Preferences > Settings 
+- On macOS - Code > Preferences > Settings
+- Search: open folders in new window 
+- make it ON
+
