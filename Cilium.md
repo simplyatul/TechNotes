@@ -71,6 +71,52 @@ enable-ipv6             true
 - https://www.youtube.com/watch?v=wv_9YxdC49Y
 - Few screenshots from the talk
 
+- Cilium from 10K Feet
+<img src="/resources/images/Cilium-1-In-Brief.png" title="Cilium from 10K Feet" style="height: 400px; width:800px;"/>
+
+ - Cilium's Initial Vision
+<img src="/resources/images/Cilium-2-Initial-Vision.png" title="Cilium's Initial Vision" style="height: 400px; width:800px;"/>
+
+- Cilium Nework Security
+<img src="/resources/images/Cilium-3-Nework-Security-1.0.png" title="Cilium Nework Security" style="height: 400px; width:800px;"/>
+
+- Cilium Cluster Mesh
+<img src="/resources/images/Cilium-4-Cluster-Mesh.png" title="Cilium Cluster Mesh" style="height: 400px; width:800px;"/>
+
+- Cilium Hubble
+<img src="/resources/images/Cilium-4-Hubble.png" title="Cilium Hubble" style="height: 400px; width:800px;"/>
+
+- Cilium Tetragon
+<img src="/resources/images/Cilium-5-Tetragon.png" title="Cilium Tetragon" style="height: 400px; width:800px;"/>
+<img src="/resources/images/Cilium-6-Tetragon-logo.png" title="Cilium Tetragon Logo" style="height: 400px; width:800px;"/>
+
+- Cilium LB
+<img src="/resources/images/Cilium-6-LB.png" title="Cilium LB" style="height: 400px; width:800px;"/>
+
+- Cilium Timescape
+<img src="/resources/images/Cilium-7-Timescape.png" title="Cilium Timescape" style="height: 400px; width:800px;"/>
+
+- Cilium Service Mesh
+<img src="/resources/images/Cilium-8-Service-Mesh.png" title="Cilium Service Mesh" style="height: 400px; width:800px;"/>
+
+- Cilium Proxy
+<img src="/resources/images/Cilium-9-Proxy.png" title="Cilium Proxy" style="height: 400px; width:800px;"/>
+
+- Cilium Service Mesh & Netowrk Security
+<img src="/resources/images/Cilium-10-Service-Mesh-Netowrk-Security.png" title="Cilium Service Mesh & Netowrk Security" style="height: 400px; width:800px;"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
