@@ -1,3 +1,3 @@
 # Tech Notes
 
-This repo is dedictaed for listing notes, commands on various software tech topic, tools, etc.
+This repo is dedicated for listing notes, commands on various software tech topic, tools, etc.

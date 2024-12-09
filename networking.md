@@ -1,5 +1,11 @@
 # Networking...
 
+## north-south traffic
+- Network traffic flowing into and out of a data center. 
+
+## east-west traffic
+- Network traffic among devices within a specific data center. 
+
 ## iptables/ip6tables
 
 ### Concepts

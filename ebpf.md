@@ -1,5 +1,9 @@
 # Documenting eBPF related stuff
 
+## What is eBPF
+- Makes Linux (& Windows as well) Kernel programmable in a secure and efficient way
+- What JS is to browser, eBPF is to Linux Kernel
+
 ## One of way to identify/find syscall name supported on target machine
 
 ```bash

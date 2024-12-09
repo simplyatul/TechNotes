@@ -12,10 +12,14 @@ Cilium is eBPF based network observability and security tool. On high level, it 
     - mTLS
     - SIEM Integration
 - Observability (Hubble)
+    - Flow Logs
+    - Metrics
+    - Troubleshooting
     - supports Timescape
         - based on Clickhouse (col based DBMS) 
     - Vs Grafana
-        - Timescape is native to Cilium project, so more efficient
+        - Timescape is native to Cilium project, so more efficient from analytic perspective
+        - lot of data and you want short query time then Timescape is more efficient
 - Service Mesh and Ingress
     - L7 LB (using Envoy)
     - Tracing
@@ -40,6 +44,7 @@ Cilium is eBPF based network observability and security tool. On high level, it 
 - N/w Observability
 
 ### Tetragon
+- Provides security relevant observability data
 - Runtime security and observability
 - Runtime enforcement
 - Can run w/o Cilium as well
@@ -47,7 +52,7 @@ Cilium is eBPF based network observability and security tool. On high level, it 
 ## Cilium Internals
 
 ### Cilium Configs
-- Store in k8s ConfigMap => cilium-config
+- Stored in k8s ConfigMap => cilium-config
 ```bash
 kubectl get -n kube-system configmap cilium-config -o yaml | yq .data.enable-ipv6
 true
@@ -60,8 +65,12 @@ enable-ipv6             true
 - Cilium CLI tool interface with K8s API Server as necessary, similar to that of kubectl
 
 ## References
-- History of Cilium
-    - https://www.youtube.com/watch?v=wv_9YxdC49Y
-    - By Thomas Graf, Co-Creator of Cilium
+### Ebook: Kubernetes Networking and Cilium by Nico Vibert
 
-- EBook: Kubernetes Networking and Cilium by Nico Vibert
+### History of Cilium - Talk by Thomas Graf
+- https://www.youtube.com/watch?v=wv_9YxdC49Y
+- Few screenshots from the talk
+
+
+
+
