@@ -6,17 +6,9 @@ Ctrl + b
 ```
 ## Tmux config file content
 ```bash
-cat ~/.tmux.conf
-
-set -g mouse on
-setw -g mode-keys vi
-set -g history-limit 100000
-
-# Set new panes/window to open in current directory
-bind c new-window -c "#{pane_current_path}"
-bind '"' split-window -c "#{pane_current_path}"
-bind % split-window -h -c "#{pane_current_path}"
+curl --silent --output ~/.tmux.conf https://raw.githubusercontent.com/simplyatul/TechNotes/refs/heads/main/tmux.conf
 ```
+
 ## Copy to tmux buffer using mouse
 ```
 Select the text using mouse.
