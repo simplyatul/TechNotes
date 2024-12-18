@@ -1,7 +1,10 @@
 # Cilium 
 
 ## Intro 
-Cilium is eBPF based network observability and security tool. On high level, it provides
+- Cilium is eBPF based network observability and security tool.
+- From inception, Cilium was designed for large-scale, highly-dynamic containerized environments.
+
+On high level, Cilium provides
 - Networking
     - Container Networking
     - L3-L4 LB
@@ -107,14 +110,64 @@ enable-ipv6             true
 
 
 
+## Get list of cilium managed endpoints 
+```bash
+kubectl get cep
+```
+
+## Cilium Labs
+
+### Notes from "Getting Started with Cilium" Lab
+
+- Three microservice applications: deathstar, tiefighter, and xwing
+- deathstar (bad guy)
+    - HTTP webservice on port 80
+    - Provides landing services to the empire’s spaceships so that they can request a landing port.
+    - org=empire, class=deathstar
+
+- tiefighter (The Imperial TIE fighter, bad guys)
+    - represents landing-request client service on empire ship
+    - org=empire, class=tiefighter
+
+- xwing (The Rebel, good guys)
+    - represents landing-request client service on alliance ship
+    - org=alliance, class=xwing
+ 
+- deathstar-service
+    - LB traffic to all pds w/ label org=empire, class=deathstar
 
 
+```bash
+cilium install
+cilium status --wait
+kubectl get cep --all-namespaces
+```
 
+- Install the services 
+```bash
+kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/HEAD/examples/minikube/http-sw-app.yaml
+```
 
+- APIs
 
+```bash
+kubectl exec tiefighter -- \
+    curl -s -XPOST deathstar.default.svc.cluster.local/v1/request-landing
+kubectl exec xwing -- \ 
+    curl -s -XPOST deathstar.default.svc.cluster.local/v1/request-landing
+kubectl exec tiefighter -- \
+    curl -s -XPUT deathstar.default.svc.cluster.local/v1/exhaust-port
+```
 
+- Apply L3/L4 network policy
+```bash
+kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/HEAD/examples/minikube/sw_l3_l4_policy.yaml
+```
 
-
+- Apply L3/L4/L7 network policy
+```bash
+kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/HEAD/examples/minikube/sw_l3_l4_l7_policy.yaml
+```
 
 
 

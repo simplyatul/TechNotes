@@ -1,5 +1,18 @@
 # Miscellaneous Stuff...
  
+## Setup bash aliases
+```bash
+wget -4 https://raw.githubusercontent.com/simplyatul/bin/master/setaliases.sh
+source setaliases.sh
+
+echo "source ~/setaliases.sh" >> ~/.bashrc
+```
+## Install some useful tools
+```bash
+wget -4 https://raw.githubusercontent.com/simplyatul/vagrant-vms/main/tools-0-install.sh
+chmod +x tools-0-install.sh
+sudo ./tools-0-install.sh
+```
 ## Install sngrep on CentOS-7
 create `/etc/yum.repos.d/irontec.repo` w/ following contents
 

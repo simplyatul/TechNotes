@@ -49,13 +49,15 @@ s1 => Session name
 w1 => Window name
 ```
 
-## Exist from session
+## Exit from session
 ```bash
 prefix + d
 ```
 ## Attach to session
 ```bash
 tmux a -t s2
+a => attach
+-t => target-session
 s2 => Session name
 ```
 ## List all sessions + windows
@@ -100,3 +102,5 @@ tmux list-panes
 ```
 
 
+# References
+1. https://man7.org/linux/man-pages/man1/tmux.1.html
