@@ -9,6 +9,13 @@ Ctrl + b
 curl --silent --output ~/.tmux.conf https://raw.githubusercontent.com/simplyatul/TechNotes/refs/heads/main/tmux.conf
 ```
 
+## Create new session
+```bash
+tmux new -s s1 -n w1
+s1 => Session name
+w1 => Window name
+```
+
 ## Copy to tmux buffer using mouse
 ```
 Select the text using mouse.
@@ -40,13 +47,6 @@ tmux ls
 
 s1: 1 windows (created Sun Aug 25 17:11:03 2024) (attached)
 s2: 1 windows (created Sun Aug 25 17:12:19 2024) (attached)
-```
-
-## Create new session
-```bash
-tmux new -s s1 -n w1
-s1 => Session name
-w1 => Window name
 ```
 
 ## Exit from session

@@ -323,3 +323,10 @@ To locate/access pod definition
 kubectl exec -it -n kube-system etcd-k8s-samples-control-plane -- etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/healthcheck-client.cr
 t --key=/etc/kubernetes/pki/etcd/healthcheck-client.key get /registry/pods/default/nginx-dep-7579c6ff58-7bgpv
 ```
+
+## CNI Functions
+- General Pod Connectivity
+- IPAM => IP Address Management
+- Service handling and load balancing 
+- Network policy enforcement
+- Monitoring and troubleshooting
