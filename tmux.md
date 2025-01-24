@@ -36,9 +36,9 @@ Right Click + Copy Or Ctrl + Insert
 ## Copy scroll-back of pane into the file
 ```bash
 Prefix + :
-capture-pane -S - + return # - means start at the beginning of history
-Prefix + :
-save-buffer filename.txt + return
+capture-pane -S -; save-buffer t0.log + enter
+# - means start at the beginning of history
+# saves the complete pane history in file t0.log
 ```
 
 ## List Sessions

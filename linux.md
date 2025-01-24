@@ -117,3 +117,37 @@ Sunday 01 December 2024 11:42:50 AM IST
 $ date --date='@1733033570'
 Sunday 01 December 2024 11:42:50 AM IST
 ```
+
+## Display date in Year-month-day format
+```bash
+date +%Y-%m-%d
+date +%Y-%m-%d-%H-%M-%S
+```
+## Run multiple commands on piped output
+```bash
+docker ps --format '{{.Names}}' | xargs -I % sh -c '{ echo %; docker exec % ip addr; }'
+
+# Or
+
+ls | xargs -I % sh -c '{ echo %; ls -l "%"; }'
+``` 
+## List current time with timezone info
+```bash
+timedatectl
+        Local time: Sat 2024-12-28 07:28:05 UTC
+        Universal time: Sat 2024-12-28 07:28:05 UTC
+        RTC time: Sat 2024-12-28 07:28:05
+        Time zone: Etc/UTC (UTC, +0000)
+        System clock synchronized: yes
+        NTP service: active
+        RTC in local TZ: no
+```
+## Find timezone
+```bash
+timedatectl list-timezones | grep -i kolk
+Asia/Kolkata
+```
+## Update/set timezone
+```bash
+sudo timedatectl set-timezone Asia/Kolkata
+```

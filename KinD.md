@@ -53,7 +53,113 @@ CONTAINER           IMAGE               CREATED             STATE               
 2abb1cc3a8166       eb3079d47a23a       2 minutes ago       Running             kube-proxy          0                   636c3833a20cf       kube-proxy-7599g
 ```
 
+Identify PID of a container running within conatinerd
+```bash
+crictl inspect --output go-template --template '{{.info.pid}}' 2abb1cc3a8166
+```
+
+## kubelet config file 
+located on the host
+
+```bash
+cat ~/.kube/config | yq
+apiVersion: v1
+clusters:
+  - cluster:
+      certificate-authority-data: LS0t...0K
+      server: https://127.0.0.1:41231
+    name: kind-k8s
+contexts:
+  - context:
+      cluster: kind-k8s
+      user: kind-k8s
+    name: kind-k8s
+current-context: kind-k8s
+kind: Config
+preferences: {}
+users:
+  - name: kind-k8s
+    user:
+      client-certificate-data: LS0...S0K
+      client-key-data: LS0....LQo=
+```
+
+## Kubelet file in k8s control plate
+
+```bash
+docker exec -ti k8s-control-plane cat /var/lib/kubelet/config.yaml | yq
+apiVersion: kubelet.config.k8s.io/v1beta1
+authentication:
+  anonymous:
+    enabled:false
+  webhook:
+    cacheTTL:0s
+    enabled: true
+  x509:
+    clientCAFile: /etc/kubernetes/pki/ca.crt
+authorization:
+  mode: Webhook
+  webhook:
+    cacheAuthorizedTTL: 0s
+    cacheUnauthorizedTTL: 0s
+cgroupDriver: systemd
+cgroupRoot: /kubelet
+clusterDNS:
+  - 10.96.0.10
+clusterDomain: cluster.local
+containerRuntimeEndpoint: ""
+cpuManagerReconcilePeriod: 0s
+evictionHard:
+  imagefs.available: 0%
+  nodefs.available: 0%
+  nodefs.inodesFree: 0%
+evictionPressureTransitionPeriod: 0s
+failSwapOn: false
+fileCheckFrequency: 0s
+healthzBindAddress: 127.0.0.1
+healthzPort: 10248
+httpCheckFrequency: 0s
+imageGCHighThresholdPercent: 100
+imageMaximumGCAge: 0s
+imageMinimumGCAge: 0s
+kind: KubeletConfiguration
+logging:
+  flushFrequency: 0
+  options:
+    json:
+      infoBufferSize: "0"
+    text:
+      infoBufferSize: "0"
+  verbosity: 0
+memorySwap: {}
+nodeStatusReportFrequency: 0s
+nodeStatusUpdateFrequency: 0s
+rotateCertificates: true
+runtimeRequestTimeout: 0s
+shutdownGracePeriod: 0s
+shutdownGracePeriodCriticalPods: 0s
+staticPodPath: /etc/kubernetes/manifests
+streamingConnectionIdleTimeout: 0s
+syncFrequency: 0s
+volumeStatsAggPeriod: 0s
+
+```
 ## Delete a cluster
 ```bash
 kind delete cluster --name k8s
+```
+
+## Get the cluster
+```bash
+kind get clusters
+```
+
+## Get the cluster context
+```bash
+kubectl cluster-info --context kind-k8s
+Kubernetes control plane is running at https://127.0.0.1:46455
+CoreDNS is running at https://127.0.0.1:46455/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+
 ```

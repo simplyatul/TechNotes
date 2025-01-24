@@ -5,6 +5,8 @@
 Ctrl+p => Find a file by name
 Ctrl+Shift+P => Opens Command Palette
 Ctrl+Shift+F => Search in all files
+Ctrl+Alt+- => Go Back
+Ctrl+Shift+- => Go Forward
 
 ## Workspace/Project setting location
 ```bash

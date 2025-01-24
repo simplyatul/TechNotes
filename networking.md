@@ -46,3 +46,26 @@ Remove/delete a rule
 iptables -R INPUT 1
 ```
 
+## Running termshark in a container
+
+```bash
+# Perform following is in container
+
+apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install tcpdump termshark
+mkdir -p /root/.config/termshark/
+echo -e "[main]\ndark-mode = true" > /root/.config/termshark/termshark.toml
+
+```
+
+### Capture packet and view with termshark
+```bash
+tcpdump -i any arp -w arp.pcap
+Ctrl+C
+
+TERM=xterm-256color termshark -r arp.pcap
+```
+
+### Or capture and view live
+```bash
+TERM=xterm-256color termshark -i any
+```

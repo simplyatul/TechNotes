@@ -38,6 +38,11 @@ Re-attch to the pod
 kubectl attach curl -c curl -i -t -n default
 ```
 
+## Get IP address of all Pods from all namespaces
+
+```bash
+kubectl get pods -A -o custom-columns=NS:metadata.namespace,NAME:metadata.name,IP:status.podIP,NODE:spec.nodeName
+```
 
 ## List k8s API Resources
 ```bash

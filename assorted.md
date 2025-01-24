@@ -2,8 +2,7 @@
  
 ## Setup bash aliases
 ```bash
-wget -4 https://raw.githubusercontent.com/simplyatul/bin/master/setaliases.sh
-source setaliases.sh
+wget -4 https://raw.githubusercontent.com/simplyatul/bin/master/setaliases.sh && source setaliases.sh
 
 echo "source ~/setaliases.sh" >> ~/.bashrc
 ```

@@ -1,5 +1,6 @@
 # Intro
 - Vagrant box's location is ~/.vagrant.d/boxes
+- ubuntu vagrant box images are at [here](https://portal.cloud.hashicorp.com/vagrant/discover/ubuntu)
 
 ## Vagrant useful commands
 
@@ -41,3 +42,4 @@ vagrant up --provision-with kind
 ```bash
 vagrant global-status
 ```
+
