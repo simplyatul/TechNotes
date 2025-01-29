@@ -1,0 +1,11 @@
+# kind create cluster --config=kind-config.yaml --name env-gw
+# kind delete cluster --name env-gw
+
+# env-gw => Envoy Gateway => https://gateway.envoyproxy.io/docs/tasks/quickstart/
+
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+- role: worker
+- role: worker

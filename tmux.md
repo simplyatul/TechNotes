@@ -39,6 +39,12 @@ Prefix + :
 capture-pane -S -; save-buffer t0.log + enter
 # - means start at the beginning of history
 # saves the complete pane history in file t0.log
+
+# Or
+capture-pane -S -; save-buffer '#P'.log + enter
+# Or
+capture-pane -S -; save-buffer '#{pane_index}'.log + enter
+# #P => pane index (pane_index)
 ```
 
 ## List Sessions
