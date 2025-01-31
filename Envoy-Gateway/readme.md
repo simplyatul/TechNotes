@@ -1,8 +1,8 @@
-## Intro
+# Intro
 The folder containing this file documents findings/logs about Envoy Gateway.  
 Envoy Gateway implements K8s Gateway APIs => implements Ingress, Load Balancing, and Service Mesh as per the [specs](https://gateway-api.sigs.k8s.io/)
 
-## Steps
+## HTTP Route
 
 - Create Kind K8s cluster
 
@@ -18,7 +18,7 @@ helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.2.6 -n envo
 - Install GatewayClass and Gateway
 
 ```bash
-kubectl apply -f Gateway.yaml
+kubectl apply -f HTTPRoute/Gateway.yaml
 ```
 
 Observe envoy-default-eg-e41e7b31 service,deployment/pod is created post above step
@@ -26,22 +26,23 @@ Observe envoy-default-eg-e41e7b31 service,deployment/pod is created post above s
 - To capture metrics, do port-forward
 ```bash
 export ENVOY_POD_NAME=$(kubectl get pod -n envoy-gateway-system --selector=gateway.envoyproxy.io/owning-gateway-namespace=default,gateway.envoyproxy.io/owning-gateway-name=eg -o jsonpath='{.items[0].metadata.name}')
+
 kubectl port-forward pod/$ENVOY_POD_NAME -n envoy-gateway-system 19000:19000 &
 
 ```
 - Collect Envoy Proxy settings/logs
 ```bash
-./capture-envoy-data.sh --dir before_httproute
+./capture-envoy-data.sh --dir HTTPRoute/before_httproute
 ```
 
 - Create backend-http service and HTTPRoute
 ```bash
-kubectl apply -f backend-http-service.yaml
+kubectl apply -f HTTPRoute/backend-http-service.yaml
 ```
 
 - Collect Envoy Proxy settings/logs
 ```bash
-./capture-envoy-data.sh --dir after_httproute
+./capture-envoy-data.sh --dir HTTPRoute/after_httproute
 ```
 
 - Port forward to the Envoy service as LB is not available in Kind cluster
@@ -104,11 +105,162 @@ Handling connection for 8888
 * Connection #0 to host localhost left intact
 ```
 
-## Notes
-- 29-01-2025.log captures terminal log
-- grep '^# AT:' 29-01-2025.log => for some notes
+### Notes
+- HTTPRoute/29-01-2025.log captures terminal log
+- grep '^# AT:' HTTPRoute/29-01-2025.log => for some notes
+
+
+## TLS Passthrough
+
+First, run the HTTP Route example above and verify HTTP Route is working.
+
+### Create Certs and store it in k8s secrete
+
+```bash
+openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example Inc./CN=example.com' -keyout TLS-Passthrough/example.com.key -out TLS-Passthrough/example.com.crt
+
+openssl req -out TLS-Passthrough/passthrough.example.com.csr -newkey rsa:2048 -nodes -keyout TLS-Passthrough/passthrough.example.com.key -subj "/CN=passthrough.example.com/O=some organization"
+
+openssl x509 -req -sha256 -days 365 -CA TLS-Passthrough/example.com.crt -CAkey TLS-Passthrough/example.com.key -set_serial 0 -in TLS-Passthrough/passthrough.example.com.csr -out TLS-Passthrough/passthrough.example.com.crt
+
+kubectl create secret tls passthrough-server-certs --key=TLS-Passthrough/passthrough.example.com.key --cert=TLS-Passthrough/passthrough.example.com.crt
+
+```
+
+### Deploy TLS Passthrough application Deployment, Service and TLSRoute:
+```bash
+kubectl apply -f TLS-Passthrough/tls-passthrough.yaml
+```
+
+### Patch the Gateway from the Quickstart to include a TLS listener that listens on port 6443 and is configured for TLS mode Passthrough
+```bash
+kubectl patch gateway eg --type=json --patch '
+  - op: add
+    path: /spec/listeners/-
+    value:
+      name: tls
+      protocol: TLS
+      hostname: passthrough.example.com
+      port: 6443
+      tls:
+        mode: Passthrough
+   '
+```
+### Port forward to the Envoy service:
+```bash
+kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 
+6043:6443 &
+
+```
+
+### Curl the example app through Envoy proxy:
+
+```bash
+curl -v --resolve "passthrough.example.com:6043:127.0.0.1" https://passthrough.example.com:6043 --cacert TLS-Passthrough/passthrough.example.com.crt
+
+* Added passthrough.example.com:6043:127.0.0.1 to DNS cache
+* Hostname passthrough.example.com was found in DNS cache
+*   Trying 127.0.0.1:6043...
+Handling connection for 6043
+* Connected to passthrough.example.com (127.0.0.1) port 6043 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+*  CAfile: passthrough.example.com.crt
+*  CApath: /etc/ssl/certs
+* TLSv1.0 (OUT), TLS header, Certificate Status (22):
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS header, Certificate Status (22):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS header, Finished (20):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.2 (OUT), TLS header, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_128_GCM_SHA256
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: CN=passthrough.example.com; O=some organization
+*  start date: Jan 31 04:28:51 2025 GMT
+*  expire date: Jan 31 04:28:51 2026 GMT
+*  common name: passthrough.example.com (matched)
+*  issuer: O=example Inc.; CN=example.com
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multiplexing
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+* Using Stream ID: 1 (easy handle 0x559410aaaeb0)
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+> GET / HTTP/2
+> Host: passthrough.example.com:6043
+> user-agent: curl/7.81.0
+> accept: */*
+>
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* Connection state changed (MAX_CONCURRENT_STREAMS == 250)!
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+< HTTP/2 200
+< content-type: application/json
+< x-content-type-options: nosniff
+< content-length: 443
+< date: Fri, 31 Jan 2025 05:43:45 GMT
+<
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+{
+ "path": "/",
+ "host": "passthrough.example.com:6043",
+ "method": "GET",
+ "proto": "HTTP/2.0",
+ "headers": {
+  "Accept": [
+   "*/*"
+  ],
+  "User-Agent": [
+   "curl/7.81.0"
+  ]
+ },
+ "namespace": "default",
+ "ingress": "",
+ "service": "",
+ "pod": "passthrough-echoserver-5dddbf6b95-gzcvx",
+ "tls": {
+  "version": "TLSv1.3",
+  "serverName": "passthrough.example.com",
+  "negotiatedProtocol": "h2",
+  "cipherSuite": "TLS_AES_128_GCM_SHA256"
+ }
+* Connection #0 to host passthrough.example.com left intact
+
+```
+
+### Collect Envoy Proxy settings/logs
+
+```bash
+../capture-envoy-data.sh --dir TLS-Passthrough/after_tlspassthrough
+```
+
+### Compare changes
+```bash
+meld HTTPRoute/after_httproute TLS-Passthrough/after_tlspassthrough 
+```
 
 ## Ref
 - https://gateway.envoyproxy.io/docs/tasks/quickstart/
 - https://gateway.envoyproxy.io/docs/tasks/observability/proxy-metric/
 - https://gateway.envoyproxy.io/docs/tasks/traffic/http-routing/
+- https://gateway.envoyproxy.io/docs/tasks/security/tls-passthrough/
