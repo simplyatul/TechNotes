@@ -2,7 +2,24 @@
 The folder containing this file documents findings/logs about Envoy Gateway.  
 Envoy Gateway implements K8s Gateway APIs => implements Ingress, Load Balancing, and Service Mesh as per the [specs](https://gateway-api.sigs.k8s.io/)
 
-## HTTP Route
+# TOC
+- [TLS Passthrough](#TLS-Passthrough)
+- [Backend TLS Policy](#Backend-TLS-Policy)
+
+## TLS Passthrough
+
+- With this, client makes HTTPS connections with Backend directly.  
+- Gateway (Envoy Proxy) simply acts as passthrough.
+
+
+First, run the HTTP Route example and verify HTTP Route is working.
+
+Change Dir
+```bash
+cd TLS-Passthrough
+```
+
+### HTTP Route
 
 - Create Kind K8s cluster
 
@@ -32,7 +49,7 @@ kubectl port-forward pod/$ENVOY_POD_NAME -n envoy-gateway-system 19000:19000 &
 ```
 - Collect Envoy Proxy settings/logs
 ```bash
-./capture-envoy-data.sh --dir HTTPRoute/before_httproute
+../capture-envoy-data.sh --dir HTTPRoute/before_httproute
 ```
 
 - Create backend-http service and HTTPRoute
@@ -42,7 +59,7 @@ kubectl apply -f HTTPRoute/backend-http-service.yaml
 
 - Collect Envoy Proxy settings/logs
 ```bash
-./capture-envoy-data.sh --dir HTTPRoute/after_httproute
+../capture-envoy-data.sh --dir HTTPRoute/after_httproute
 ```
 
 - Port forward to the Envoy service as LB is not available in Kind cluster
@@ -105,14 +122,9 @@ Handling connection for 8888
 * Connection #0 to host localhost left intact
 ```
 
-### Notes
-- HTTPRoute/29-01-2025.log captures terminal log
-- grep '^# AT:' HTTPRoute/29-01-2025.log => for some notes
 
+### TLS Passthrough setup and verification
 
-## TLS Passthrough
-
-First, run the HTTP Route example above and verify HTTP Route is working.
 
 ### Create Certs and store it in k8s secrete
 
@@ -257,6 +269,268 @@ Handling connection for 6043
 ### Compare changes
 ```bash
 meld HTTPRoute/after_httproute TLS-Passthrough/after_tlspassthrough 
+```
+
+## Backend TLS Policy
+
+- In this, client to Gateway (Envoy Proxy) is http connection
+- Gateway to backend is TLS/HTTPS connection
+
+Change Dir
+```bash
+cd BackendTLSPolicy
+```
+
+
+### HTTP Route
+First, create basic HTTP Route with non https backend
+
+- Post creating kind cluster, Install the Gateway API CRDs and Envoy Gateway:
+```bash
+helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.2.6 -n envoy-gateway-system --create-namespace
+```
+
+- Install the GatewayClass, Gateway, HTTPRoute and example app
+```bash
+kubectl apply -f HTTPRoute/quickstart.yaml
+```
+
+- Port forward to the Envoy service:
+
+```bash
+export ENVOY_SERVICE=$(kubectl get svc -n envoy-gateway-system --selector=gateway.envoyproxy.io/owning-gateway-namespace=default,gateway.envoyproxy.io/owning-gateway-name=eg -o jsonpath='{.items[0].metadata.name}')
+
+kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 8888:80 &
+```
+
+- Curl the example app through Envoy proxy:
+
+```bash
+curl --verbose --header "Host: www.example.com" http://localhost:8888/get
+```
+
+- To capture metrics, do port-forward. As mentioned above
+
+- Collect Envoy Proxy settings/logs
+```bash
+../capture-envoy-data.sh --dir HTTPRoute/after_httproute
+```
+
+### BackendTLSPolicy setup and verification
+
+- Generate self signed ca certs
+```bash
+openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example Inc./CN=example.com' -keyout ca.key -out ca.crt
+```
+
+- Create a certificate and a private key for ```www.example.com```
+
+
+```bash
+cat > openssl.conf  <<EOF
+[req]
+req_extensions = v3_req
+prompt = no
+
+[v3_req]
+keyUsage = keyEncipherment, digitalSignature
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = www.example.com
+EOF
+
+```
+
+- Create a certificate using this above openssl configuration file:
+```bash
+openssl req -out www.example.com.csr -newkey rsa:2048 -nodes -keyout www.example.com.key -subj "/CN=www.example.com/O=example organization"
+
+openssl x509 -req -days 365 -CA ca.crt -CAkey ca.key -set_serial 0 -in www.example.com.csr -out www.example.com.crt -extfile openssl.conf -extensions v3_req
+```
+- Store the cert/key in a Secret:
+```bash
+kubectl create secret tls example-cert --key=www.example.com.key --cert=www.example.com.crt
+```
+
+- Store the CA Cert in another Secret:
+
+```bash
+kubectl create configmap example-ca --from-file=ca.crt
+```
+
+- Setup TLS on the backend by patching existing backend deployment
+```bash
+kubectl patch deployment backend --type=json --patch '
+  - op: add
+    path: /spec/template/spec/containers/0/volumeMounts
+    value:
+    - name: secret-volume
+      mountPath: /etc/secret-volume
+  - op: add
+    path: /spec/template/spec/volumes
+    value:
+    - name: secret-volume
+      secret:
+        secretName: example-cert
+        items:
+        - key: tls.crt
+          path: crt
+        - key: tls.key
+          path: key
+  - op: add
+    path: /spec/template/spec/containers/0/env/-
+    value:
+      name: TLS_SERVER_CERT
+      value: /etc/secret-volume/crt
+  - op: add
+    path: /spec/template/spec/containers/0/env/-
+    value:
+      name: TLS_SERVER_PRIVKEY
+      value: /etc/secret-volume/key
+  '
+```
+
+- Create a service that exposes port 443 on the backend service.
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: backend
+    service: backend
+  name: tls-backend
+  namespace: default
+spec:
+  selector:
+    app: backend
+  ports:
+  - name: https
+    port: 443
+    protocol: TCP
+    targetPort: 8443
+EOF
+```
+
+- Create a BackendTLSPolicy
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: gateway.networking.k8s.io/v1alpha3
+kind: BackendTLSPolicy
+metadata:
+  name: enable-backend-tls
+  namespace: default
+spec:
+  targetRefs:
+  - group: ''
+    kind: Service
+    name: tls-backend
+    sectionName: https
+  validation:
+    caCertificateRefs:
+    - name: example-ca
+      group: ''
+      kind: ConfigMap
+    hostname: www.example.com
+EOF
+```
+
+- Patch the existing HTTPRoute’s backend reference, so that it refers to the new TLS-enabled service:
+
+```bash
+kubectl patch HTTPRoute backend --type=json --patch '
+  - op: replace
+    path: /spec/rules/0/backendRefs/0/port
+    value: 443
+  - op: replace
+    path: /spec/rules/0/backendRefs/0/name
+    value: tls-backend
+  '
+```
+
+- Verify the HTTPRoute status:
+
+```bash
+kubectl get HTTPRoute backend -o yaml
+```
+
+- Port forward to the Envoy service
+```bash
+export ENVOY_SERVICE=$(kubectl get svc -n envoy-gateway-system --selector=gateway.envoyproxy.io/owning-gateway-namespace=default,gateway.envoyproxy.io/owning-gateway-name=eg -o jsonpath='{.items[0].metadata.name}')
+
+
+kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 9999:80 &
+```
+
+- Query the TLS-enabled backend through Envoy proxy
+```bash
+curl -v -HHost:www.example.com --resolve "www.example.com:9999:127.0.0.1" http://www.example.com:9999/get
+
+* Added www.example.com:9999:127.0.0.1 to DNS cache
+* Hostname www.example.com was found in DNS cache
+*   Trying 127.0.0.1:9999...
+Handling connection for 9999 
+* Connected to www.example.com (127.0.0.1) port 9999 (#0) 
+> GET /get HTTP/1.1
+> Host:www.example.com
+> User-Agent: curl/7.81.0
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200 OK
+< content-type: application/json
+< x-content-type-options: nosniff
+< date: Fri, 31 Jan 2025 08:14:35 GMT
+< content-length: 620
+<
+{
+ "path": "/get",
+ "host": "www.example.com",
+ "method": "GET",
+ "proto": "HTTP/1.1",
+ "headers": {
+  "Accept": [
+   "*/*"
+  ],
+  "User-Agent": [
+   "curl/7.81.0"
+  ],
+  "X-Envoy-Internal": [
+   "true"
+  ],
+  "X-Forwarded-For": [
+   "10.244.1.2"
+  ],
+  "X-Forwarded-Proto": [
+   "http"
+  ],
+  "X-Request-Id": [
+   "c06918f0-849b-427b-a2d2-1c1575ff873c"
+  ]
+ },
+ "namespace": "default",
+ "ingress": "",
+ "service": "",
+ "pod": "backend-88699b6f8-mmxmb",
+ "tls": {
+  "version": "TLSv1.2",
+  "serverName": "www.example.com",
+  "negotiatedProtocol": "http/1.1",
+  "cipherSuite": "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+ }
+* Connection #0 to host www.example.com left intact
+}
+```
+
+- Collect Envoy Proxy settings/logs
+```bash
+../capture-envoy-data.sh --dir after-backendtlspolicy
+```
+
+- Compare the changes post creating backend policy
+```bash
+meld HTTPRoute/after_httproute/ after-backendtlspolicy/ &
 ```
 
 ## Ref

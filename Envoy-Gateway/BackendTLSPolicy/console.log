@@ -1,0 +1,2094 @@
+[Fri Jan 31 06:38:49] [vagrant@ubuntu-jammy] [/shared-with-host]#
+[Fri Jan 31 06:38:51] [vagrant@ubuntu-jammy] [/shared-with-host]#
+[Fri Jan 31 06:38:54] [vagrant@ubuntu-jammy] [/shared-with-host]#
+[Fri Jan 31 06:38:55] [vagrant@ubuntu-jammy] [/shared-with-host]#
+[Fri Jan 31 06:38:55] [vagrant@ubuntu-jammy] [/shared-with-host]#
+# AT: Verifying BackendTLSPolicy
+[Fri Jan 31 06:39:14] [vagrant@ubuntu-jammy] [/shared-with-host]#
+ls
+0-bk-0.log      28-01-2025.log  app-with-labels.yaml      cilium-kind-config.yaml    custom-ns.yaml  k8s                                  pod-w-host-network.yaml   simple-nginx-dep-n-srv-w-np.yaml  simple-nginx-pod-n-srv.yaml
+06-01-2025.log  29-01-2025.log  atrivial-app-simple.yaml  cilium-linux-amd64.tar.gz  eBPF            k8s_aliases                          pod-wo-host-network.yaml  simple-nginx-ingress.yaml         t0.log
+27-01-2025.log  Dockerfile      cilium                    code                       envoy-gateway   kind-local-k8s-cluster-baremin.yaml  s.sh                      simple-nginx-pod-n-srv-w-np.yaml
+[Fri Jan 31 06:39:16] [vagrant@ubuntu-jammy] [/shared-with-host]#
+cd envoy-gateway/
+[Fri Jan 31 06:39:17] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway]#
+[Fri Jan 31 06:39:17] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway]#
+ls
+capture-envoy-data.sh  kind-config.yaml
+[Fri Jan 31 06:39:18] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway]#
+mkdir BackendTLSPolicy
+[Fri Jan 31 06:39:27] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway]#
+cd BackendTLSPolicy/
+[Fri Jan 31 06:39:28] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:39:30] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+mkdir HTTPRoute
+[Fri Jan 31 06:39:39] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+cd HTTPRoute/
+[Fri Jan 31 06:39:42] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy/HTTPRoute]#
+[Fri Jan 31 06:39:42] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy/HTTPRoute]#
+cd ../
+[Fri Jan 31 06:39:45] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:39:45] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ls
+HTTPRoute
+[Fri Jan 31 06:39:47] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ll HTTPRoute/
+total 8.0K
+-rw-rw-r-- 1 vagrant vagrant 1.5K Jan 31 06:40 backend-http-service.yaml
+-rw-rw-r-- 1 vagrant vagrant  326 Jan 31 06:40 Gateway.yaml
+[Fri Jan 31 06:40:44] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kga
+kubectl get all
+NAME                                          READY   STATUS    RESTARTS   AGE
+pod/backend-http-7c877f78d9-22q5f             1/1     Running   0          83m
+pod/passthrough-echoserver-5dddbf6b95-gzcvx   1/1     Running   0          79m
+
+NAME                             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+service/backend-http             ClusterIP   10.96.89.57    <none>        3000/TCP   83m
+service/kubernetes               ClusterIP   10.96.0.1      <none>        443/TCP    92m
+service/passthrough-echoserver   ClusterIP   10.96.114.47   <none>        443/TCP    79m
+
+NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/backend-http             1/1     1            1           83m
+deployment.apps/passthrough-echoserver   1/1     1            1           79m
+
+NAME                                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/backend-http-7c877f78d9             1         1         1       83m
+replicaset.apps/passthrough-echoserver-5dddbf6b95   1         1         1       79m
+[Fri Jan 31 06:40:53] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ll ../
+total 12K
+-rw-rw-r-- 1 vagrant vagrant  290 Jan 29 03:34 kind-config.yaml
+-rwxrwxr-x 1 vagrant vagrant 1.7K Jan 29 05:47 capture-envoy-data.sh
+drwxrwxr-x 1 vagrant vagrant 4.0K Jan 31 06:39 BackendTLSPolicy
+[Fri Jan 31 06:41:01] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+cat ../kind-config.yaml
+# kind create cluster --config=kind-config.yaml --name env-gw
+# kind delete cluster --name env-gw
+
+# env-gw => Envoy Gateway => https://gateway.envoyproxy.io/docs/tasks/quickstart/
+
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+- role: worker
+- role: worker
+[Fri Jan 31 06:41:04] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kind delete cluster --name env-gw
+Deleting cluster "env-gw" ...
+Deleted nodes: ["env-gw-worker2" "env-gw-worker" "env-gw-control-plane"]
+[Fri Jan 31 06:41:11] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:41:12] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:41:12] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:41:12] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+cat ../kind-config.yaml
+# kind create cluster --config=kind-config.yaml --name env-gw
+# kind delete cluster --name env-gw
+
+# env-gw => Envoy Gateway => https://gateway.envoyproxy.io/docs/tasks/quickstart/
+
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+- role: worker
+- role: worker
+[Fri Jan 31 06:41:24] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kind create cluster --config=kind-config.yaml --name env-gw
+ERROR: failed to create cluster: error reading file: open kind-config.yaml: no such file or directory
+[Fri Jan 31 06:41:29] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kind create cluster --config=../kind-config.yaml --name env-gw
+Creating cluster "env-gw" ...
+ ✓ Ensuring node image (kindest/node:v1.31.0) 🖼
+ ✓ Preparing nodes 📦 📦 📦
+ ✓ Writing configuration 📜
+ ✓ Starting control-plane 🕹️
+ ✓ Installing CNI 🔌
+ ✓ Installing StorageClass 💾
+ ✓ Joining worker nodes 🚜
+Set kubectl context to "kind-env-gw"
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-env-gw
+
+Not sure what to do next? 😅  Check out https://kind.sigs.k8s.io/docs/user/quick-start/
+[Fri Jan 31 06:42:05] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:42:05] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ls
+HTTPRoute
+[Fri Jan 31 06:42:22] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ll HTTPRoute/
+total 8.0K
+-rw-rw-r-- 1 vagrant vagrant 1.5K Jan 31 06:40 backend-http-service.yaml
+-rw-rw-r-- 1 vagrant vagrant  326 Jan 31 06:40 Gateway.yaml
+[Fri Jan 31 06:42:24] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kga -A
+kubectl get all
+NAMESPACE            NAME                                               READY   STATUS    RESTARTS   AGE
+kube-system          pod/coredns-6f6b679f8f-7nl2g                       1/1     Running   0          41s
+kube-system          pod/coredns-6f6b679f8f-wnsb9                       1/1     Running   0          41s
+kube-system          pod/etcd-env-gw-control-plane                      1/1     Running   0          48s
+kube-system          pod/kindnet-4kgfr                                  1/1     Running   0          41s
+kube-system          pod/kindnet-9gngd                                  1/1     Running   0          38s
+kube-system          pod/kindnet-gcz4b                                  1/1     Running   0          38s
+kube-system          pod/kube-apiserver-env-gw-control-plane            1/1     Running   0          47s
+kube-system          pod/kube-controller-manager-env-gw-control-plane   1/1     Running   0          47s
+kube-system          pod/kube-proxy-d8zr9                               1/1     Running   0          41s
+kube-system          pod/kube-proxy-gjssf                               1/1     Running   0          38s
+kube-system          pod/kube-proxy-vgtsd                               1/1     Running   0          38s
+kube-system          pod/kube-scheduler-env-gw-control-plane            1/1     Running   0          47s
+local-path-storage   pod/local-path-provisioner-57c5987fd4-k6mx4        1/1     Running   0          41s
+
+NAMESPACE     NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)                  AGE
+default       service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP                  48s
+kube-system   service/kube-dns     ClusterIP   10.96.0.10   <none>        53/UDP,53/TCP,9153/TCP   47s
+
+NAMESPACE     NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+kube-system   daemonset.apps/kindnet      3         3         3       3            3           kubernetes.io/os=linux   46s
+kube-system   daemonset.apps/kube-proxy   3         3         3       3            3           kubernetes.io/os=linux   47s
+
+NAMESPACE            NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+kube-system          deployment.apps/coredns                  2/2     2            2           47s
+local-path-storage   deployment.apps/local-path-provisioner   1/1     1            1           45s
+
+NAMESPACE            NAME                                                DESIRED   CURRENT   READY   AGE
+kube-system          replicaset.apps/coredns-6f6b679f8f                  2         2         2       42s
+local-path-storage   replicaset.apps/local-path-provisioner-57c5987fd4   1         1         1       42s
+[Fri Jan 31 06:42:42] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:42:43] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.2.6 -n envoy-gateway-system --create-namespace
+Pulled: docker.io/envoyproxy/gateway-helm:v1.2.6
+Digest: sha256:89ff3ccd206a66f51adfd02c75436fa6b58037ab15a8049c36f7eb10227ce2a4
+NAME: eg
+LAST DEPLOYED: Fri Jan 31 06:43:03 2025
+NAMESPACE: envoy-gateway-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+**************************************************************************
+*** PLEASE BE PATIENT: Envoy Gateway may take a few minutes to install ***
+**************************************************************************
+
+Envoy Gateway is an open source project for managing Envoy Proxy as a standalone or Kubernetes-based application gateway.
+
+Thank you for installing Envoy Gateway! 🎉
+
+Your release is named: eg. 🎉
+
+Your release is in namespace: envoy-gateway-system. 🎉
+
+To learn more about the release, try:
+
+  $ helm status eg -n envoy-gateway-system
+  $ helm get all eg -n envoy-gateway-system
+
+To have a quickstart of Envoy Gateway, please refer to https://gateway.envoyproxy.io/latest/tasks/quickstart.
+
+To get more details, please visit https://gateway.envoyproxy.io and https://github.com/envoyproxy/gateway.
+[Fri Jan 31 06:43:19] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:43:22] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:43:22] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:43:22] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kga -A
+kubectl get all
+NAMESPACE              NAME                                               READY   STATUS      RESTARTS   AGE
+envoy-gateway-system   pod/eg-gateway-helm-certgen-dlmwr                  0/1     Completed   0          21s
+envoy-gateway-system   pod/envoy-gateway-5b47459c4d-h49mp                 0/1     Running     0          6s
+kube-system            pod/coredns-6f6b679f8f-7nl2g                       1/1     Running     0          84s
+kube-system            pod/coredns-6f6b679f8f-wnsb9                       1/1     Running     0          84s
+kube-system            pod/etcd-env-gw-control-plane                      1/1     Running     0          91s
+kube-system            pod/kindnet-4kgfr                                  1/1     Running     0          84s
+kube-system            pod/kindnet-9gngd                                  1/1     Running     0          81s
+kube-system            pod/kindnet-gcz4b                                  1/1     Running     0          81s
+kube-system            pod/kube-apiserver-env-gw-control-plane            1/1     Running     0          90s
+kube-system            pod/kube-controller-manager-env-gw-control-plane   1/1     Running     0          90s
+kube-system            pod/kube-proxy-d8zr9                               1/1     Running     0          84s
+kube-system            pod/kube-proxy-gjssf                               1/1     Running     0          81s
+kube-system            pod/kube-proxy-vgtsd                               1/1     Running     0          81s
+kube-system            pod/kube-scheduler-env-gw-control-plane            1/1     Running     0          90s
+local-path-storage     pod/local-path-provisioner-57c5987fd4-k6mx4        1/1     Running     0          84s
+
+NAMESPACE              NAME                    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                                   AGE
+default                service/kubernetes      ClusterIP   10.96.0.1       <none>        443/TCP                                   91s
+envoy-gateway-system   service/envoy-gateway   ClusterIP   10.96.200.151   <none>        18000/TCP,18001/TCP,18002/TCP,19001/TCP   6s
+kube-system            service/kube-dns        ClusterIP   10.96.0.10      <none>        53/UDP,53/TCP,9153/TCP                    90s
+
+NAMESPACE     NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+kube-system   daemonset.apps/kindnet      3         3         3       3            3           kubernetes.io/os=linux   89s
+kube-system   daemonset.apps/kube-proxy   3         3         3       3            3           kubernetes.io/os=linux   90s
+
+NAMESPACE              NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+envoy-gateway-system   deployment.apps/envoy-gateway            0/1     1            0           6s
+kube-system            deployment.apps/coredns                  2/2     2            2           90s
+local-path-storage     deployment.apps/local-path-provisioner   1/1     1            1           88s
+
+NAMESPACE              NAME                                                DESIRED   CURRENT   READY   AGE
+envoy-gateway-system   replicaset.apps/envoy-gateway-5b47459c4d            1         1         0       6s
+kube-system            replicaset.apps/coredns-6f6b679f8f                  2         2         2       85s
+local-path-storage     replicaset.apps/local-path-provisioner-57c5987fd4   1         1         1       85s
+
+NAMESPACE              NAME                                STATUS     COMPLETIONS   DURATION   AGE
+envoy-gateway-system   job.batch/eg-gateway-helm-certgen   Complete   1/1           15s        21s
+[Fri Jan 31 06:43:25] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:43:32] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:43:32] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kga -A
+kubectl get all
+NAMESPACE              NAME                                               READY   STATUS    RESTARTS   AGE
+envoy-gateway-system   pod/envoy-gateway-5b47459c4d-h49mp                 1/1     Running   0          36s
+kube-system            pod/coredns-6f6b679f8f-7nl2g                       1/1     Running   0          114s
+kube-system            pod/coredns-6f6b679f8f-wnsb9                       1/1     Running   0          114s
+kube-system            pod/etcd-env-gw-control-plane                      1/1     Running   0          2m1s
+kube-system            pod/kindnet-4kgfr                                  1/1     Running   0          114s
+kube-system            pod/kindnet-9gngd                                  1/1     Running   0          111s
+kube-system            pod/kindnet-gcz4b                                  1/1     Running   0          111s
+kube-system            pod/kube-apiserver-env-gw-control-plane            1/1     Running   0          2m
+kube-system            pod/kube-controller-manager-env-gw-control-plane   1/1     Running   0          2m
+kube-system            pod/kube-proxy-d8zr9                               1/1     Running   0          114s
+kube-system            pod/kube-proxy-gjssf                               1/1     Running   0          111s
+kube-system            pod/kube-proxy-vgtsd                               1/1     Running   0          111s
+kube-system            pod/kube-scheduler-env-gw-control-plane            1/1     Running   0          2m
+local-path-storage     pod/local-path-provisioner-57c5987fd4-k6mx4        1/1     Running   0          114s
+
+NAMESPACE              NAME                    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                                   AGE
+default                service/kubernetes      ClusterIP   10.96.0.1       <none>        443/TCP                                   2m1s
+envoy-gateway-system   service/envoy-gateway   ClusterIP   10.96.200.151   <none>        18000/TCP,18001/TCP,18002/TCP,19001/TCP   36s
+kube-system            service/kube-dns        ClusterIP   10.96.0.10      <none>        53/UDP,53/TCP,9153/TCP                    2m
+
+NAMESPACE     NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+kube-system   daemonset.apps/kindnet      3         3         3       3            3           kubernetes.io/os=linux   119s
+kube-system   daemonset.apps/kube-proxy   3         3         3       3            3           kubernetes.io/os=linux   2m
+
+NAMESPACE              NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+envoy-gateway-system   deployment.apps/envoy-gateway            1/1     1            1           36s
+kube-system            deployment.apps/coredns                  2/2     2            2           2m
+local-path-storage     deployment.apps/local-path-provisioner   1/1     1            1           118s
+
+NAMESPACE              NAME                                                DESIRED   CURRENT   READY   AGE
+envoy-gateway-system   replicaset.apps/envoy-gateway-5b47459c4d            1         1         1       36s
+kube-system            replicaset.apps/coredns-6f6b679f8f                  2         2         2       115s
+local-path-storage     replicaset.apps/local-path-provisioner-57c5987fd4   1         1         1       115s
+[Fri Jan 31 06:43:56] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:43:56] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl apply -f HTTPRoute/Gateway.yaml
+gatewayclass.gateway.networking.k8s.io/eg created
+gateway.gateway.networking.k8s.io/eg created
+[Fri Jan 31 06:44:04] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:44:04] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:44:50] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+export ENVOY_POD_NAME=$(kubectl get pod -n envoy-gateway-system --selector=gateway.envoyproxy.io/owning-gateway-namespace=default,gateway.envoyproxy.io/owning-gateway-name=eg -o jsonpath='{.items[0].metadata.name}')
+[Fri Jan 31 06:45:25] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+echo $ENVOY_POD_NAME
+envoy-default-eg-e41e7b31-594f564cb9-pw4ft
+[Fri Jan 31 06:45:34] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl port-forward pod/$ENVOY_POD_NAME -n envoy-gateway-system 19000:19000 &
+[1] 65134
+[Fri Jan 31 06:45:41] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+Forwarding from 127.0.0.1:19000 -> 19000
+Forwarding from [::1]:19000 -> 19000
+[Fri Jan 31 06:45:43] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+curl -s localhost:19000/stats | head
+Handling connection for 19000
+cluster_manager.cds.version_text: ""
+control_plane.identifier: ""
+http.http-10080.rds.default/eg/http.version_text: "1"
+listener_manager.lds.version_text: "1"
+sds.xds_certificate.version_text: ""
+sds.xds_trusted_ca.version_text: ""
+cluster.prometheus_stats.assignment_stale: 0
+cluster.prometheus_stats.assignment_timeout_received: 0
+cluster.prometheus_stats.assignment_use_cached: 0
+cluster.prometheus_stats.bind_errors: 0
+[Fri Jan 31 06:45:49] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:45:49] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+./capture-envoy-data.sh --dir HTTPRoute/before_httproute
+-bash: ./capture-envoy-data.sh: No such file or directory
+[Fri Jan 31 06:46:00] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+../capture-envoy-data.sh --dir HTTPRoute/before_httproute
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Data successfully saved in directory: HTTPRoute/before_httproute
+[Fri Jan 31 06:46:05] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kga -A
+kubectl get all
+NAMESPACE              NAME                                               READY   STATUS    RESTARTS   AGE
+envoy-gateway-system   pod/envoy-default-eg-e41e7b31-594f564cb9-pw4ft     2/2     Running   0          2m10s
+envoy-gateway-system   pod/envoy-gateway-5b47459c4d-h49mp                 1/1     Running   0          2m56s
+kube-system            pod/coredns-6f6b679f8f-7nl2g                       1/1     Running   0          4m14s
+kube-system            pod/coredns-6f6b679f8f-wnsb9                       1/1     Running   0          4m14s
+kube-system            pod/etcd-env-gw-control-plane                      1/1     Running   0          4m21s
+kube-system            pod/kindnet-4kgfr                                  1/1     Running   0          4m14s
+kube-system            pod/kindnet-9gngd                                  1/1     Running   0          4m11s
+kube-system            pod/kindnet-gcz4b                                  1/1     Running   0          4m11s
+kube-system            pod/kube-apiserver-env-gw-control-plane            1/1     Running   0          4m20s
+kube-system            pod/kube-controller-manager-env-gw-control-plane   1/1     Running   0          4m20s
+kube-system            pod/kube-proxy-d8zr9                               1/1     Running   0          4m14s
+kube-system            pod/kube-proxy-gjssf                               1/1     Running   0          4m11s
+kube-system            pod/kube-proxy-vgtsd                               1/1     Running   0          4m11s
+kube-system            pod/kube-scheduler-env-gw-control-plane            1/1     Running   0          4m20s
+local-path-storage     pod/local-path-provisioner-57c5987fd4-k6mx4        1/1     Running   0          4m14s
+
+NAMESPACE              NAME                                TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                                   AGE
+default                service/kubernetes                  ClusterIP      10.96.0.1       <none>        443/TCP                                   4m21s
+envoy-gateway-system   service/envoy-default-eg-e41e7b31   LoadBalancer   10.96.217.103   <pending>     80:30987/TCP                              2m10s
+envoy-gateway-system   service/envoy-gateway               ClusterIP      10.96.200.151   <none>        18000/TCP,18001/TCP,18002/TCP,19001/TCP   2m56s
+kube-system            service/kube-dns                    ClusterIP      10.96.0.10      <none>        53/UDP,53/TCP,9153/TCP                    4m20s
+
+NAMESPACE     NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+kube-system   daemonset.apps/kindnet      3         3         3       3            3           kubernetes.io/os=linux   4m19s
+kube-system   daemonset.apps/kube-proxy   3         3         3       3            3           kubernetes.io/os=linux   4m20s
+
+NAMESPACE              NAME                                        READY   UP-TO-DATE   AVAILABLE   AGE
+envoy-gateway-system   deployment.apps/envoy-default-eg-e41e7b31   1/1     1            1           2m10s
+envoy-gateway-system   deployment.apps/envoy-gateway               1/1     1            1           2m56s
+kube-system            deployment.apps/coredns                     2/2     2            2           4m20s
+local-path-storage     deployment.apps/local-path-provisioner      1/1     1            1           4m18s
+
+NAMESPACE              NAME                                                   DESIRED   CURRENT   READY   AGE
+envoy-gateway-system   replicaset.apps/envoy-default-eg-e41e7b31-594f564cb9   1         1         1       2m10s
+envoy-gateway-system   replicaset.apps/envoy-gateway-5b47459c4d               1         1         1       2m56s
+kube-system            replicaset.apps/coredns-6f6b679f8f                     2         2         2       4m15s
+local-path-storage     replicaset.apps/local-path-provisioner-57c5987fd4      1         1         1       4m15s
+[Fri Jan 31 06:46:15] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:46:15] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl apply -f HTTPRoute/backend-http-service.yaml
+serviceaccount/backend-http created
+service/backend-http created
+deployment.apps/backend-http created
+httproute.gateway.networking.k8s.io/backend-http created
+[Fri Jan 31 06:46:45] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+../capture-envoy-data.sh --dir HTTPRoute/after_httproute
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Data successfully saved in directory: HTTPRoute/after_httproute
+[Fri Jan 31 06:47:04] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ll HTTPRoute/after_httproute/
+total 428K
+-rw-rw-r-- 1 vagrant vagrant 102K Jan 31 06:47 config_dump.log
+-rw-rw-r-- 1 vagrant vagrant 6.6K Jan 31 06:47 clusters.log
+-rw-rw-r-- 1 vagrant vagrant 4.8K Jan 31 06:47 clusters.json
+-rw-rw-r-- 1 vagrant vagrant  350 Jan 31 06:47 listeners.json
+-rw-rw-r-- 1 vagrant vagrant   86 Jan 31 06:47 listeners.log
+-rw-rw-r-- 1 vagrant vagrant  96K Jan 31 06:47 server_info.log
+-rw-rw-r-- 1 vagrant vagrant  51K Jan 31 06:47 stats.log
+-rw-rw-r-- 1 vagrant vagrant 150K Jan 31 06:47 stats-prometheus.log
+[Fri Jan 31 06:47:09] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+export ENVOY_SERVICE=$(kubectl get svc -n envoy-gateway-system --selector=gateway.envoyproxy.io/owning-gateway-namespace=default,gateway.envoyproxy.io/owning-gateway-name=eg -o jsonpath='{.items[0].metadata.name}')
+[Fri Jan 31 06:47:24] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+echo $ENVOY_SERVICE
+[Fri Jan 31 06:47:24] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+echo $ENVOY_SERVICE
+envoy-default-eg-e41e7b31
+[Fri Jan 31 06:47:31] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 8888:80 &
+[2] 65787
+[Fri Jan 31 06:47:37] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+Forwarding from 127.0.0.1:8888 -> 10080
+Forwarding from [::1]:8888 -> 10080
+[Fri Jan 31 06:47:38] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+curl --verbose --header "Host: www.example.com" http://localhost:8888/get
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> GET /get HTTP/1.1
+> Host: www.example.com
+> User-Agent: curl/7.81.0
+> Accept: */*
+>
+Handling connection for 8888
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200 OK
+< content-type: application/json
+< x-content-type-options: nosniff
+< date: Fri, 31 Jan 2025 06:47:43 GMT
+< content-length: 460
+<
+{
+ "path": "/get",
+ "host": "www.example.com",
+ "method": "GET",
+ "proto": "HTTP/1.1",
+ "headers": {
+  "Accept": [
+   "*/*"
+  ],
+  "User-Agent": [
+   "curl/7.81.0"
+  ],
+  "X-Envoy-Internal": [
+   "true"
+  ],
+  "X-Forwarded-For": [
+   "10.244.2.2"
+  ],
+  "X-Forwarded-Proto": [
+   "http"
+  ],
+  "X-Request-Id": [
+   "f34e6ced-d4b1-4dc6-b239-247360ccf12b"
+  ]
+ },
+ "namespace": "default",
+ "ingress": "",
+ "service": "",
+ "pod": "backend-http-7c877f78d9-2gp2f"
+* Connection #0 to host localhost left intact
+}[Fri Jan 31 06:47:43] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:47:44] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:47:44] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:48:15] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:48:15] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ll
+total 4.0K
+drwxrwxr-x 1 vagrant vagrant 4.0K Jan 31 06:47 HTTPRoute
+[Fri Jan 31 06:49:35] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ll HTTPRoute/
+total 16K
+-rw-rw-r-- 1 vagrant vagrant 1.5K Jan 31 06:40 backend-http-service.yaml
+-rw-rw-r-- 1 vagrant vagrant  326 Jan 31 06:40 Gateway.yaml
+drwxrwxr-x 1 vagrant vagrant 4.0K Jan 31 06:46 before_httproute
+drwxrwxr-x 1 vagrant vagrant 4.0K Jan 31 06:47 after_httproute
+[Fri Jan 31 06:49:38] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example Inc./CN=example.com' -keyout ca.key -out ca.crt
+..+...+....+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*...+.......+.....+...+....+...........+.+.....+...+.+.....+.+......+..+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*...+.+.....+
+.......+..+...+...+.+...+........+...+............+.........+...+.+.........+......+..............+.+..+............+.+...........+......+...+....+...........+............+...+..........+..+.......+..+...+......+.......+.........
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+..+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*..+.....+.+...........+.+..+.......+........+.+.........+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*....+...+......+...+...+..+.+......
+......+...+.........+...+..+......+.+.........+.....+....+........+...................+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-----
+[Fri Jan 31 06:49:53] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ll
+total 12K
+drwxrwxr-x 1 vagrant vagrant 4.0K Jan 31 06:47 HTTPRoute
+-rw------- 1 vagrant vagrant 1.7K Jan 31 06:49 ca.key
+-rw-rw-r-- 1 vagrant vagrant 1.2K Jan 31 06:49 ca.crt
+[Fri Jan 31 06:49:54] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+cat > openssl.conf  <<EOF
+[req]
+req_extensions = v3_req
+prompt = no
+
+[v3_req]
+keyUsage = keyEncipherment, digitalSignature
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = www.example.com
+EOF
+[Fri Jan 31 06:50:01] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:50:01] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ll
+total 16K
+drwxrwxr-x 1 vagrant vagrant 4.0K Jan 31 06:47 HTTPRoute
+-rw------- 1 vagrant vagrant 1.7K Jan 31 06:49 ca.key
+-rw-rw-r-- 1 vagrant vagrant 1.2K Jan 31 06:49 ca.crt
+-rw-rw-r-- 1 vagrant vagrant  191 Jan 31 06:50 openssl.conf
+[Fri Jan 31 06:50:03] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+openssl req -out www.example.com.csr -newkey rsa:2048 -nodes -keyout www.example.com.key -subj "/CN=www.example.com/O=example organization"
+openssl x509 -req -days 365 -CA ca.crt -CAkey ca.key -set_serial 0 -in www.example.com.csr -out www.example.com.crt -extfile openssl.conf -extensions v3_req
+....+........+.+...+..+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*..+.............+............+..+......+.+.....+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.........+.....+......+.+..+
+.......+...+.....................+..............+...+...............+...+.+......+...+...............+.................+...+.+......+..............+...+.+.........+........+...+.......+............+..+.+........++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++
+..+............+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.....+..+.......+.....+.+...+...........+.+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.......+.....+...+.+.........+......
+.....+.+...+...............+.....+..........+...........+.+........+...+.......+..+...+.+......+.........+.....+......+..........+.....+.+...+.........+..+...+.+..+....+...+.....+...+...............+...................+......+...
+...........+.+.....+...+......+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-----
+Certificate request self-signature ok
+subject=CN = www.example.com, O = example organization
+[Fri Jan 31 06:50:09] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:50:09] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ll
+total 28K
+drwxrwxr-x 1 vagrant vagrant 4.0K Jan 31 06:47 HTTPRoute
+-rw------- 1 vagrant vagrant 1.7K Jan 31 06:49 ca.key
+-rw-rw-r-- 1 vagrant vagrant 1.2K Jan 31 06:49 ca.crt
+-rw-rw-r-- 1 vagrant vagrant  191 Jan 31 06:50 openssl.conf
+-rw------- 1 vagrant vagrant 1.7K Jan 31 06:50 www.example.com.key
+-rw-rw-r-- 1 vagrant vagrant  940 Jan 31 06:50 www.example.com.csr
+-rw-rw-r-- 1 vagrant vagrant 1.3K Jan 31 06:50 www.example.com.crt
+[Fri Jan 31 06:50:14] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl create secret tls example-cert --key=www.example.com.key --cert=www.example.com.crt
+secret/example-cert created
+[Fri Jan 31 06:50:30] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl create configmap example-ca --from-file=ca.crt
+configmap/example-ca created
+[Fri Jan 31 06:50:35] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k get configmaps
+NAME               DATA   AGE
+example-ca         1      11s
+kube-root-ca.crt   1      8m45s
+[Fri Jan 31 06:50:46] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k get configmap/example-ca -o yaml | yq
+apiVersion: v1
+data:
+  ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIDOzCCAiOgAwIBAgIUbp9fzulGBjCG0WRg1eKwooSX55AwDQYJKoZIhvcNAQEL
+    BQAwLTEVMBMGA1UECgwMZXhhbXBsZSBJbmMuMRQwEgYDVQQDDAtleGFtcGxlLmNv
+    bTAeFw0yNTAxMzEwNjQ5NTNaFw0yNjAxMzEwNjQ5NTNaMC0xFTATBgNVBAoMDGV4
+    YW1wbGUgSW5jLjEUMBIGA1UEAwwLZXhhbXBsZS5jb20wggEiMA0GCSqGSIb3DQEB
+    AQUAA4IBDwAwggEKAoIBAQChv1t9Fdwj9OoCNsuq7blt7zOyoG7FxjtJbSxZYf2x
+    Z/ZbmiPoIR41y0aDSR+QvVoUg/12PU+HZzMxoVDvuznU3PSiFUpE41wzqCaJWBPA
+    Gwl078GzphDeouTsMbijwFVNKYpvz7Pfc7d0C3TEg5R+do4+nKhZ2Y7sbR7ib1qE
+    X1Xwm/Ut6dNLmMpAzvKie2QHHSZRUlxHRFPz/R05OXf0r2FfNy88c+3hZ6Ye+k9c
+    sOXpdXKjgxQijbyyIFGAMJv6ZCs1Df67SytxueupyvZ60AlvUudyRduIEaecNOrw
+    ea0b+BFq13mJvgD1Shl6hsnVix8kh3aJkHjABiViWjP9AgMBAAGjUzBRMB0GA1Ud
+    DgQWBBSr13QhSTiWTjPEVHptJ3f4CPvjYDAfBgNVHSMEGDAWgBSr13QhSTiWTjPE
+    VHptJ3f4CPvjYDAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQAF
+    /y5hw2yN+Q+nIFzKk0GDib20JwD01kVR8XGa+5O5xAq9ON1j95ga4H5GraXbux//
+    DDKQq6DNr7JCWlo7/5FG9+6+mBPQF04/f0lbsPlG3Gft4Jf5FRfcP4g4gjJqyntv
+    h7rS5HylDxR7FP60iiSSdtfh5N6zUOulY6DIDK13/eiG465v2n7FYAH+/uJVjNnw
+    Fg0CvwmDZXrFhjlst72rrbMovTormS034rBCyxJT1I/oGUy37/wN/Qs2Buv0FMXs
+    cadX1XsTLlyihUXJKF5grz+PhXqlCYdZw7vSteNhWhB31xz/mC1n21NGrgomQRfO
+    wyPtYAl6xNVYGHtyY/AO
+    -----END CERTIFICATE-----
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2025-01-31T06:50:35Z"
+  name: example-ca
+  namespace: default
+  resourceVersion: "1761"
+  uid: bd9a4005-9730-4737-891d-55cf1610f44c
+[Fri Jan 31 06:50:54] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k get secret/example-cert -o yaml | yq
+apiVersion: v1
+data:
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURZakNDQWtxZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREF0TVJVd0V3WURWUVFLREF4bGVHRnQKY0d4bElFbHVZeTR4RkRBU0JnTlZCQU1NQzJWNFlXMXdiR1V1WTI5dE1CNFhEVEkxTURFek1UQTJOVEF3T1ZvWApEVEkyTU
+RFek1UQTJOVEF3T1Zvd09URVlNQllHQTFVRUF3d1BkM2QzTG1WNFlXMXdiR1V1WTI5dE1SMHdHd1lEClZRUUtEQlJsZUdGdGNHeGxJRzl5WjJGdWFYcGhkR2x2YmpDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVAKQURDQ0FRb0NnZ0VCQUlMYlgzSWFVbUhnUUtKdVVWWEpzUFJwVGlLVnV6TjZONVk
+wQjAycWplaVlUVXZ5bUhjbgpSL3ZFWEZrNytaeGxPWVoyNDI5bXRjTGlyaGxZV0lJNG1PZENLSWJOdTZxTjRmM251cXBabEkzWnYwSUpPb3JUCnNFbGpQalBuTm1UUzh5K0RtdVZIU2pzTUkvZkJna2ozakJWeE4wWjdhQTVWTHRmMTkvTkJoblZzSWRNcmFVTkYKdFEzLzF0NDZZUzN5anJZZTYwL3d6T1B1
+czRZd2NNc3hGZU52bFRadTZDZnY2b2lFamV3ZTV5OEo4OXc4TlFGYwpwUmpJVXQ4eFNQNFhDeXAyUkFZb0VsV0dsb05uekcySEVMNjJSemhQakdDMC96MGQ1RlpqcUs0b2kyOUdwUUJmClRubGZUaGtKUDlBU28zZWROSnhvK2hBMy9LWCtaRVhqV2NNQ0F3RUFBYU9CZ0RCK01Bc0dBMVVkRHdRRUF3SUYKb
+0RBVEJnTlZIU1VFRERBS0JnZ3JCZ0VGQlFjREFUQWFCZ05WSFJFRUV6QVJnZzkzZDNjdVpYaGhiWEJzWlM1agpiMjB3SFFZRFZSME9CQllFRkdDYlBKUHpwT0w4Zzdic0xHZy9PNU1LMW11cE1COEdBMVVkSXdRWU1CYUFGS3ZYCmRDRkpPSlpPTThSVWVtMG5kL2dJKytOZ01BMEdDU3FHU0liM0RRRUJDd1
+VBQTRJQkFRQlZ2c0NVcFZ3bWVwVlEKazNJUzV4dzBWOXE3cGlvWTVNWWNJdnQ1cFZ3TUZKaTJBOWpVZjFhczMzelcvcnFudzdXR002YUw4b1c4MElmSgpvYmlpcHR1UjUvcnZkaXFzamhoazlWcHdlNm95dmJ0eGdocUxEbWJQRFA2UnBwcFFkK1JjemhiYkFOVjlIRnBwCnRJMVRVVVRJazA5QU9CNGl4SFR
+jcHUvekdRWVZrWXkxQWR1bjF5OHUyL0ZCV2ZtK1BSNngrUFhqUHZtd0gxUWwKQmJuMWt2azJIYzNrN3JsQnJwUTZ3ZlhvQlN3VW1lQURoaHRURlFzWElyL2xEZHpmQ2JCMW1WY1dpeVJacEV2OQpnNkpWODlka1VHMjVsa0dMcFdnOEtLdzRoKzBUaTlTSHNWYXRFNThlWjVsWmtyTTZSY2hiN3JOYUVlVWRo
+eHdmClZ1d3FwdmhzCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  tls.key: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2UUlCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktjd2dnU2pBZ0VBQW9JQkFRQ0MyMTl5R2xKaDRFQ2kKYmxGVnliRDBhVTRpbGJzemVqZVdOQWROcW8zb21FMUw4cGgzSjBmN3hGeFpPL21jWlRtR2R1TnZaclhDNHE0WgpXRmlDT0
+pqblFpaUd6YnVxamVIOTU3cXFXWlNOMmI5Q0NUcUswN0JKWXo0ejV6Wmswdk12ZzVybFIwbzdEQ1AzCndZSkk5NHdWY1RkR2UyZ09WUzdYOWZmelFZWjFiQ0hUSzJsRFJiVU4vOWJlT21FdDhvNjJIdXRQOE16ajdyT0cKTUhETE1SWGpiNVUyYnVnbjcrcUloSTNzSHVjdkNmUGNQRFVCWEtVWXlGTGZNVWo
+rRndzcWRrUUdLQkpWaHBhRApaOHh0aHhDK3RrYzRUNHhndFA4OUhlUldZNml1S0l0dlJxVUFYMDU1WDA0WkNUL1FFcU4zblRTY2FQb1FOL3lsCi9tUkY0MW5EQWdNQkFBRUNnZ0VBRU1wSEYrUHF1Q1pIQk5CMDNUWVEzM3QzakJaOE82R3Q2amJvelAxYVVnTGcKd0NMemp5NWFIU0xYMnBkSWN0bkdKTXV5
+YVFQYnhKTERWZnN3K0J4OCtnZFNIZUhkOTRkVy9QWXp6RkhNTHR0RwpvQm1CQ25rWkFJR2NaSnFCTHpTbUFXMjRmVHpGZUlnWlFWdng5SnpXdTVXWVN4SGdpeDVBOFhMZENyaFlvVTQ4Cm5MR0o1NXBVZFJDcHBlMWdNak9HcEN3Skg1WkR2M3Zib0c4QTFrR3l5ZDh3dG1jT0VaQWY0NlJFejEycWtPR2MKV
+GxOMklMWmxNRWoyM1NrZW0rS1RwdklzdVltcnFTcDFLQ0ZYVUZBaWxlNHZQRW9WSFZ0TnB6eVhtSFN2ZS9yRQpvV0ZtZWt3emtaMDJ3ank4OGNydDBia1ZwOTVPQkIwMUlRTlBxcTR1K1FLQmdRQzNkcHE2S0pnN2JkM3N6aHlPCnFyKzJFbUF5T0k3WG9Ic0tzZHJxVGovd3Bzd3RDWUQ2SjNGWGc4a3RlV1
+pnQXkyVk00YmJLd2tSRGg1ajlZNFcKaUFab2NCNXNYUzREV2FoU2JkNjNTRUU1VEFISVFXMFJiT1ZIaFlnMHFtZWdNMXFtaVJubDhPQ3pPeVlPcjQvVQo2SFExOU02UmpHcC9yVlF2MGZWcUswM0dWUUtCZ1FDMm1DdEo1OHlkOW83aGJmRmU5aWw1YzZkc3VFdXB4V1dmCkk3WTB0VzNQZll0dUdBMWRFbHZ
+pb3JMbVVkUEc3eGNQTER0UnUrS3lUL0xmRzg4YWtCYXRkV1RLZkp2RXpFQTUKT25MSXpidmYyVGN2WnFJa0JjcHpXdGliTmxlTVh4Zks1VkpKbmxDcnoxclF5L2w4K05xUXpqL1FpKzVZcy9STApDbVRWd1NWSHR3S0JnRG1pOURjWnU4R240WG1jd3hIN0NLRjlvbVVFcWJPS1FqMTQ1S3FKak1MZzAvSXVN
+eXZqCnFsTHhId20vUXU5VThFUVlYUHlMeDV4cEVCa2RNdGRYUXBRYTdTUGtIaW1GU0VFbExUdnRZamhLN2FCcEZZZk0KNnpjTjkxMThUM1BmemxIVmJxSnppMVFqZC9CVExWK1k2N0ZyeUYybmZHbkNIVm1zbjJvTVVySEZBb0dCQUtpRQoxbWIyTlNXUXVadWFnWXNYKzMwbzNWdDgxL0FPeTlSTS9FdTNLb
+XEyUHFuVUx2azRDVytvb3gzb1pXRVRwcCtOClBnNFlMb2hOT3lUb29JS3VldytKNmdUcmJrUDZFa2YvQnBNSE5aN0o5YUdjd29ZbWhndGl5OGlzSmE3YTBMV2sKWWdhcHcyQmVGajNnRXhsZy95OW4rd041TWZmUjFlUXY2cEpSR1J3UEFvR0FEMmhpaEMzVzlYMzFTMzlLR0ZXMQpCVFMya2szeXBnN1A4QS
+9SY1pWWU5ycWFSQmNpbXJVbHA1QmNQMU5KM0E2ZU5NNEw5NEIwQk1ZT0hJQS9VU240CmRHN3JoRis4UTdUZzRyUkdTSXp2aHc3UjkweUt4OGwzL3FnOVp3Q0hZVDE2M1p3SEZ3YTdIbW1PaHdmNGFKdlAKQ3NtaC8zSXhzaW1VVURJbk1xUmFwRXM9Ci0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K
+kind: Secret
+metadata:
+  creationTimestamp: "2025-01-31T06:50:30Z"
+  name: example-cert
+  namespace: default
+  resourceVersion: "1747"
+  uid: 84eca6a5-dcd9-4051-890d-5cf7bb0a0edf
+type: kubernetes.io/tls
+[Fri Jan 31 06:51:10] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:51:16] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:51:26] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:51:26] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:51:26] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k get deployments.apps
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+backend-http   1/1     1            1           4m54s
+[Fri Jan 31 06:51:39] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl patch deployment backend --type=json --patch '
+  - op: add
+    path: /spec/template/spec/containers/0/volumeMounts
+    value:
+    - name: secret-volume
+      mountPath: /etc/secret-volume
+  - op: add
+    path: /spec/template/spec/volumes
+    value:
+    - name: secret-volume
+      secret:
+        secretName: example-cert
+        items:
+        - key: tls.crt
+          path: crt
+        - key: tls.key
+          path: key
+  - op: add
+    path: /spec/template/spec/containers/0/env/-
+    value:
+      name: TLS_SERVER_CERT
+      value: /etc/secret-volume/crt
+  - op: add
+    path: /spec/template/spec/containers/0/env/-
+    value:
+      name: TLS_SERVER_PRIVKEY
+      value: /etc/secret-volume/key
+  '
+
+Error from server (NotFound): deployments.apps "backend" not found
+[Fri Jan 31 06:52:21] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:52:21] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ls
+HTTPRoute  ca.crt  ca.key  openssl.conf  www.example.com.crt  www.example.com.csr  www.example.com.key
+[Fri Jan 31 06:54:40] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ll
+total 28K
+drwxrwxr-x 1 vagrant vagrant 4.0K Jan 31 06:47 HTTPRoute
+-rw------- 1 vagrant vagrant 1.7K Jan 31 06:49 ca.key
+-rw-rw-r-- 1 vagrant vagrant 1.2K Jan 31 06:49 ca.crt
+-rw-rw-r-- 1 vagrant vagrant  191 Jan 31 06:50 openssl.conf
+-rw------- 1 vagrant vagrant 1.7K Jan 31 06:50 www.example.com.key
+-rw-rw-r-- 1 vagrant vagrant  940 Jan 31 06:50 www.example.com.csr
+-rw-rw-r-- 1 vagrant vagrant 1.3K Jan 31 06:50 www.example.com.crt
+[Fri Jan 31 06:54:41] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+rm -rf ./*
+[Fri Jan 31 06:55:04] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ll
+total 0
+[Fri Jan 31 06:55:05] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:55:06] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kind delete cluster --name env-gw
+Deleting cluster "env-gw" ...
+error: lost connection to pod
+error: lost connection to pod
+Deleted nodes: ["env-gw-control-plane" "env-gw-worker" "env-gw-worker2"]
+[1]-  Exit 1                  kubectl port-forward pod/$ENVOY_POD_NAME -n envoy-gateway-system 19000:19000
+[2]+  Exit 1                  kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 8888:80
+[Fri Jan 31 06:55:14] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kga
+kubectl get all
+E0131 06:55:28.367819   68138 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0131 06:55:28.369414   68138 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0131 06:55:28.370692   68138 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0131 06:55:28.371946   68138 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0131 06:55:28.373281   68138 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
+[Fri Jan 31 06:55:28] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+dpa
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+[Fri Jan 31 06:55:32] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:55:33] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kind create cluster --config=../kind-config.yaml --name env-gw
+Creating cluster "env-gw" ...
+ ✓ Ensuring node image (kindest/node:v1.31.0) 🖼
+ ✓ Preparing nodes 📦 📦 📦
+ ✓ Writing configuration 📜
+ ✓ Starting control-plane 🕹️
+ ✓ Installing CNI 🔌
+ ✓ Installing StorageClass 💾
+ ✓ Joining worker nodes 🚜
+Set kubectl context to "kind-env-gw"
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-env-gw
+
+Have a question, bug, or feature request? Let us know! https://kind.sigs.k8s.io/#community 🙂
+[Fri Jan 31 06:56:09] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:56:10] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:56:10] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+
+[Fri Jan 31 06:56:10] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:56:10] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+
+[Fri Jan 31 06:56:10] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:56:10] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:56:10] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:56:10] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:56:10] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:56:10] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:56:10] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:56:10] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kag
+Command 'kag' not found, did you mean:
+  command 'kig' from snap kig (23.08.3)
+  command 'kak' from snap kakoune (v2023.08.05)
+  command 'kmag' from snap kmag (23.08.4)
+  command 'mag' from deb texlive-binaries (2021.20210626.59705-1ubuntu0.2)
+  command 'kmag' from deb kmag (4:21.12.3-0ubuntu1)
+  command 'ag' from deb silversearcher-ag (2.2.0+git20200805-1)
+  command 'kig' from deb kig (4:21.12.3-0ubuntu1)
+  command 'jag' from deb jag (0.3.8-2)
+  command 'kar' from deb sra-toolkit (2.11.3+dfsg-1ubuntu1)
+  command 'kas' from deb kas (2.6.3-2)
+  command 'kak' from deb kakoune (2020.09.01-3)
+See 'snap info <snapname>' for additional versions.
+[Fri Jan 31 06:56:14] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:56:14] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kga -A
+kubectl get all
+NAMESPACE            NAME                                               READY   STATUS    RESTARTS   AGE
+kube-system          pod/coredns-6f6b679f8f-7b8zj                       0/1     Pending   0          11s
+kube-system          pod/coredns-6f6b679f8f-dcvfs                       0/1     Pending   0          11s
+kube-system          pod/etcd-env-gw-control-plane                      1/1     Running   0          17s
+kube-system          pod/kindnet-j4w7m                                  1/1     Running   0          12s
+kube-system          pod/kindnet-qg4rr                                  1/1     Running   0          8s
+kube-system          pod/kindnet-vmhz9                                  1/1     Running   0          8s
+kube-system          pod/kube-apiserver-env-gw-control-plane            1/1     Running   0          17s
+kube-system          pod/kube-controller-manager-env-gw-control-plane   1/1     Running   0          17s
+kube-system          pod/kube-proxy-n9h7r                               1/1     Running   0          8s
+kube-system          pod/kube-proxy-sdjpp                               1/1     Running   0          12s
+kube-system          pod/kube-proxy-vng5s                               1/1     Running   0          8s
+kube-system          pod/kube-scheduler-env-gw-control-plane            1/1     Running   0          17s
+local-path-storage   pod/local-path-provisioner-57c5987fd4-28g8w        0/1     Pending   0          11s
+
+NAMESPACE     NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)                  AGE
+default       service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP                  18s
+kube-system   service/kube-dns     ClusterIP   10.96.0.10   <none>        53/UDP,53/TCP,9153/TCP   17s
+
+NAMESPACE     NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+kube-system   daemonset.apps/kindnet      3         3         3       3            3           kubernetes.io/os=linux   16s
+kube-system   daemonset.apps/kube-proxy   3         3         3       3            3           kubernetes.io/os=linux   17s
+
+NAMESPACE            NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+kube-system          deployment.apps/coredns                  0/2     2            0           17s
+local-path-storage   deployment.apps/local-path-provisioner   0/1     1            0           16s
+
+NAMESPACE            NAME                                                DESIRED   CURRENT   READY   AGE
+kube-system          replicaset.apps/coredns-6f6b679f8f                  2         2         0       11s
+local-path-storage   replicaset.apps/local-path-provisioner-57c5987fd4   1         1         0       11s
+[Fri Jan 31 06:56:16] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:56:17] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:56:17] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 06:56:17] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:05:03] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:05:03] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ls
+[Fri Jan 31 07:05:05] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kga -A
+kubectl get all
+NAMESPACE            NAME                                               READY   STATUS    RESTARTS   AGE
+kube-system          pod/coredns-6f6b679f8f-7b8zj                       1/1     Running   0          9m4s
+kube-system          pod/coredns-6f6b679f8f-dcvfs                       1/1     Running   0          9m4s
+kube-system          pod/etcd-env-gw-control-plane                      1/1     Running   0          9m10s
+kube-system          pod/kindnet-j4w7m                                  1/1     Running   0          9m5s
+kube-system          pod/kindnet-qg4rr                                  1/1     Running   0          9m1s
+kube-system          pod/kindnet-vmhz9                                  1/1     Running   0          9m1s
+kube-system          pod/kube-apiserver-env-gw-control-plane            1/1     Running   0          9m10s
+kube-system          pod/kube-controller-manager-env-gw-control-plane   1/1     Running   0          9m10s
+kube-system          pod/kube-proxy-n9h7r                               1/1     Running   0          9m1s
+kube-system          pod/kube-proxy-sdjpp                               1/1     Running   0          9m5s
+kube-system          pod/kube-proxy-vng5s                               1/1     Running   0          9m1s
+kube-system          pod/kube-scheduler-env-gw-control-plane            1/1     Running   0          9m10s
+local-path-storage   pod/local-path-provisioner-57c5987fd4-28g8w        1/1     Running   0          9m4s
+
+NAMESPACE     NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)                  AGE
+default       service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP                  9m11s
+kube-system   service/kube-dns     ClusterIP   10.96.0.10   <none>        53/UDP,53/TCP,9153/TCP   9m10s
+
+NAMESPACE     NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+kube-system   daemonset.apps/kindnet      3         3         3       3            3           kubernetes.io/os=linux   9m9s
+kube-system   daemonset.apps/kube-proxy   3         3         3       3            3           kubernetes.io/os=linux   9m10s
+
+NAMESPACE            NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+kube-system          deployment.apps/coredns                  2/2     2            2           9m10s
+local-path-storage   deployment.apps/local-path-provisioner   1/1     1            1           9m9s
+
+NAMESPACE            NAME                                                DESIRED   CURRENT   READY   AGE
+kube-system          replicaset.apps/coredns-6f6b679f8f                  2         2         2       9m4s
+local-path-storage   replicaset.apps/local-path-provisioner-57c5987fd4   1         1         1       9m4s
+[Fri Jan 31 07:05:09] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+mkdir HTTPRoute
+[Fri Jan 31 07:05:15] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+wget https://github.com/envoyproxy/gateway/releases/download/v1.2.6/quickstart.yaml
+--2025-01-31 07:05:31--  https://github.com/envoyproxy/gateway/releases/download/v1.2.6/quickstart.yaml
+Resolving github.com (github.com)... 20.207.73.82
+Connecting to github.com (github.com)|20.207.73.82|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://objects.githubusercontent.com/github-production-release-asset-2e65be/480573177/491df943-97a8-4bc2-b52d-c5b256916c0c?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250131%2Fus-east-1
+%2Fs3%2Faws4_request&X-Amz-Date=20250131T070531Z&X-Amz-Expires=300&X-Amz-Signature=ed37acd052d8b474abafd41749b5c3bc59807780b603801688066d72545ebac7&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D
+quickstart.yaml&response-content-type=application%2Foctet-stream [following]
+--2025-01-31 07:05:31--  https://objects.githubusercontent.com/github-production-release-asset-2e65be/480573177/491df943-97a8-4bc2-b52d-c5b256916c0c?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250
+131%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250131T070531Z&X-Amz-Expires=300&X-Amz-Signature=ed37acd052d8b474abafd41749b5c3bc59807780b603801688066d72545ebac7&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3
+B%20filename%3Dquickstart.yaml&response-content-type=application%2Foctet-stream
+Resolving objects.githubusercontent.com (objects.githubusercontent.com)... 185.199.109.133, 185.199.110.133, 185.199.108.133, ...
+Connecting to objects.githubusercontent.com (objects.githubusercontent.com)|185.199.109.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 1745 (1.7K) [application/octet-stream]
+Saving to: ‘quickstart.yaml’
+
+quickstart.yaml                                           100%[==================================================================================================================================>]   1.70K  --.-KB/s    in 0.001s
+
+2025-01-31 07:05:33 (3.33 MB/s) - ‘quickstart.yaml’ saved [1745/1745]
+
+[Fri Jan 31 07:05:33] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:05:33] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+vim quickstart.yaml
+[Fri Jan 31 07:05:36] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+mv quickstart.yaml HTTPRoute/
+[Fri Jan 31 07:05:41] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.2.6 -n envoy-gateway-system --create-namespace
+Pulled: docker.io/envoyproxy/gateway-helm:v1.2.6
+Digest: sha256:89ff3ccd206a66f51adfd02c75436fa6b58037ab15a8049c36f7eb10227ce2a4
+NAME: eg
+LAST DEPLOYED: Fri Jan 31 07:05:56 2025
+NAMESPACE: envoy-gateway-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+**************************************************************************
+*** PLEASE BE PATIENT: Envoy Gateway may take a few minutes to install ***
+**************************************************************************
+
+Envoy Gateway is an open source project for managing Envoy Proxy as a standalone or Kubernetes-based application gateway.
+
+Thank you for installing Envoy Gateway! 🎉
+
+Your release is named: eg. 🎉
+
+Your release is in namespace: envoy-gateway-system. 🎉
+
+To learn more about the release, try:
+
+  $ helm status eg -n envoy-gateway-system
+  $ helm get all eg -n envoy-gateway-system
+
+To have a quickstart of Envoy Gateway, please refer to https://gateway.envoyproxy.io/latest/tasks/quickstart.
+
+To get more details, please visit https://gateway.envoyproxy.io and https://github.com/envoyproxy/gateway.
+[Fri Jan 31 07:06:13] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:06:15] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kga -A
+kubectl get all
+NAMESPACE              NAME                                               READY   STATUS      RESTARTS   AGE
+envoy-gateway-system   pod/eg-gateway-helm-certgen-mrq9h                  0/1     Completed   0          24s
+envoy-gateway-system   pod/envoy-gateway-5b47459c4d-xp974                 0/1     Running     0          8s
+kube-system            pod/coredns-6f6b679f8f-7b8zj                       1/1     Running     0          10m
+kube-system            pod/coredns-6f6b679f8f-dcvfs                       1/1     Running     0          10m
+kube-system            pod/etcd-env-gw-control-plane                      1/1     Running     0          10m
+kube-system            pod/kindnet-j4w7m                                  1/1     Running     0          10m
+kube-system            pod/kindnet-qg4rr                                  1/1     Running     0          10m
+kube-system            pod/kindnet-vmhz9                                  1/1     Running     0          10m
+kube-system            pod/kube-apiserver-env-gw-control-plane            1/1     Running     0          10m
+kube-system            pod/kube-controller-manager-env-gw-control-plane   1/1     Running     0          10m
+kube-system            pod/kube-proxy-n9h7r                               1/1     Running     0          10m
+kube-system            pod/kube-proxy-sdjpp                               1/1     Running     0          10m
+kube-system            pod/kube-proxy-vng5s                               1/1     Running     0          10m
+kube-system            pod/kube-scheduler-env-gw-control-plane            1/1     Running     0          10m
+local-path-storage     pod/local-path-provisioner-57c5987fd4-28g8w        1/1     Running     0          10m
+
+NAMESPACE              NAME                    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                                   AGE
+default                service/kubernetes      ClusterIP   10.96.0.1       <none>        443/TCP                                   10m
+envoy-gateway-system   service/envoy-gateway   ClusterIP   10.96.103.153   <none>        18000/TCP,18001/TCP,18002/TCP,19001/TCP   9s
+kube-system            service/kube-dns        ClusterIP   10.96.0.10      <none>        53/UDP,53/TCP,9153/TCP                    10m
+
+NAMESPACE     NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+kube-system   daemonset.apps/kindnet      3         3         3       3            3           kubernetes.io/os=linux   10m
+kube-system   daemonset.apps/kube-proxy   3         3         3       3            3           kubernetes.io/os=linux   10m
+
+NAMESPACE              NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+envoy-gateway-system   deployment.apps/envoy-gateway            0/1     1            0           9s
+kube-system            deployment.apps/coredns                  2/2     2            2           10m
+local-path-storage     deployment.apps/local-path-provisioner   1/1     1            1           10m
+
+NAMESPACE              NAME                                                DESIRED   CURRENT   READY   AGE
+envoy-gateway-system   replicaset.apps/envoy-gateway-5b47459c4d            1         1         0       9s
+kube-system            replicaset.apps/coredns-6f6b679f8f                  2         2         2       10m
+local-path-storage     replicaset.apps/local-path-provisioner-57c5987fd4   1         1         1       10m
+
+NAMESPACE              NAME                                STATUS     COMPLETIONS   DURATION   AGE
+envoy-gateway-system   job.batch/eg-gateway-helm-certgen   Complete   1/1           15s        24s
+[Fri Jan 31 07:06:21] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:06:23] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:06:23] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:06:24] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:06:24] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:06:24] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway --for=condition=Available
+deployment.apps/envoy-gateway condition met
+[Fri Jan 31 07:06:39] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:06:39] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway --for=condition=Available
+deployment.apps/envoy-gateway condition met
+[Fri Jan 31 07:06:41] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k apply -f HTTPRoute/quickstart.yaml -n default
+gatewayclass.gateway.networking.k8s.io/eg created
+gateway.gateway.networking.k8s.io/eg created
+serviceaccount/backend created
+service/backend created
+deployment.apps/backend created
+httproute.gateway.networking.k8s.io/backend created
+[Fri Jan 31 07:07:00] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k get httproute -o yaml | yq
+apiVersion: v1
+items:
+  - apiVersion: gateway.networking.k8s.io/v1
+    kind: HTTPRoute
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/last-applied-configuration: |
+          {"apiVersion":"gateway.networking.k8s.io/v1","kind":"HTTPRoute","metadata":{"annotations":{},"name":"backend","namespace":"default"},"spec":{"hostnames":["www.example.com"],"parentRefs":[{"name":"eg"}],"rules":[{"backen
+dRefs":[{"group":"","kind":"Service","name":"backend","port":3000,"weight":1}],"matches":[{"path":{"type":"PathPrefix","value":"/"}}]}]}}
+      creationTimestamp: "2025-01-31T07:07:00Z"
+      generation: 1
+      name: backend
+      namespace: default
+      resourceVersion: "1696"
+      uid: 9b5a10b0-3c0b-4773-886f-b416518e9bb6
+    spec:
+      hostnames:
+        - www.example.com
+      parentRefs:
+        - group: gateway.networking.k8s.io
+          kind: Gateway
+          name: eg
+      rules:
+        - backendRefs:
+            - group: ""
+              kind: Service
+              name: backend
+              port: 3000
+              weight: 1
+          matches:
+            - path:
+                type: PathPrefix
+                value: /
+    status:
+      parents:
+        - conditions:
+            - lastTransitionTime: "2025-01-31T07:07:00Z"
+              message: Route is accepted
+              observedGeneration: 1
+              reason: Accepted
+              status: "True"
+              type: Accepted
+            - lastTransitionTime: "2025-01-31T07:07:00Z"
+              message: Resolved all the Object references for the Route
+              observedGeneration: 1
+              reason: ResolvedRefs
+              status: "True"
+              type: ResolvedRefs
+          controllerName: gateway.envoyproxy.io/gatewayclass-controller
+          parentRef:
+            group: gateway.networking.k8s.io
+            kind: Gateway
+            name: eg
+kind: List
+metadata:
+  resourceVersion: ""
+[Fri Jan 31 07:07:17] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:07:18] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:07:18] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+export ENVOY_SERVICE=$(kubectl get svc -n envoy-gateway-system --selector=gateway.envoyproxy.io/owning-gateway-namespace=default,gateway.envoyproxy.io/owning-gateway-name=eg -o jsonpath='{.items[0].metadata.name}')
+[Fri Jan 31 07:07:40] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 8888:80 &
+[1] 75964
+[Fri Jan 31 07:07:45] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+Forwarding from 127.0.0.1:8888 -> 10080
+Forwarding from [::1]:8888 -> 10080
+[Fri Jan 31 07:07:45] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+jobs
+[1]+  Running                 kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 8888:80 &
+[Fri Jan 31 07:07:47] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:07:47] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+curl --verbose --header "Host: www.example.com" http://localhost:8888/get
+*   Trying 127.0.0.1:8888...
+Handling connection for 8888
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> GET /get HTTP/1.1
+> Host: www.example.com
+> User-Agent: curl/7.81.0
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200 OK
+< content-type: application/json
+< x-content-type-options: nosniff
+< date: Fri, 31 Jan 2025 07:07:52 GMT
+< content-length: 455
+<
+{
+ "path": "/get",
+ "host": "www.example.com",
+ "method": "GET",
+ "proto": "HTTP/1.1",
+ "headers": {
+  "Accept": [
+   "*/*"
+  ],
+  "User-Agent": [
+   "curl/7.81.0"
+  ],
+  "X-Envoy-Internal": [
+   "true"
+  ],
+  "X-Forwarded-For": [
+   "10.244.1.2"
+  ],
+  "X-Forwarded-Proto": [
+   "http"
+  ],
+  "X-Request-Id": [
+   "f3df2e7b-8757-476a-936a-5725c922a9c9"
+  ]
+ },
+ "namespace": "default",
+ "ingress": "",
+ "service": "",
+ "pod": "backend-765694d47f-6j8l9"
+* Connection #0 to host localhost left intact
+}[Fri Jan 31 07:07:52] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:07:52] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:07:52] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:07:52] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+#../capture-envoy-data.sh --dir HTTPRoute/after_httproute
+[Fri Jan 31 07:08:11] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+export ENVOY_POD_NAME=$(kubectl get pod -n envoy-gateway-system --selector=gateway.envoyproxy.io/owning-gateway-namespace=default,gateway.envoyproxy.io/owning-gateway-name=eg -o jsonpath='{.items[0].metadata.name}')
+[Fri Jan 31 07:08:32] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+echo $ENVOY_POD_NAME
+envoy-default-eg-e41e7b31-594f564cb9-hrzjp
+[Fri Jan 31 07:08:40] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl port-forward pod/$ENVOY_POD_NAME -n envoy-gateway-system 19000:19000 &
+[2] 76258
+[Fri Jan 31 07:08:45] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+Forwarding from 127.0.0.1:19000 -> 19000
+Forwarding from [::1]:19000 -> 19000
+[Fri Jan 31 07:08:46] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:08:46] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+jobs
+[1]-  Running                 kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 8888:80 &
+[2]+  Running                 kubectl port-forward pod/$ENVOY_POD_NAME -n envoy-gateway-system 19000:19000 &
+[Fri Jan 31 07:08:47] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:08:48] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+../capture-envoy-data.sh --dir HTTPRoute/after_httproute
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Data successfully saved in directory: HTTPRoute/after_httproute
+[Fri Jan 31 07:08:59] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ll HTTPRoute/after_httproute/
+total 432K
+-rw-rw-r-- 1 vagrant vagrant 102K Jan 31 07:08 config_dump.log
+-rw-rw-r-- 1 vagrant vagrant 6.4K Jan 31 07:08 clusters.log
+-rw-rw-r-- 1 vagrant vagrant 4.9K Jan 31 07:08 clusters.json
+-rw-rw-r-- 1 vagrant vagrant  350 Jan 31 07:08 listeners.json
+-rw-rw-r-- 1 vagrant vagrant   86 Jan 31 07:08 listeners.log
+-rw-rw-r-- 1 vagrant vagrant  96K Jan 31 07:08 server_info.log
+-rw-rw-r-- 1 vagrant vagrant  51K Jan 31 07:08 stats.log
+-rw-rw-r-- 1 vagrant vagrant 155K Jan 31 07:08 stats-prometheus.log
+[Fri Jan 31 07:09:05] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:09:06] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:09:06] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:09:06] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:09:25] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:09:25] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+# AT: now verifying BackendTLSPloicy
+[Fri Jan 31 07:09:44] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:09:44] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl get gateway/eg -o yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"gateway.networking.k8s.io/v1","kind":"Gateway","metadata":{"annotations":{},"name":"eg","namespace":"default"},"spec":{"gatewayClassName":"eg","listeners":[{"name":"http","port":80,"protocol":"HTTP"}]}}
+  creationTimestamp: "2025-01-31T07:07:00Z"
+  generation: 1
+  name: eg
+  namespace: default
+  resourceVersion: "1812"
+  uid: d5382eb6-3df0-46e5-a94b-4d65456abff8
+spec:
+  gatewayClassName: eg
+  listeners:
+  - allowedRoutes:
+      namespaces:
+        from: Same
+    name: http
+    port: 80
+    protocol: HTTP
+status:
+  conditions:
+  - lastTransitionTime: "2025-01-31T07:07:32Z"
+    message: The Gateway has been scheduled by Envoy Gateway
+    observedGeneration: 1
+    reason: Accepted
+    status: "True"
+    type: Accepted
+  - lastTransitionTime: "2025-01-31T07:07:32Z"
+    message: No addresses have been assigned to the Gateway
+    observedGeneration: 1
+    reason: AddressNotAssigned
+    status: "False"
+    type: Programmed
+  listeners:
+  - attachedRoutes: 1
+    conditions:
+    - lastTransitionTime: "2025-01-31T07:07:16Z"
+      message: Sending translated listener configuration to the data plane
+      observedGeneration: 1
+      reason: Programmed
+      status: "True"
+      type: Programmed
+    - lastTransitionTime: "2025-01-31T07:07:16Z"
+      message: Listener has been successfully translated
+      observedGeneration: 1
+      reason: Accepted
+      status: "True"
+      type: Accepted
+    - lastTransitionTime: "2025-01-31T07:07:16Z"
+      message: Listener references have been resolved
+      observedGeneration: 1
+      reason: ResolvedRefs
+      status: "True"
+      type: ResolvedRefs
+    name: http
+    supportedKinds:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+    - group: gateway.networking.k8s.io
+      kind: GRPCRoute
+[Fri Jan 31 07:09:55] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:09:55] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:09:56] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:09:56] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl get gateway/eg -o yaml | yq
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"gateway.networking.k8s.io/v1","kind":"Gateway","metadata":{"annotations":{},"name":"eg","namespace":"default"},"spec":{"gatewayClassName":"eg","listeners":[{"name":"http","port":80,"protocol":"HTTP"}]}}
+  creationTimestamp: "2025-01-31T07:07:00Z"
+  generation: 1
+  name: eg
+  namespace: default
+  resourceVersion: "1812"
+  uid: d5382eb6-3df0-46e5-a94b-4d65456abff8
+spec:
+  gatewayClassName: eg
+  listeners:
+    - allowedRoutes:
+        namespaces:
+          from: Same
+      name: http
+      port: 80
+      protocol: HTTP
+status:
+  conditions:
+    - lastTransitionTime: "2025-01-31T07:07:32Z"
+      message: The Gateway has been scheduled by Envoy Gateway
+      observedGeneration: 1
+      reason: Accepted
+      status: "True"
+      type: Accepted
+    - lastTransitionTime: "2025-01-31T07:07:32Z"
+      message: No addresses have been assigned to the Gateway
+      observedGeneration: 1
+      reason: AddressNotAssigned
+      status: "False"
+      type: Programmed
+  listeners:
+    - attachedRoutes: 1
+      conditions:
+        - lastTransitionTime: "2025-01-31T07:07:16Z"
+          message: Sending translated listener configuration to the data plane
+          observedGeneration: 1
+          reason: Programmed
+          status: "True"
+          type: Programmed
+        - lastTransitionTime: "2025-01-31T07:07:16Z"
+          message: Listener has been successfully translated
+          observedGeneration: 1
+          reason: Accepted
+          status: "True"
+          type: Accepted
+        - lastTransitionTime: "2025-01-31T07:07:16Z"
+          message: Listener references have been resolved
+          observedGeneration: 1
+          reason: ResolvedRefs
+          status: "True"
+          type: ResolvedRefs
+      name: http
+      supportedKinds:
+        - group: gateway.networking.k8s.io
+          kind: HTTPRoute
+        - group: gateway.networking.k8s.io
+          kind: GRPCRoute
+[Fri Jan 31 07:09:59] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+jobs
+[1]-  Running                 kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 8888:80 &
+[2]+  Running                 kubectl port-forward pod/$ENVOY_POD_NAME -n envoy-gateway-system 19000:19000 &
+[Fri Jan 31 07:10:08] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:10:08] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+jobs
+[1]-  Running                 kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 8888:80 &
+[2]+  Running                 kubectl port-forward pod/$ENVOY_POD_NAME -n envoy-gateway-system 19000:19000 &
+[Fri Jan 31 07:10:11] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example Inc./CN=example.com' -keyout ca.key -out ca.crt
+.+......+.+.....+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.........+.+.........+..+.+..+......+.......+..+.......+...+........+..........+..............+..................+......+.......+..+.+.........
++..+..........+.....+.............+...+.........+...+......+..+............+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*...+....+...+.........+...+........+.......+...+...+......+...+...+........+......+.....
+.+..........+.........+...........+.........+.+..+...+.......+........+....+.........+......+....................+...+...+...............+....+...+...+..............+.+.........+........+.+.....+...............+.+......+...+.....
+.+....................+.+.....+....+.....+.............+..+......+.........+...+......+....+...+...+.....+....+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+........+...+............+..+...+.......+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*......+...+.+......+......+...+...........+.+..+...+...+.+.........+.........+......+++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++*.....+.......+........+......+.........................+.....+.+......+..+.+.................+...+.+.................................+..+...+.+.....+.+......+............+.....+.+.....+.+........+...+..
+.+....+..+.+...............+............+...+.................+......+.......+.........+........+......+......+...+......+.+........+............+....+..+.......+..+....+..+.......+..+....+..+...+.+...+......+..+....+.....+......
+............+...+.......+...........+....+...........+......+.+..+...+.......+..+...+..........+...+..+.+..+...+.......+...............+...+..+.......+.....+...+....+.........++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++
+-----
+[Fri Jan 31 07:10:22] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ll
+total 12K
+drwxrwxr-x 1 vagrant vagrant 4.0K Jan 31 07:08 HTTPRoute
+-rw------- 1 vagrant vagrant 1.7K Jan 31 07:10 ca.key
+-rw-rw-r-- 1 vagrant vagrant 1.2K Jan 31 07:10 ca.crt
+[Fri Jan 31 07:10:23] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+cat > openssl.conf  <<EOF
+[req]
+req_extensions = v3_req
+prompt = no
+
+[v3_req]
+keyUsage = keyEncipherment, digitalSignature
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = www.example.com
+EOF
+[Fri Jan 31 07:10:28] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+openssl req -out www.example.com.csr -newkey rsa:2048 -nodes -keyout www.example.com.key -subj "/CN=www.example.com/O=example organization"
+openssl x509 -req -days 365 -CA ca.crt -CAkey ca.key -set_serial 0 -in www.example.com.csr -out www.example.com.crt -extfile openssl.conf -extensions v3_req
+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*...+...+..+.+..............+.......+.....+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*..........+...+...+.......+..+...+...+...+.+......+..
+...............+.+..+.............+.........+........+...+.+...+..+....+............+...+.....+....+.....+...+....+......+...............+...+..+.......+..+......+.......+...+..+............+++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++
+.+..+...+.+......+...+..+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*........+..+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.+......+..........+..+...+.........+...+.........+...+.+.
+.....+........+.+..+...+....+......+.................+.......+........+....+...+...+.....+..........+...+...........+.............+...+........+.......+........+.+.....+.+..+...+....+...........+...+......+....+..............+...
+....+...............+........+.+..+.......+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-----
+Certificate request self-signature ok
+subject=CN = www.example.com, O = example organization
+[Fri Jan 31 07:10:33] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:10:33] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ll
+total 28K
+drwxrwxr-x 1 vagrant vagrant 4.0K Jan 31 07:08 HTTPRoute
+-rw------- 1 vagrant vagrant 1.7K Jan 31 07:10 ca.key
+-rw-rw-r-- 1 vagrant vagrant 1.2K Jan 31 07:10 ca.crt
+-rw-rw-r-- 1 vagrant vagrant  191 Jan 31 07:10 openssl.conf
+-rw------- 1 vagrant vagrant 1.7K Jan 31 07:10 www.example.com.key
+-rw-rw-r-- 1 vagrant vagrant  940 Jan 31 07:10 www.example.com.csr
+-rw-rw-r-- 1 vagrant vagrant 1.3K Jan 31 07:10 www.example.com.crt
+[Fri Jan 31 07:10:35] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl create secret tls example-cert --key=www.example.com.key --cert=www.example.com.crt
+secret/example-cert created
+[Fri Jan 31 07:10:44] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl create configmap example-ca --from-file=ca.crt
+configmap/example-ca created
+[Fri Jan 31 07:10:48] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k get configmap/example-ca -o yaml | yq
+apiVersion: v1
+data:
+  ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIDOzCCAiOgAwIBAgIUQt74r9izCPvwJCDVCS4IxGkTixQwDQYJKoZIhvcNAQEL
+    BQAwLTEVMBMGA1UECgwMZXhhbXBsZSBJbmMuMRQwEgYDVQQDDAtleGFtcGxlLmNv
+    bTAeFw0yNTAxMzEwNzEwMjJaFw0yNjAxMzEwNzEwMjJaMC0xFTATBgNVBAoMDGV4
+    YW1wbGUgSW5jLjEUMBIGA1UEAwwLZXhhbXBsZS5jb20wggEiMA0GCSqGSIb3DQEB
+    AQUAA4IBDwAwggEKAoIBAQDDbxnKKf66XXq3xRZDQ6tbhMKSFuYXZY1Y3KpH/1FX
+    kaqXLWL4jGjkVIcUTYxdX/jULYFaFlqnQRVFPkqoWV90bPFGH6Gg8Bthr9m3K3UM
+    +GCbNbgTYniEDs5q0ZIudvyFEkzvDSGBRkiOnAhKVhzahb+1i3KI30qdU5U8aX5m
+    RvBFQqlDOdg53xH+Pl6Df09d1Z4cHun6vFVAiiSMiOLIkIjZof/4LACqEUaZkfOq
+    BcRD3Omk+jHXIWiYaXhoDt5CpA+D0eyMKeDNVbepe3E8LlWALfbeBqUtavh45EpJ
+    my1tm6fYvs4LJ42bwHP4ANPfloFA+gZm7vV8ILiE4tJTAgMBAAGjUzBRMB0GA1Ud
+    DgQWBBT6sqgdjW5q6sjMoGobhKzpM8g0FzAfBgNVHSMEGDAWgBT6sqgdjW5q6sjM
+    oGobhKzpM8g0FzAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQBw
+    VhZK8pav6VLAo01R6LZHF5CCCL250PFMWUJhT/xyv2tCSSiCPTjqCamLttIMbASF
+    ehAEnEagGfmaPRQyewMAu92oIpa02iu6tdMj5VW1qFvLxjjZy1INks2W0Uqogmut
+    OhaQcVATz07kqcM/fm4YibM4bDYOi9RynTG0klDU0QPPrbTQttw+TuhosQYWPgWN
+    as7zRL8byKnkjTVKKldl5msQNFAdRK9z8ByI1O7Q5b0Vnv/usHEM9rfCvhBPjQpX
+    FxZelNhXsyfca64QqnumBfB4nfWbMPOr33uz/JNEhtAQSC/wcZdEygf82SIxgbU4
+    CgKOKPxuxkE0ie0kaM6j
+    -----END CERTIFICATE-----
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2025-01-31T07:10:48Z"
+  name: example-ca
+  namespace: default
+  resourceVersion: "2205"
+  uid: efe5993d-e411-470e-9574-b870b1be2901
+[Fri Jan 31 07:11:05] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:11:07] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:11:07] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k get secret/example-cert =o yaml | yq
+error: there is no need to specify a resource type as a separate argument when passing arguments in resource/name form (e.g. 'kubectl get resource/<resource_name>' instead of 'kubectl get resource resource/<resource_name>'
+
+[Fri Jan 31 07:11:20] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k get secret/example-cert -o yaml | yq
+apiVersion: v1
+data:
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURZakNDQWtxZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREF0TVJVd0V3WURWUVFLREF4bGVHRnQKY0d4bElFbHVZeTR4RkRBU0JnTlZCQU1NQzJWNFlXMXdiR1V1WTI5dE1CNFhEVEkxTURFek1UQTNNVEF6TTFvWApEVEkyTU
+RFek1UQTNNVEF6TTFvd09URVlNQllHQTFVRUF3d1BkM2QzTG1WNFlXMXdiR1V1WTI5dE1SMHdHd1lEClZRUUtEQlJsZUdGdGNHeGxJRzl5WjJGdWFYcGhkR2x2YmpDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVAKQURDQ0FRb0NnZ0VCQUxwL05rY1loUG90cHlWLzA1ajVWZ0hZdHFTOWhlUm92K1d
+IenB4a1l2YzZCU0lkRzEwQQpuR3F2cnF3TjBabXVqV1pxVHFOUXVJdlBVK2NWOXlHUCtlSDFncXpxNXRwQjczMjF2Mkpvd1hueVFIWmsyM0R0CnI0aVNmelEwWnFRVnYyVXE0dThDMDBQTzFQcFFIVUVXSnFhQTY1alIzVlpObU9KY2xZb0V3aE50MktwTXliK0sKUHhwaVZaMDFJTytqN3hCNTFIQ3NSRkJO
+VUNZZWo1dzd2cDRZVkpjVXQvbE0yRytVZnZBdFdlV3pXeEZNaWJXUApzZXVkbURCZXlZMmU4ZU41aEpDUUtBV0FwSmNZaTVxL01TcXRuZ3J1UDNDUWpJZnhRRlVaWHBvbUJIZHJPQ1dhCmwyOW5lNlRoZkg3ay9pWjBuaTJYRU5kZldYQVk4ZDVKUjdzQ0F3RUFBYU9CZ0RCK01Bc0dBMVVkRHdRRUF3SUYKb
+0RBVEJnTlZIU1VFRERBS0JnZ3JCZ0VGQlFjREFUQWFCZ05WSFJFRUV6QVJnZzkzZDNjdVpYaGhiWEJzWlM1agpiMjB3SFFZRFZSME9CQllFRkYvSm5OOFZ1VHVYY1RPTWw4emZtZEFVQUhWTk1COEdBMVVkSXdRWU1CYUFGUHF5CnFCMk5ibXJxeU15Z2FodUVyT2t6eURRWE1BMEdDU3FHU0liM0RRRUJDd1
+VBQTRJQkFRQ2wzckhMNC8rQjdUek0KRzFPeHpENDQ4ZU12Q205TS8vUVQ4OHFXaG0yZDB6eDdlVCtPZDNHbkNidmliN2RYeTN5VDlkVmdrdmZ4SWRJNQpGMVlNWERLNVNxQjFrUEFlSEN5a3hHNVVTbFRKTDl5N0hqejMva0d6bGs3MFhLa0N3R1o2MFBScmJsQzNNQjJkCkFSamtvRUN1QzNGTWhMR0NGclB
+lR0VQY0EzOVo2ZmtONkd2YmdtUTNxcW1UbUR3L0VxTVQzNzVXU2tscE1DUE0KbkhXZHNHUzluZWE4NXp1QmhyYXNJUDZzUWxDdm42eDU0cm00eXBsSkowaXBkLzJ6dEJUUlJJZHJVcW5LbE1CRQpyNWdqL2ptTnpJWU5ORVI3ZUovVDFiaUk0ajRCeXJIWTdtclBFanpHWmNUQ0VmTm1qOEJhUlNOMjhDMks4
+dDZECjRacVpQK0ZxCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  tls.key: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2UUlCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktjd2dnU2pBZ0VBQW9JQkFRQzZmelpIR0lUNkxhY2wKZjlPWStWWUIyTGFrdllYa2FML2xoODZjWkdMM09nVWlIUnRkQUp4cXI2NnNEZEdacm8xbWFrNmpVTGlMejFQbgpGZmNoai
+9uaDlZS3M2dWJhUWU5OXRiOWlhTUY1OGtCMlpOdHc3YStJa244ME5HYWtGYjlsS3VMdkF0TkR6dFQ2ClVCMUJGaWFtZ091WTBkMVdUWmppWEpXS0JNSVRiZGlxVE1tL2lqOGFZbFdkTlNEdm8rOFFlZFJ3ckVSUVRWQW0KSG8rY083NmVHRlNYRkxmNVROaHZsSDd3TFZubHMxc1JUSW0xajdIcm5aZ3dYc21
+ObnZIamVZU1FrQ2dGZ0tTWApHSXVhdnpFcXJaNEs3ajl3a0l5SDhVQlZHVjZhSmdSM2F6Z2xtcGR2WjN1azRYeCs1UDRtZEo0dGx4RFhYMWx3CkdQSGVTVWU3QWdNQkFBRUNnZ0VBQjR5d3lNNEFUQlJmQ05DVTQwTnNyT1IxK0ZOSHdVaFFSRjFzQ3I2eGx1cDkKWExVcTcyZmY3UjJ4aDN1RHVhSHNUWElP
+UHVROHBFUS9WRUo2WDV4eGRDazVJZ0RjV1llRHgyWDlHbUc5TzArSQpOb0s4czJTYnozNkdzYmxSVW1FaS8xaHVHVmpXN283SDVsNHA0UUdoak9uNUg1V1hUVEFVK1V6Z0xOY21lQnpQCmJITVFoaS9sZjNZZWtuUEZxejNkalhQb05hMDFlOTlkbERPWDBqemdGWmY0OGxEUzQ2UER3NSthakE2WFBKb2UKK
+3V4R1NvWnZBNDZCZWNZWDQxY1hzMkthTFA5bEQ1U1VVUEdzbE03YUhDcDdrUW4yTEs0emNOZUtucWw5SXVYWgoxRVlEY2dVSklibGl6ZWw3S0RFV0tIbGYzbDVmK25TTkNBeTBRa2d5VVFLQmdRRDMrY0J2cXpKZWpGd3JERWFrCkYyTWZPZ0hNb0YxanRCWG40QUV1Vk80ZE5sd0dzTVp3cHBoM2dMTTdkL2
+pnVGNLVUJVeGFQVHNrSlEwWnlXdmMKK0FiRjZZYUNiTG5BcXQwRm1tbGRKZVc1YXhacFZlV1NOeWdLS29URllDeW5aOTZlMWE4UlRKblhlWXJkZlZxUApyWDM4TlZKa3prU2tnNWRWNkRvWGlzSm5Zd0tCZ1FEQWlDcWEvdm8ySEdQMHFzSklENWJucENhZktFVlBGcTY2ClBWRXlBelVXL0o4RHF1TW1YNnN
+UZ2M0ODJCdDBYVHpDVUh5OVBXWVFWV3cxYk9CdUNjYVU2cFBQaE5zZ1ZpTjgKZk8wdFFJSDBnNXcvMmFhZUcvRHcyTmVMY0FxTlI4eGtqdThJRUE0TkxlQUtaSHZyQkNLUEorUWxJaDcxUlBkeApMK1NjM0UvcHlRS0JnQ3E1NGFwYitRWEpjV2dKYVhLRWhST3dUdmNPK29oZlV4YnN4Y2RSNHVVdHBKV1No
+OTZKCkZlUWhUTUNHWDE5bWhvd3lqWUZPNDQzS3hJTVk3WGpaVTNGdVZ6ckp1UWUxYVBlNkwwVlpia2VRYUFBbVNMUDAKeFBWYmRoejhBVFdtOC9peUlNUCtTdE9Sb1plZ0xhWnI0alUraXIvTHVwQU9ERmxFOWgxd1R5YTVBb0dBWGpQQgp0T2pCQUN6UDgyeUJkc1M1NzBqdjVMdk5mYTc1ZXdKNWNlRUQzd
+VZuNEdHQ2xzb0VhSjBBamVDblBqNUlka0x2ClphQmZDZXJoOFJuK2paaVc0MUlMVkdRSzJ6MktTMlRNbjNHS3BGcW8zc3pkcTBxOGp2dHFLejE4ekRldkdCeWYKYy9CM0Q1ZThvUmtkVUpaTFdvUUlLdXNRL3F6cDdTV2owK1F2N1pFQ2dZRUF5SWlyVk9vLytoaU1ER3crUkhweApHYnlHc2oraUdaMkl0M2
+RSWitYQTlGSEF3M1J5NjNGaXlaS213Si9Uc3RMdnNkeHhCVXdrY0RLUGZLOThtUlArCjZjSXBPa3REZnBRSHhzenA1WHU4OGs4VnprY3VvWENobm4vdHRySzhkVzZkOFE1UitJOTM0T0NPSUc2RmErRVMKTVBaYnRwcUxhQ0tQdmhzVVdjUGttSE09Ci0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K
+kind: Secret
+metadata:
+  creationTimestamp: "2025-01-31T07:10:44Z"
+  name: example-cert
+  namespace: default
+  resourceVersion: "2195"
+  uid: 3f4df4d6-691f-4fa1-b715-4f67f76187d7
+type: kubernetes.io/tls
+[Fri Jan 31 07:11:23] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:11:24] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:11:24] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+#
+[Fri Jan 31 07:12:06] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+# AT: Setup TLS on the backend
+[Fri Jan 31 07:12:11] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:12:11] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:12:12] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:12:12] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl patch deployment backend --type=json --patch '
+  - op: add
+    path: /spec/template/spec/containers/0/volumeMounts
+    value:
+    - name: secret-volume
+      mountPath: /etc/secret-volume
+  - op: add
+    path: /spec/template/spec/volumes
+    value:
+    - name: secret-volume
+      secret:
+        secretName: example-cert
+        items:
+        - key: tls.crt
+          path: crt
+        - key: tls.key
+          path: key
+  - op: add
+    path: /spec/template/spec/containers/0/env/-
+    value:
+      name: TLS_SERVER_CERT
+      value: /etc/secret-volume/crt
+  - op: add
+    path: /spec/template/spec/containers/0/env/-
+    value:
+      name: TLS_SERVER_PRIVKEY
+      value: /etc/secret-volume/key
+  '
+deployment.apps/backend patched
+[Fri Jan 31 07:12:18] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k get pod/backend-88699b6f8-mmxmb -o yaml | yq
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2025-01-31T07:12:18Z"
+  generateName: backend-88699b6f8-
+  labels:
+    app: backend
+    pod-template-hash: 88699b6f8
+    version: v1
+  name: backend-88699b6f8-mmxmb
+  namespace: default
+  ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: backend-88699b6f8
+      uid: 555d680f-c17f-426e-8bf4-6ed50d457e46
+  resourceVersion: "2415"
+  uid: 6b31a313-0d95-4c10-b480-053b2300e312
+spec:
+  containers:
+    - env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: TLS_SERVER_CERT
+          value: /etc/secret-volume/crt
+        - name: TLS_SERVER_PRIVKEY
+          value: /etc/secret-volume/key
+      image: gcr.io/k8s-staging-gateway-api/echo-basic:v20231214-v1.0.0-140-gf544a46e
+      imagePullPolicy: IfNotPresent
+      name: backend
+      ports:
+        - containerPort: 3000
+          protocol: TCP
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+        - mountPath: /etc/secret-volume
+          name: secret-volume
+        - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+          name: kube-api-access-h6ptc
+          readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: env-gw-worker
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: backend
+  serviceAccountName: backend
+  terminationGracePeriodSeconds: 30
+  tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+  volumes:
+    - name: secret-volume
+      secret:
+        defaultMode: 420
+        items:
+          - key: tls.crt
+            path: crt
+          - key: tls.key
+            path: key
+        secretName: example-cert
+    - name: kube-api-access-h6ptc
+      projected:
+        defaultMode: 420
+        sources:
+          - serviceAccountToken:
+              expirationSeconds: 3607
+              path: token
+          - configMap:
+              items:
+                - key: ca.crt
+                  path: ca.crt
+              name: kube-root-ca.crt
+          - downwardAPI:
+              items:
+                - fieldRef:
+                    apiVersion: v1
+                    fieldPath: metadata.namespace
+                  path: namespace
+status:
+  conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-31T07:12:24Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-31T07:12:18Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-31T07:12:24Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-31T07:12:24Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-01-31T07:12:18Z"
+      status: "True"
+      type: PodScheduled
+  containerStatuses:
+    - containerID: containerd://30ef25c833345f7d287f322806fb652a6fa64c694d2eaf942f194da489fcec2b
+      image: gcr.io/k8s-staging-gateway-api/echo-basic:v20231214-v1.0.0-140-gf544a46e
+      imageID: gcr.io/k8s-staging-gateway-api/echo-basic@sha256:22f6999b51e1198b0a8f94fde7b1baed41119e57eeb799425d4af9616b840cdf
+      lastState: {}
+      name: backend
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-01-31T07:12:24Z"
+      volumeMounts:
+        - mountPath: /etc/secret-volume
+          name: secret-volume
+        - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+          name: kube-api-access-h6ptc
+          readOnly: true
+          recursiveReadOnly: Disabled
+  hostIP: 172.18.0.4
+  hostIPs:
+    - ip: 172.18.0.4
+  phase: Running
+  podIP: 10.244.2.4
+  podIPs:
+    - ip: 10.244.2.4
+  qosClass: BestEffort
+  startTime: "2025-01-31T07:12:18Z"
+[Fri Jan 31 07:12:35] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:13:40] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 07:13:40] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: backend
+    service: backend
+  name: tls-backend
+  namespace: default
+spec:
+  selector:
+    app: backend
+  ports:
+  - name: https
+    port: 443
+    protocol: TCP
+    targetPort: 8443
+EOF
+service/tls-backend created
+[Fri Jan 31 08:06:13] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 08:06:14] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+cat <<EOF | kubectl apply -f -
+apiVersion: gateway.networking.k8s.io/v1alpha3
+kind: BackendTLSPolicy
+metadata:
+  name: enable-backend-tls
+  namespace: default
+spec:
+  targetRefs:
+  - group: ''
+    kind: Service
+    name: tls-backend
+    sectionName: https
+  validation:
+    caCertificateRefs:
+    - name: example-ca
+      group: ''
+      kind: ConfigMap
+    hostname: www.example.com
+EOF
+backendtlspolicy.gateway.networking.k8s.io/enable-backend-tls created
+[Fri Jan 31 08:06:25] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 08:06:26] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 08:06:26] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl patch HTTPRoute backend --type=json --patch '
+  - op: replace
+    path: /spec/rules/0/backendRefs/0/port
+    value: 443
+  - op: replace
+    path: /spec/rules/0/backendRefs/0/name
+    value: tls-backend
+  '
+httproute.gateway.networking.k8s.io/backend patched
+[Fri Jan 31 08:06:34] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 08:06:35] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl get HTTPRoute backend -o yaml | yq
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"gateway.networking.k8s.io/v1","kind":"HTTPRoute","metadata":{"annotations":{},"name":"backend","namespace":"default"},"spec":{"hostnames":["www.example.com"],"parentRefs":[{"name":"eg"}],"rules":[{"backendRef
+s":[{"group":"","kind":"Service","name":"backend","port":3000,"weight":1}],"matches":[{"path":{"type":"PathPrefix","value":"/"}}]}]}}
+  creationTimestamp: "2025-01-31T07:07:00Z"
+  generation: 2
+  name: backend
+  namespace: default
+  resourceVersion: "8948"
+  uid: 9b5a10b0-3c0b-4773-886f-b416518e9bb6
+spec:
+  hostnames:
+    - www.example.com
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: eg
+  rules:
+    - backendRefs:
+        - group: ""
+          kind: Service
+          name: tls-backend
+          port: 443
+          weight: 1
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
+status:
+  parents:
+    - conditions:
+        - lastTransitionTime: "2025-01-31T08:06:34Z"
+          message: Route is accepted
+          observedGeneration: 2
+          reason: Accepted
+          status: "True"
+          type: Accepted
+        - lastTransitionTime: "2025-01-31T08:06:34Z"
+          message: Resolved all the Object references for the Route
+          observedGeneration: 2
+          reason: ResolvedRefs
+          status: "True"
+          type: ResolvedRefs
+      controllerName: gateway.envoyproxy.io/gatewayclass-controller
+      parentRef:
+        group: gateway.networking.k8s.io
+        kind: Gateway
+        name: eg
+[Fri Jan 31 08:06:43] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+echo $ENVOY_SERVICE
+envoy-default-eg-e41e7b31
+[Fri Jan 31 08:07:35] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 08:07:36] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 08:07:36] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 08:07:38] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+echo $ENVOY_SERVICE
+envoy-default-eg-e41e7b31
+[Fri Jan 31 08:07:38] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+jobs
+[1]-  Running                 kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 8888:80 &
+[2]+  Running                 kubectl port-forward pod/$ENVOY_POD_NAME -n envoy-gateway-system 19000:19000 &
+[Fri Jan 31 08:07:43] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 9999:80 &
+[3] 90606
+[Fri Jan 31 08:08:12] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+Forwarding from 127.0.0.1:9999 -> 10080
+Forwarding from [::1]:9999 -> 10080
+[Fri Jan 31 08:08:12] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+jobs
+[1]   Running                 kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 8888:80 &
+[2]-  Running                 kubectl port-forward pod/$ENVOY_POD_NAME -n envoy-gateway-system 19000:19000 &
+[3]+  Running                 kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 9999:80 &
+[Fri Jan 31 08:08:14] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+fg 3
+kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 9999:80
+^C[Fri Jan 31 08:09:01] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+jobs
+[1]-  Running                 kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 8888:80 &
+[2]+  Running                 kubectl port-forward pod/$ENVOY_POD_NAME -n envoy-gateway-system 19000:19000 &
+[Fri Jan 31 08:09:03] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 80:80 &
+[3] 90857
+[Fri Jan 31 08:09:09] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+Unable to listen on port 80: Listeners failed to create with the following errors: [unable to create listener: Error listen tcp4 127.0.0.1:80: bind: permission denied unable to create listener: Error listen tcp6 [::1]:80: bind: p
+ermission denied]
+error: unable to listen on any of the requested ports: [{80 10080}]
+[3]+  Exit 1                  kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 80:80
+[Fri Jan 31 08:09:11] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+jobs
+[1]-  Running                 kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 8888:80 &
+[2]+  Running                 kubectl port-forward pod/$ENVOY_POD_NAME -n envoy-gateway-system 19000:19000 &
+[Fri Jan 31 08:09:14] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+sudo kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 80:80 &
+[3] 90925
+[Fri Jan 31 08:09:18] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+E0131 08:09:18.392096   90931 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0131 08:09:18.393546   90931 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0131 08:09:18.394938   90931 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0131 08:09:18.396378   90931 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
+[3]+  Exit 1                  sudo kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 80:80
+[Fri Jan 31 08:09:21] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 08:09:21] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+jobs
+[1]-  Running                 kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 8888:80 &
+[2]+  Running                 kubectl port-forward pod/$ENVOY_POD_NAME -n envoy-gateway-system 19000:19000 &
+[Fri Jan 31 08:09:47] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+sudo kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 8080:80 &
+[3] 91109
+[Fri Jan 31 08:09:57] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+E0131 08:09:57.961392   91115 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0131 08:09:57.962596   91115 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0131 08:09:57.963954   91115 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0131 08:09:57.968964   91115 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
+[3]+  Exit 1                  sudo kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 8080:80
+[Fri Jan 31 08:09:59] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+sudo kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 9999:80 &
+[3] 91148
+[Fri Jan 31 08:10:15] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+E0131 08:10:15.504522   91154 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0131 08:10:15.505874   91154 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0131 08:10:15.507100   91154 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0131 08:10:15.508538   91154 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
+[3]+  Exit 1                  sudo kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 9999:80
+[Fri Jan 31 08:10:21] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 9999:80 &
+[3] 91259
+[Fri Jan 31 08:10:24] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+Forwarding from 127.0.0.1:9999 -> 10080
+Forwarding from [::1]:9999 -> 10080
+[Fri Jan 31 08:10:25] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+jobs
+[1]   Running                 kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 8888:80 &
+[2]-  Running                 kubectl port-forward pod/$ENVOY_POD_NAME -n envoy-gateway-system 19000:19000 &
+[3]+  Running                 kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 9999:80 &
+[Fri Jan 31 08:10:27] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+curl -v -HHost:www.example.com --resolve "www.example.com:80:127.0.0.1:9999" \
+http://www.example.com:80/get
+[Fri Jan 31 08:10:27] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+curl -v -HHost:www.example.com --resolve "www.example.com:80:127.0.0.1:9999" \
+http://www.example.com:80/get
+* Resolve address '127.0.0.1:9999' found illegal!
+* Couldn't parse CURLOPT_RESOLVE entry 'www.example.com:80:127.0.0.1:9999'!
+curl: (49) Couldn't parse CURLOPT_RESOLVE entry 'www.example.com:80:127.0.0.1:9999'!
+[Fri Jan 31 08:10:44] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+sudo netstat -tupln
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN      613/systemd-resolve
+tcp        0      0 127.0.0.1:19000         0.0.0.0:*               LISTEN      76258/kubectl
+tcp        0      0 127.0.0.1:8888          0.0.0.0:*               LISTEN      75964/kubectl
+tcp        0      0 127.0.0.1:36673         0.0.0.0:*               LISTEN      68367/docker-proxy
+tcp        0      0 127.0.0.1:9999          0.0.0.0:*               LISTEN      91259/kubectl
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      713/sshd: /usr/sbin
+tcp6       0      0 ::1:9999                :::*                    LISTEN      91259/kubectl
+tcp6       0      0 ::1:8888                :::*                    LISTEN      75964/kubectl
+tcp6       0      0 ::1:19000               :::*                    LISTEN      76258/kubectl
+tcp6       0      0 :::22                   :::*                    LISTEN      713/sshd: /usr/sbin
+udp        0      0 127.0.0.53:53           0.0.0.0:*                           613/systemd-resolve
+udp        0      0 10.0.2.15:68            0.0.0.0:*                           611/systemd-network
+[Fri Jan 31 08:11:15] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 08:14:10] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+curl -v -HHost:www.example.com --resolve "www.example.com:9999:127.0.0.1" http://www.example.com:9999/get
+[Fri Jan 31 08:14:10] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+curl -v -HHost:www.example.com --resolve "www.example.com:9999:127.0.0.1" http://www.example.com:9999/get
+* Added www.example.com:9999:127.0.0.1 to DNS cache
+* Hostname www.example.com was found in DNS cache
+*   Trying 127.0.0.1:9999...
+Handling connection for 9999
+* Connected to www.example.com (127.0.0.1) port 9999 (#0)
+> GET /get HTTP/1.1
+> Host:www.example.com
+> User-Agent: curl/7.81.0
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200 OK
+< content-type: application/json
+< x-content-type-options: nosniff
+< date: Fri, 31 Jan 2025 08:14:35 GMT
+< content-length: 620
+<
+{
+ "path": "/get",
+ "host": "www.example.com",
+ "method": "GET",
+ "proto": "HTTP/1.1",
+ "headers": {
+  "Accept": [
+   "*/*"
+  ],
+  "User-Agent": [
+   "curl/7.81.0"
+  ],
+  "X-Envoy-Internal": [
+   "true"
+  ],
+  "X-Forwarded-For": [
+   "10.244.1.2"
+  ],
+  "X-Forwarded-Proto": [
+   "http"
+  ],
+  "X-Request-Id": [
+   "c06918f0-849b-427b-a2d2-1c1575ff873c"
+  ]
+ },
+ "namespace": "default",
+ "ingress": "",
+ "service": "",
+ "pod": "backend-88699b6f8-mmxmb",
+ "tls": {
+  "version": "TLSv1.2",
+  "serverName": "www.example.com",
+  "negotiatedProtocol": "http/1.1",
+  "cipherSuite": "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+ }
+* Connection #0 to host www.example.com left intact
+}[Fri Jan 31 08:14:35] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ll HTTPRoute/
+total 8.0K
+-rw-rw-r-- 1 vagrant vagrant 1.8K Jan 23 04:36 quickstart.yaml
+drwxrwxr-x 1 vagrant vagrant 4.0K Jan 31 07:08 after_httproute
+[Fri Jan 31 08:14:49] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 08:14:54] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 08:14:55] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 08:15:02] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 08:15:02] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+../capture-envoy-data.sh --dir ./after-backendtlspolicy
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Handling connection for 19000
+Data successfully saved in directory: ./after-backendtlspolicy
+[Fri Jan 31 08:15:23] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 08:15:23] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ll after-backendtlspolicy/
+total 444K
+-rw-rw-r-- 1 vagrant vagrant 105K Jan 31 08:15 config_dump.log
+-rw-rw-r-- 1 vagrant vagrant 6.4K Jan 31 08:15 clusters.log
+-rw-rw-r-- 1 vagrant vagrant 4.9K Jan 31 08:15 clusters.json
+-rw-rw-r-- 1 vagrant vagrant  350 Jan 31 08:15 listeners.json
+-rw-rw-r-- 1 vagrant vagrant   86 Jan 31 08:15 listeners.log
+-rw-rw-r-- 1 vagrant vagrant  96K Jan 31 08:15 server_info.log
+-rw-rw-r-- 1 vagrant vagrant  54K Jan 31 08:15 stats.log
+-rw-rw-r-- 1 vagrant vagrant 160K Jan 31 08:15 stats-prometheus.log
+[Fri Jan 31 08:15:26] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 10:16:15] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ll
+total 32K
+drwxrwxr-x 1 vagrant vagrant 4.0K Jan 31 07:08 HTTPRoute
+-rw------- 1 vagrant vagrant 1.7K Jan 31 07:10 ca.key
+-rw-rw-r-- 1 vagrant vagrant 1.2K Jan 31 07:10 ca.crt
+-rw-rw-r-- 1 vagrant vagrant  191 Jan 31 07:10 openssl.conf
+-rw------- 1 vagrant vagrant 1.7K Jan 31 07:10 www.example.com.key
+-rw-rw-r-- 1 vagrant vagrant  940 Jan 31 07:10 www.example.com.csr
+-rw-rw-r-- 1 vagrant vagrant 1.3K Jan 31 07:10 www.example.com.crt
+drwxrwxr-x 1 vagrant vagrant 4.0K Jan 31 08:15 after-backendtlspolicy
+[Fri Jan 31 10:16:19] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 10:31:05] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ls
+HTTPRoute  after-backendtlspolicy  ca.crt  ca.key  openssl.conf  www.example.com.crt  www.example.com.csr  www.example.com.key
+[Fri Jan 31 10:34:57] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ls HTTPRoute/
+after_httproute  quickstart.yaml
+[Fri Jan 31 10:35:02] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ls HTTPRoute/quickstart.yaml
+HTTPRoute/quickstart.yaml
+[Fri Jan 31 10:35:06] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+jobs
+[1]   Running                 kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 8888:80 &
+[2]-  Running                 kubectl port-forward pod/$ENVOY_POD_NAME -n envoy-gateway-system 19000:19000 &
+[3]+  Running                 kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 9999:80 &
+[Fri Jan 31 10:35:52] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k get service -o wide
+[Fri Jan 31 10:35:52] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k get service -o wide
+NAME          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE     SELECTOR
+backend       ClusterIP   10.96.226.129   <none>        3000/TCP   3h34m   app=backend
+kubernetes    ClusterIP   10.96.0.1       <none>        443/TCP    3h45m   <none>
+tls-backend   ClusterIP   10.96.153.205   <none>        443/TCP    154m    app=backend
+[Fri Jan 31 10:41:04] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+ls
+HTTPRoute  after-backendtlspolicy  ca.crt  ca.key  openssl.conf  www.example.com.crt  www.example.com.csr  www.example.com.key
+[Fri Jan 31 10:48:26] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 10:48:45] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+kga -A
+kubectl get all
+NAMESPACE              NAME                                               READY   STATUS    RESTARTS   AGE
+default                pod/backend-88699b6f8-mmxmb                        1/1     Running   0          3h42m
+envoy-gateway-system   pod/envoy-default-eg-e41e7b31-594f564cb9-hrzjp     2/2     Running   0          3h47m
+envoy-gateway-system   pod/envoy-gateway-5b47459c4d-xp974                 1/1     Running   0          3h48m
+kube-system            pod/coredns-6f6b679f8f-7b8zj                       1/1     Running   0          3h58m
+kube-system            pod/coredns-6f6b679f8f-dcvfs                       1/1     Running   0          3h58m
+kube-system            pod/etcd-env-gw-control-plane                      1/1     Running   0          3h58m
+kube-system            pod/kindnet-j4w7m                                  1/1     Running   0          3h58m
+kube-system            pod/kindnet-qg4rr                                  1/1     Running   0          3h58m
+kube-system            pod/kindnet-vmhz9                                  1/1     Running   0          3h58m
+kube-system            pod/kube-apiserver-env-gw-control-plane            1/1     Running   0          3h58m
+kube-system            pod/kube-controller-manager-env-gw-control-plane   1/1     Running   0          3h58m
+kube-system            pod/kube-proxy-n9h7r                               1/1     Running   0          3h58m
+kube-system            pod/kube-proxy-sdjpp                               1/1     Running   0          3h58m
+kube-system            pod/kube-proxy-vng5s                               1/1     Running   0          3h58m
+kube-system            pod/kube-scheduler-env-gw-control-plane            1/1     Running   0          3h58m
+local-path-storage     pod/local-path-provisioner-57c5987fd4-28g8w        1/1     Running   0          3h58m
+
+NAMESPACE              NAME                                TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                                   AGE
+default                service/backend                     ClusterIP      10.96.226.129   <none>        3000/TCP                                  3h47m
+default                service/kubernetes                  ClusterIP      10.96.0.1       <none>        443/TCP                                   3h58m
+default                service/tls-backend                 ClusterIP      10.96.153.205   <none>        443/TCP                                   168m
+envoy-gateway-system   service/envoy-default-eg-e41e7b31   LoadBalancer   10.96.151.65    <pending>     80:31819/TCP                              3h47m
+envoy-gateway-system   service/envoy-gateway               ClusterIP      10.96.103.153   <none>        18000/TCP,18001/TCP,18002/TCP,19001/TCP   3h48m
+kube-system            service/kube-dns                    ClusterIP      10.96.0.10      <none>        53/UDP,53/TCP,9153/TCP                    3h58m
+
+NAMESPACE     NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+kube-system   daemonset.apps/kindnet      3         3         3       3            3           kubernetes.io/os=linux   3h58m
+kube-system   daemonset.apps/kube-proxy   3         3         3       3            3           kubernetes.io/os=linux   3h58m
+
+NAMESPACE              NAME                                        READY   UP-TO-DATE   AVAILABLE   AGE
+default                deployment.apps/backend                     1/1     1            1           3h47m
+envoy-gateway-system   deployment.apps/envoy-default-eg-e41e7b31   1/1     1            1           3h47m
+envoy-gateway-system   deployment.apps/envoy-gateway               1/1     1            1           3h48m
+kube-system            deployment.apps/coredns                     2/2     2            2           3h58m
+local-path-storage     deployment.apps/local-path-provisioner      1/1     1            1           3h58m
+
+NAMESPACE              NAME                                                   DESIRED   CURRENT   READY   AGE
+default                replicaset.apps/backend-765694d47f                     0         0         0       3h47m
+default                replicaset.apps/backend-88699b6f8                      1         1         1       3h42m
+envoy-gateway-system   replicaset.apps/envoy-default-eg-e41e7b31-594f564cb9   1         1         1       3h47m
+envoy-gateway-system   replicaset.apps/envoy-gateway-5b47459c4d               1         1         1       3h48m
+kube-system            replicaset.apps/coredns-6f6b679f8f                     2         2         2       3h58m
+local-path-storage     replicaset.apps/local-path-provisioner-57c5987fd4      1         1         1       3h58m
+[Fri Jan 31 10:54:35] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 10:54:35] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k get gateway/eg -o yaml | yq
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"gateway.networking.k8s.io/v1","kind":"Gateway","metadata":{"annotations":{},"name":"eg","namespace":"default"},"spec":{"gatewayClassName":"eg","listeners":[{"name":"http","port":80,"protocol":"HTTP"}]}}
+  creationTimestamp: "2025-01-31T07:07:00Z"
+  generation: 1
+  name: eg
+  namespace: default
+  resourceVersion: "8947"
+  uid: d5382eb6-3df0-46e5-a94b-4d65456abff8
+spec:
+  gatewayClassName: eg
+  listeners:
+    - allowedRoutes:
+        namespaces:
+          from: Same
+      name: http
+      port: 80
+      protocol: HTTP
+status:
+  conditions:
+    - lastTransitionTime: "2025-01-31T08:06:34Z"
+      message: The Gateway has been scheduled by Envoy Gateway
+      observedGeneration: 1
+      reason: Accepted
+      status: "True"
+      type: Accepted
+    - lastTransitionTime: "2025-01-31T08:06:34Z"
+      message: No addresses have been assigned to the Gateway
+      observedGeneration: 1
+      reason: AddressNotAssigned
+      status: "False"
+      type: Programmed
+  listeners:
+    - attachedRoutes: 1
+      conditions:
+        - lastTransitionTime: "2025-01-31T08:06:34Z"
+          message: Sending translated listener configuration to the data plane
+          observedGeneration: 1
+          reason: Programmed
+          status: "True"
+          type: Programmed
+        - lastTransitionTime: "2025-01-31T08:06:34Z"
+          message: Listener has been successfully translated
+          observedGeneration: 1
+          reason: Accepted
+          status: "True"
+          type: Accepted
+        - lastTransitionTime: "2025-01-31T08:06:34Z"
+          message: Listener references have been resolved
+          observedGeneration: 1
+          reason: ResolvedRefs
+          status: "True"
+          type: ResolvedRefs
+      name: http
+      supportedKinds:
+        - group: gateway.networking.k8s.io
+          kind: HTTPRoute
+        - group: gateway.networking.k8s.io
+          kind: GRPCRoute
+[Fri Jan 31 10:54:47] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 10:57:21] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 10:57:21] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 10:57:21] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 10:57:21] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 10:57:21] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 10:57:21] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k get httproute
+httproutefilters.gateway.envoyproxy.io  httproutes.gateway.networking.k8s.io
+[Fri Jan 31 10:57:21] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k get httproutefilters.gateway.envoyproxy.io -o yaml | yq
+[Fri Jan 31 10:57:21] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k get httproutefilters.gateway.envoyproxy.io -o yaml | yq
+apiVersion: v1
+items: []
+kind: List
+metadata:
+  resourceVersion: ""
+[Fri Jan 31 10:57:45] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k get httproute
+httproutefilters.gateway.envoyproxy.io  httproutes.gateway.networking.k8s.io
+[Fri Jan 31 10:57:45] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+k get httproutes.gateway.networking.k8s.io -o yaml | yq
+apiVersion: v1
+items:
+  - apiVersion: gateway.networking.k8s.io/v1
+    kind: HTTPRoute
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/last-applied-configuration: |
+          {"apiVersion":"gateway.networking.k8s.io/v1","kind":"HTTPRoute","metadata":{"annotations":{},"name":"backend","namespace":"default"},"spec":{"hostnames":["www.example.com"],"parentRefs":[{"name":"eg"}],"rules":[{"backen
+dRefs":[{"group":"","kind":"Service","name":"backend","port":3000,"weight":1}],"matches":[{"path":{"type":"PathPrefix","value":"/"}}]}]}}
+      creationTimestamp: "2025-01-31T07:07:00Z"
+      generation: 2
+      name: backend
+      namespace: default
+      resourceVersion: "8948"
+      uid: 9b5a10b0-3c0b-4773-886f-b416518e9bb6
+    spec:
+      hostnames:
+        - www.example.com
+      parentRefs:
+        - group: gateway.networking.k8s.io
+          kind: Gateway
+          name: eg
+      rules:
+        - backendRefs:
+            - group: ""
+              kind: Service
+              name: tls-backend
+              port: 443
+              weight: 1
+          matches:
+            - path:
+                type: PathPrefix
+                value: /
+    status:
+      parents:
+        - conditions:
+            - lastTransitionTime: "2025-01-31T08:06:34Z"
+              message: Route is accepted
+              observedGeneration: 2
+              reason: Accepted
+              status: "True"
+              type: Accepted
+            - lastTransitionTime: "2025-01-31T08:06:34Z"
+              message: Resolved all the Object references for the Route
+              observedGeneration: 2
+              reason: ResolvedRefs
+              status: "True"
+              type: ResolvedRefs
+          controllerName: gateway.envoyproxy.io/gatewayclass-controller
+          parentRef:
+            group: gateway.networking.k8s.io
+            kind: Gateway
+            name: eg
+kind: List
+metadata:
+  resourceVersion: ""
+[Fri Jan 31 10:58:02] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 10:59:00] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 10:59:01] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+[Fri Jan 31 10:59:01] [vagrant@ubuntu-jammy] [/shared-with-host/envoy-gateway/BackendTLSPolicy]#
+

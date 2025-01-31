@@ -1,0 +1,2061 @@
+# TYPE envoy_cluster_assignment_stale counter
+envoy_cluster_assignment_stale{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_assignment_stale{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_assignment_stale{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_assignment_stale{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_assignment_timeout_received counter
+envoy_cluster_assignment_timeout_received{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_assignment_timeout_received{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_assignment_timeout_received{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_assignment_timeout_received{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_assignment_use_cached counter
+envoy_cluster_assignment_use_cached{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_assignment_use_cached{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_assignment_use_cached{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_assignment_use_cached{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_bind_errors counter
+envoy_cluster_bind_errors{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_bind_errors{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_bind_errors{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_bind_errors{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_client_ssl_socket_factory_downstream_context_secrets_not_ready counter
+envoy_cluster_client_ssl_socket_factory_downstream_context_secrets_not_ready{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_client_ssl_socket_factory_downstream_context_secrets_not_ready{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_client_ssl_socket_factory_downstream_context_secrets_not_ready{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_client_ssl_socket_factory_ssl_context_update_by_sds counter
+envoy_cluster_client_ssl_socket_factory_ssl_context_update_by_sds{envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_client_ssl_socket_factory_ssl_context_update_by_sds{envoy_cluster_name="wasm_cluster"} 2
+envoy_cluster_client_ssl_socket_factory_ssl_context_update_by_sds{envoy_cluster_name="xds_cluster"} 2
+# TYPE envoy_cluster_client_ssl_socket_factory_upstream_context_secrets_not_ready counter
+envoy_cluster_client_ssl_socket_factory_upstream_context_secrets_not_ready{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_client_ssl_socket_factory_upstream_context_secrets_not_ready{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_client_ssl_socket_factory_upstream_context_secrets_not_ready{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_default_total_match_count counter
+envoy_cluster_default_total_match_count{envoy_cluster_name="httproute/default/backend/rule/0"} 5
+envoy_cluster_default_total_match_count{envoy_cluster_name="prometheus_stats"} 1
+envoy_cluster_default_total_match_count{envoy_cluster_name="wasm_cluster"} 803
+envoy_cluster_default_total_match_count{envoy_cluster_name="xds_cluster"} 818
+# TYPE envoy_cluster_http1_dropped_headers_with_underscores counter
+envoy_cluster_http1_dropped_headers_with_underscores{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_http1_metadata_not_supported_error counter
+envoy_cluster_http1_metadata_not_supported_error{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_http1_requests_rejected_with_underscores_in_headers counter
+envoy_cluster_http1_requests_rejected_with_underscores_in_headers{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_http1_response_flood counter
+envoy_cluster_http1_response_flood{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_http2_dropped_headers_with_underscores counter
+envoy_cluster_http2_dropped_headers_with_underscores{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_goaway_sent counter
+envoy_cluster_http2_goaway_sent{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_header_overflow counter
+envoy_cluster_http2_header_overflow{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_headers_cb_no_stream counter
+envoy_cluster_http2_headers_cb_no_stream{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_inbound_empty_frames_flood counter
+envoy_cluster_http2_inbound_empty_frames_flood{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_inbound_priority_frames_flood counter
+envoy_cluster_http2_inbound_priority_frames_flood{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_inbound_window_update_frames_flood counter
+envoy_cluster_http2_inbound_window_update_frames_flood{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_keepalive_timeout counter
+envoy_cluster_http2_keepalive_timeout{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_metadata_empty_frames counter
+envoy_cluster_http2_metadata_empty_frames{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_outbound_control_flood counter
+envoy_cluster_http2_outbound_control_flood{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_outbound_flood counter
+envoy_cluster_http2_outbound_flood{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_requests_rejected_with_underscores_in_headers counter
+envoy_cluster_http2_requests_rejected_with_underscores_in_headers{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_rx_messaging_error counter
+envoy_cluster_http2_rx_messaging_error{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_rx_reset counter
+envoy_cluster_http2_rx_reset{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_stream_refused_errors counter
+envoy_cluster_http2_stream_refused_errors{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_trailers counter
+envoy_cluster_http2_trailers{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_tx_flush_timeout counter
+envoy_cluster_http2_tx_flush_timeout{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_tx_reset counter
+envoy_cluster_http2_tx_reset{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_httproute_default_backend_rule_0_tls_0_total_match_count counter
+envoy_cluster_httproute_default_backend_rule_0_tls_0_total_match_count{envoy_cluster_name="httproute/default/backend/rule/0"} 1
+# TYPE envoy_cluster_init_fetch_timeout counter
+envoy_cluster_init_fetch_timeout{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_internal_upstream_rq counter
+envoy_cluster_internal_upstream_rq{envoy_response_code="200",envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_internal_upstream_rq{envoy_response_code="200",envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_internal_upstream_rq_completed counter
+envoy_cluster_internal_upstream_rq_completed{envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_internal_upstream_rq_completed{envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_internal_upstream_rq_xx counter
+envoy_cluster_internal_upstream_rq_xx{envoy_response_code_class="2",envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_internal_upstream_rq_xx{envoy_response_code_class="2",envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_lb_healthy_panic counter
+envoy_cluster_lb_healthy_panic{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_lb_healthy_panic{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_lb_healthy_panic{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_lb_healthy_panic{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_lb_local_cluster_not_ok counter
+envoy_cluster_lb_local_cluster_not_ok{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_lb_local_cluster_not_ok{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_lb_local_cluster_not_ok{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_lb_local_cluster_not_ok{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_lb_recalculate_zone_structures counter
+envoy_cluster_lb_recalculate_zone_structures{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_lb_recalculate_zone_structures{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_lb_recalculate_zone_structures{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_lb_recalculate_zone_structures{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_lb_subsets_created counter
+envoy_cluster_lb_subsets_created{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_lb_subsets_created{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_lb_subsets_created{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_lb_subsets_created{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_lb_subsets_fallback counter
+envoy_cluster_lb_subsets_fallback{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_lb_subsets_fallback{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_lb_subsets_fallback{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_lb_subsets_fallback{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_lb_subsets_fallback_panic counter
+envoy_cluster_lb_subsets_fallback_panic{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_lb_subsets_fallback_panic{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_lb_subsets_fallback_panic{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_lb_subsets_fallback_panic{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_lb_subsets_removed counter
+envoy_cluster_lb_subsets_removed{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_lb_subsets_removed{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_lb_subsets_removed{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_lb_subsets_removed{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_lb_subsets_selected counter
+envoy_cluster_lb_subsets_selected{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_lb_subsets_selected{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_lb_subsets_selected{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_lb_subsets_selected{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_lb_zone_cluster_too_small counter
+envoy_cluster_lb_zone_cluster_too_small{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_lb_zone_cluster_too_small{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_lb_zone_cluster_too_small{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_lb_zone_cluster_too_small{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_lb_zone_no_capacity_left counter
+envoy_cluster_lb_zone_no_capacity_left{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_lb_zone_no_capacity_left{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_lb_zone_no_capacity_left{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_lb_zone_no_capacity_left{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_lb_zone_number_differs counter
+envoy_cluster_lb_zone_number_differs{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_lb_zone_number_differs{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_lb_zone_number_differs{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_lb_zone_number_differs{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_lb_zone_routing_all_directly counter
+envoy_cluster_lb_zone_routing_all_directly{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_lb_zone_routing_all_directly{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_lb_zone_routing_all_directly{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_lb_zone_routing_all_directly{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_lb_zone_routing_cross_zone counter
+envoy_cluster_lb_zone_routing_cross_zone{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_lb_zone_routing_cross_zone{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_lb_zone_routing_cross_zone{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_lb_zone_routing_cross_zone{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_lb_zone_routing_sampled counter
+envoy_cluster_lb_zone_routing_sampled{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_lb_zone_routing_sampled{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_lb_zone_routing_sampled{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_lb_zone_routing_sampled{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_membership_change counter
+envoy_cluster_membership_change{envoy_cluster_name="httproute/default/backend/rule/0"} 5
+envoy_cluster_membership_change{envoy_cluster_name="prometheus_stats"} 1
+envoy_cluster_membership_change{envoy_cluster_name="wasm_cluster"} 1
+envoy_cluster_membership_change{envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_original_dst_host_invalid counter
+envoy_cluster_original_dst_host_invalid{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_original_dst_host_invalid{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_original_dst_host_invalid{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_original_dst_host_invalid{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_consecutive_5xx counter
+envoy_cluster_outlier_detection_ejections_consecutive_5xx{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_detected_consecutive_5xx counter
+envoy_cluster_outlier_detection_ejections_detected_consecutive_5xx{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_detected_consecutive_gateway_failure counter
+envoy_cluster_outlier_detection_ejections_detected_consecutive_gateway_failure{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_detected_consecutive_local_origin_failure counter
+envoy_cluster_outlier_detection_ejections_detected_consecutive_local_origin_failure{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_detected_failure_percentage counter
+envoy_cluster_outlier_detection_ejections_detected_failure_percentage{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_detected_local_origin_failure_percentage counter
+envoy_cluster_outlier_detection_ejections_detected_local_origin_failure_percentage{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_detected_local_origin_success_rate counter
+envoy_cluster_outlier_detection_ejections_detected_local_origin_success_rate{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_detected_success_rate counter
+envoy_cluster_outlier_detection_ejections_detected_success_rate{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_enforced_consecutive_5xx counter
+envoy_cluster_outlier_detection_ejections_enforced_consecutive_5xx{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_enforced_consecutive_gateway_failure counter
+envoy_cluster_outlier_detection_ejections_enforced_consecutive_gateway_failure{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_enforced_consecutive_local_origin_failure counter
+envoy_cluster_outlier_detection_ejections_enforced_consecutive_local_origin_failure{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_enforced_failure_percentage counter
+envoy_cluster_outlier_detection_ejections_enforced_failure_percentage{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_enforced_local_origin_failure_percentage counter
+envoy_cluster_outlier_detection_ejections_enforced_local_origin_failure_percentage{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_enforced_local_origin_success_rate counter
+envoy_cluster_outlier_detection_ejections_enforced_local_origin_success_rate{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_enforced_success_rate counter
+envoy_cluster_outlier_detection_ejections_enforced_success_rate{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_enforced_total counter
+envoy_cluster_outlier_detection_ejections_enforced_total{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_overflow counter
+envoy_cluster_outlier_detection_ejections_overflow{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_success_rate counter
+envoy_cluster_outlier_detection_ejections_success_rate{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_outlier_detection_ejections_total counter
+envoy_cluster_outlier_detection_ejections_total{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_retry_or_shadow_abandoned counter
+envoy_cluster_retry_or_shadow_abandoned{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_retry_or_shadow_abandoned{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_retry_or_shadow_abandoned{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_retry_or_shadow_abandoned{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_ssl_ciphers counter
+envoy_cluster_ssl_ciphers{cipher_suite="ECDHE-RSA-AES128-GCM-SHA256",envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_ssl_ciphers{cipher_suite="TLS_AES_128_GCM_SHA256",envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_ssl_connection_error counter
+envoy_cluster_ssl_connection_error{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_ssl_connection_error{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_ssl_connection_error{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_ssl_curves counter
+envoy_cluster_ssl_curves{envoy_ssl_curve="X25519",envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_ssl_curves{envoy_ssl_curve="X25519",envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_ssl_fail_verify_cert_hash counter
+envoy_cluster_ssl_fail_verify_cert_hash{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_ssl_fail_verify_cert_hash{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_ssl_fail_verify_cert_hash{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_ssl_fail_verify_error counter
+envoy_cluster_ssl_fail_verify_error{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_ssl_fail_verify_error{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_ssl_fail_verify_error{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_ssl_fail_verify_no_cert counter
+envoy_cluster_ssl_fail_verify_no_cert{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_ssl_fail_verify_no_cert{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_ssl_fail_verify_no_cert{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_ssl_fail_verify_san counter
+envoy_cluster_ssl_fail_verify_san{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_ssl_fail_verify_san{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_ssl_fail_verify_san{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_ssl_handshake counter
+envoy_cluster_ssl_handshake{envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_ssl_handshake{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_ssl_handshake{envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_ssl_no_certificate counter
+envoy_cluster_ssl_no_certificate{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_ssl_no_certificate{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_ssl_no_certificate{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_ssl_ocsp_staple_failed counter
+envoy_cluster_ssl_ocsp_staple_failed{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_ssl_ocsp_staple_failed{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_ssl_ocsp_staple_failed{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_ssl_ocsp_staple_omitted counter
+envoy_cluster_ssl_ocsp_staple_omitted{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_ssl_ocsp_staple_omitted{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_ssl_ocsp_staple_omitted{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_ssl_ocsp_staple_requests counter
+envoy_cluster_ssl_ocsp_staple_requests{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_ssl_ocsp_staple_requests{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_ssl_ocsp_staple_requests{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_ssl_ocsp_staple_responses counter
+envoy_cluster_ssl_ocsp_staple_responses{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_ssl_ocsp_staple_responses{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_ssl_ocsp_staple_responses{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_ssl_session_reused counter
+envoy_cluster_ssl_session_reused{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_ssl_session_reused{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_ssl_session_reused{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_ssl_sigalgs counter
+envoy_cluster_ssl_sigalgs{envoy_ssl_sigalg="rsa_pss_rsae_sha256",envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_ssl_sigalgs{envoy_ssl_sigalg="rsa_pss_rsae_sha256",envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_ssl_versions counter
+envoy_cluster_ssl_versions{envoy_ssl_version="TLSv1.2",envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_ssl_versions{envoy_ssl_version="TLSv1.3",envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_ssl_was_key_usage_invalid counter
+envoy_cluster_ssl_was_key_usage_invalid{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_ssl_was_key_usage_invalid{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_ssl_was_key_usage_invalid{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_update_attempt counter
+envoy_cluster_update_attempt{envoy_cluster_name="httproute/default/backend/rule/0"} 8
+envoy_cluster_update_attempt{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_update_attempt{envoy_cluster_name="wasm_cluster"} 803
+envoy_cluster_update_attempt{envoy_cluster_name="xds_cluster"} 818
+# TYPE envoy_cluster_update_empty counter
+envoy_cluster_update_empty{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_update_empty{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_update_empty{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_update_empty{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_update_failure counter
+envoy_cluster_update_failure{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_update_failure{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_update_failure{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_update_failure{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_update_no_rebuild counter
+envoy_cluster_update_no_rebuild{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_update_no_rebuild{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_update_no_rebuild{envoy_cluster_name="wasm_cluster"} 802
+envoy_cluster_update_no_rebuild{envoy_cluster_name="xds_cluster"} 817
+# TYPE envoy_cluster_update_rejected counter
+envoy_cluster_update_rejected{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_update_success counter
+envoy_cluster_update_success{envoy_cluster_name="httproute/default/backend/rule/0"} 6
+envoy_cluster_update_success{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_update_success{envoy_cluster_name="wasm_cluster"} 803
+envoy_cluster_update_success{envoy_cluster_name="xds_cluster"} 818
+# TYPE envoy_cluster_upstream_cx_close_notify counter
+envoy_cluster_upstream_cx_close_notify{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_close_notify{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_close_notify{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_close_notify{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_connect_attempts_exceeded counter
+envoy_cluster_upstream_cx_connect_attempts_exceeded{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_connect_attempts_exceeded{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_connect_attempts_exceeded{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_connect_attempts_exceeded{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_connect_fail counter
+envoy_cluster_upstream_cx_connect_fail{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_connect_fail{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_connect_fail{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_connect_fail{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_connect_timeout counter
+envoy_cluster_upstream_cx_connect_timeout{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_connect_timeout{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_connect_timeout{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_connect_timeout{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_connect_with_0_rtt counter
+envoy_cluster_upstream_cx_connect_with_0_rtt{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_connect_with_0_rtt{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_connect_with_0_rtt{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_connect_with_0_rtt{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_destroy counter
+envoy_cluster_upstream_cx_destroy{envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_upstream_cx_destroy{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_destroy{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_destroy{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_destroy_local counter
+envoy_cluster_upstream_cx_destroy_local{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_destroy_local{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_destroy_local{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_destroy_local{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_destroy_local_with_active_rq counter
+envoy_cluster_upstream_cx_destroy_local_with_active_rq{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_destroy_local_with_active_rq{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_destroy_local_with_active_rq{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_destroy_local_with_active_rq{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_destroy_remote counter
+envoy_cluster_upstream_cx_destroy_remote{envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_upstream_cx_destroy_remote{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_destroy_remote{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_destroy_remote{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_destroy_remote_with_active_rq counter
+envoy_cluster_upstream_cx_destroy_remote_with_active_rq{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_destroy_remote_with_active_rq{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_destroy_remote_with_active_rq{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_destroy_remote_with_active_rq{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_destroy_with_active_rq counter
+envoy_cluster_upstream_cx_destroy_with_active_rq{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_destroy_with_active_rq{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_destroy_with_active_rq{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_destroy_with_active_rq{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_http1_total counter
+envoy_cluster_upstream_cx_http1_total{envoy_cluster_name="httproute/default/backend/rule/0"} 2
+envoy_cluster_upstream_cx_http1_total{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_http1_total{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_http1_total{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_http2_total counter
+envoy_cluster_upstream_cx_http2_total{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_http2_total{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_http2_total{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_http2_total{envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_upstream_cx_http3_total counter
+envoy_cluster_upstream_cx_http3_total{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_http3_total{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_http3_total{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_http3_total{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_idle_timeout counter
+envoy_cluster_upstream_cx_idle_timeout{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_idle_timeout{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_idle_timeout{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_idle_timeout{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_max_duration_reached counter
+envoy_cluster_upstream_cx_max_duration_reached{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_max_duration_reached{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_max_duration_reached{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_max_duration_reached{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_max_requests counter
+envoy_cluster_upstream_cx_max_requests{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_max_requests{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_max_requests{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_max_requests{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_none_healthy counter
+envoy_cluster_upstream_cx_none_healthy{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_none_healthy{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_none_healthy{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_none_healthy{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_overflow counter
+envoy_cluster_upstream_cx_overflow{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_overflow{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_overflow{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_overflow{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_pool_overflow counter
+envoy_cluster_upstream_cx_pool_overflow{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_pool_overflow{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_pool_overflow{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_pool_overflow{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_protocol_error counter
+envoy_cluster_upstream_cx_protocol_error{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_protocol_error{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_protocol_error{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_protocol_error{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_cx_rx_bytes_total counter
+envoy_cluster_upstream_cx_rx_bytes_total{envoy_cluster_name="httproute/default/backend/rule/0"} 1359
+envoy_cluster_upstream_cx_rx_bytes_total{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_rx_bytes_total{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_rx_bytes_total{envoy_cluster_name="xds_cluster"} 11766
+# TYPE envoy_cluster_upstream_cx_total counter
+envoy_cluster_upstream_cx_total{envoy_cluster_name="httproute/default/backend/rule/0"} 2
+envoy_cluster_upstream_cx_total{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_total{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_total{envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_upstream_cx_tx_bytes_total counter
+envoy_cluster_upstream_cx_tx_bytes_total{envoy_cluster_name="httproute/default/backend/rule/0"} 424
+envoy_cluster_upstream_cx_tx_bytes_total{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_tx_bytes_total{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_tx_bytes_total{envoy_cluster_name="xds_cluster"} 699713
+# TYPE envoy_cluster_upstream_flow_control_backed_up_total counter
+envoy_cluster_upstream_flow_control_backed_up_total{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_flow_control_backed_up_total{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_flow_control_backed_up_total{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_flow_control_backed_up_total{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_flow_control_drained_total counter
+envoy_cluster_upstream_flow_control_drained_total{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_flow_control_drained_total{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_flow_control_drained_total{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_flow_control_drained_total{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_flow_control_paused_reading_total counter
+envoy_cluster_upstream_flow_control_paused_reading_total{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_flow_control_paused_reading_total{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_flow_control_paused_reading_total{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_flow_control_paused_reading_total{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_flow_control_resumed_reading_total counter
+envoy_cluster_upstream_flow_control_resumed_reading_total{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_flow_control_resumed_reading_total{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_flow_control_resumed_reading_total{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_flow_control_resumed_reading_total{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_http3_broken counter
+envoy_cluster_upstream_http3_broken{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_http3_broken{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_http3_broken{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_http3_broken{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_internal_redirect_failed_total counter
+envoy_cluster_upstream_internal_redirect_failed_total{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_internal_redirect_failed_total{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_internal_redirect_failed_total{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_internal_redirect_failed_total{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_internal_redirect_succeeded_total counter
+envoy_cluster_upstream_internal_redirect_succeeded_total{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_internal_redirect_succeeded_total{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_internal_redirect_succeeded_total{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_internal_redirect_succeeded_total{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq counter
+envoy_cluster_upstream_rq{envoy_response_code="200",envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_upstream_rq{envoy_response_code="200",envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_upstream_rq_0rtt counter
+envoy_cluster_upstream_rq_0rtt{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_0rtt{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_0rtt{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_0rtt{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_cancelled counter
+envoy_cluster_upstream_rq_cancelled{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_cancelled{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_cancelled{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_cancelled{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_completed counter
+envoy_cluster_upstream_rq_completed{envoy_cluster_name="httproute/default/backend/rule/0"} 2
+envoy_cluster_upstream_rq_completed{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_completed{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_completed{envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_upstream_rq_maintenance_mode counter
+envoy_cluster_upstream_rq_maintenance_mode{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_maintenance_mode{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_maintenance_mode{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_maintenance_mode{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_max_duration_reached counter
+envoy_cluster_upstream_rq_max_duration_reached{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_max_duration_reached{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_max_duration_reached{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_max_duration_reached{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_pending_failure_eject counter
+envoy_cluster_upstream_rq_pending_failure_eject{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_pending_failure_eject{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_pending_failure_eject{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_pending_failure_eject{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_pending_overflow counter
+envoy_cluster_upstream_rq_pending_overflow{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_pending_overflow{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_pending_overflow{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_pending_overflow{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_pending_total counter
+envoy_cluster_upstream_rq_pending_total{envoy_cluster_name="httproute/default/backend/rule/0"} 2
+envoy_cluster_upstream_rq_pending_total{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_pending_total{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_pending_total{envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_upstream_rq_per_try_idle_timeout counter
+envoy_cluster_upstream_rq_per_try_idle_timeout{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_per_try_idle_timeout{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_per_try_idle_timeout{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_per_try_idle_timeout{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_per_try_timeout counter
+envoy_cluster_upstream_rq_per_try_timeout{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_per_try_timeout{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_per_try_timeout{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_per_try_timeout{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_retry counter
+envoy_cluster_upstream_rq_retry{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_retry{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_retry{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_retry{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_retry_backoff_exponential counter
+envoy_cluster_upstream_rq_retry_backoff_exponential{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_retry_backoff_exponential{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_retry_backoff_exponential{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_retry_backoff_exponential{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_retry_backoff_ratelimited counter
+envoy_cluster_upstream_rq_retry_backoff_ratelimited{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_retry_backoff_ratelimited{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_retry_backoff_ratelimited{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_retry_backoff_ratelimited{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_retry_limit_exceeded counter
+envoy_cluster_upstream_rq_retry_limit_exceeded{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_retry_limit_exceeded{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_retry_limit_exceeded{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_retry_limit_exceeded{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_retry_overflow counter
+envoy_cluster_upstream_rq_retry_overflow{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_retry_overflow{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_retry_overflow{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_retry_overflow{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_retry_success counter
+envoy_cluster_upstream_rq_retry_success{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_retry_success{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_retry_success{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_retry_success{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_rx_reset counter
+envoy_cluster_upstream_rq_rx_reset{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_rx_reset{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_rx_reset{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_rx_reset{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_timeout counter
+envoy_cluster_upstream_rq_timeout{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_timeout{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_timeout{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_timeout{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_total counter
+envoy_cluster_upstream_rq_total{envoy_cluster_name="httproute/default/backend/rule/0"} 2
+envoy_cluster_upstream_rq_total{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_total{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_total{envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_upstream_rq_tx_reset counter
+envoy_cluster_upstream_rq_tx_reset{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_tx_reset{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_tx_reset{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_tx_reset{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_xx counter
+envoy_cluster_upstream_rq_xx{envoy_response_code_class="2",envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_upstream_rq_xx{envoy_response_code_class="2",envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_manager_cds_init_fetch_timeout counter
+envoy_cluster_manager_cds_init_fetch_timeout{} 0
+# TYPE envoy_cluster_manager_cds_update_attempt counter
+envoy_cluster_manager_cds_update_attempt{} 3
+# TYPE envoy_cluster_manager_cds_update_failure counter
+envoy_cluster_manager_cds_update_failure{} 0
+# TYPE envoy_cluster_manager_cds_update_rejected counter
+envoy_cluster_manager_cds_update_rejected{} 0
+# TYPE envoy_cluster_manager_cds_update_success counter
+envoy_cluster_manager_cds_update_success{} 2
+# TYPE envoy_cluster_manager_cluster_added counter
+envoy_cluster_manager_cluster_added{} 4
+# TYPE envoy_cluster_manager_cluster_modified counter
+envoy_cluster_manager_cluster_modified{} 1
+# TYPE envoy_cluster_manager_cluster_removed counter
+envoy_cluster_manager_cluster_removed{} 0
+# TYPE envoy_cluster_manager_cluster_updated counter
+envoy_cluster_manager_cluster_updated{} 4
+# TYPE envoy_cluster_manager_cluster_updated_via_merge counter
+envoy_cluster_manager_cluster_updated_via_merge{} 0
+# TYPE envoy_cluster_manager_update_merge_cancelled counter
+envoy_cluster_manager_update_merge_cancelled{} 0
+# TYPE envoy_cluster_manager_update_out_of_merge_window counter
+envoy_cluster_manager_update_out_of_merge_window{} 0
+# TYPE envoy_control_plane_rate_limit_enforced counter
+envoy_control_plane_rate_limit_enforced{} 0
+# TYPE envoy_dns_cares_get_addr_failure counter
+envoy_dns_cares_get_addr_failure{} 1620
+# TYPE envoy_dns_cares_not_found counter
+envoy_dns_cares_not_found{} 0
+# TYPE envoy_dns_cares_resolve_total counter
+envoy_dns_cares_resolve_total{} 3242
+# TYPE envoy_dns_cares_timeouts counter
+envoy_dns_cares_timeouts{} 4
+# TYPE envoy_envoy_overload_actions_reset_high_memory_stream_count counter
+envoy_envoy_overload_actions_reset_high_memory_stream_count{} 0
+# TYPE envoy_filesystem_flushed_by_timer counter
+envoy_filesystem_flushed_by_timer{} 818
+# TYPE envoy_filesystem_reopen_failed counter
+envoy_filesystem_reopen_failed{} 0
+# TYPE envoy_filesystem_write_buffered counter
+envoy_filesystem_write_buffered{} 17
+# TYPE envoy_filesystem_write_completed counter
+envoy_filesystem_write_completed{} 4
+# TYPE envoy_filesystem_write_failed counter
+envoy_filesystem_write_failed{} 0
+# TYPE envoy_http_downstream_cx_delayed_close_timeout counter
+envoy_http_downstream_cx_delayed_close_timeout{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_delayed_close_timeout{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_delayed_close_timeout{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_destroy counter
+envoy_http_downstream_cx_destroy{envoy_http_conn_manager_prefix="admin"} 8
+envoy_http_downstream_cx_destroy{envoy_http_conn_manager_prefix="eg-ready-http"} 816
+envoy_http_downstream_cx_destroy{envoy_http_conn_manager_prefix="http-10080"} 2
+# TYPE envoy_http_downstream_cx_destroy_active_rq counter
+envoy_http_downstream_cx_destroy_active_rq{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_destroy_active_rq{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_destroy_active_rq{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_destroy_local counter
+envoy_http_downstream_cx_destroy_local{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_destroy_local{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_destroy_local{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_destroy_local_active_rq counter
+envoy_http_downstream_cx_destroy_local_active_rq{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_destroy_local_active_rq{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_destroy_local_active_rq{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_destroy_remote counter
+envoy_http_downstream_cx_destroy_remote{envoy_http_conn_manager_prefix="admin"} 8
+envoy_http_downstream_cx_destroy_remote{envoy_http_conn_manager_prefix="eg-ready-http"} 816
+envoy_http_downstream_cx_destroy_remote{envoy_http_conn_manager_prefix="http-10080"} 2
+# TYPE envoy_http_downstream_cx_destroy_remote_active_rq counter
+envoy_http_downstream_cx_destroy_remote_active_rq{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_destroy_remote_active_rq{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_destroy_remote_active_rq{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_drain_close counter
+envoy_http_downstream_cx_drain_close{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_drain_close{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_drain_close{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_http1_total counter
+envoy_http_downstream_cx_http1_total{envoy_http_conn_manager_prefix="admin"} 16
+envoy_http_downstream_cx_http1_total{envoy_http_conn_manager_prefix="eg-ready-http"} 816
+envoy_http_downstream_cx_http1_total{envoy_http_conn_manager_prefix="http-10080"} 2
+# TYPE envoy_http_downstream_cx_http2_total counter
+envoy_http_downstream_cx_http2_total{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_http2_total{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_http2_total{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_http3_total counter
+envoy_http_downstream_cx_http3_total{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_http3_total{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_http3_total{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_idle_timeout counter
+envoy_http_downstream_cx_idle_timeout{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_idle_timeout{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_idle_timeout{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_max_duration_reached counter
+envoy_http_downstream_cx_max_duration_reached{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_max_duration_reached{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_max_duration_reached{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_max_requests_reached counter
+envoy_http_downstream_cx_max_requests_reached{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_max_requests_reached{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_max_requests_reached{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_overload_disable_keepalive counter
+envoy_http_downstream_cx_overload_disable_keepalive{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_overload_disable_keepalive{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_overload_disable_keepalive{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_protocol_error counter
+envoy_http_downstream_cx_protocol_error{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_protocol_error{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_protocol_error{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_rx_bytes_total counter
+envoy_http_downstream_cx_rx_bytes_total{envoy_http_conn_manager_prefix="admin"} 1466
+envoy_http_downstream_cx_rx_bytes_total{envoy_http_conn_manager_prefix="eg-ready-http"} 88128
+envoy_http_downstream_cx_rx_bytes_total{envoy_http_conn_manager_prefix="http-10080"} 163
+# TYPE envoy_http_downstream_cx_ssl_total counter
+envoy_http_downstream_cx_ssl_total{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_ssl_total{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_ssl_total{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_total counter
+envoy_http_downstream_cx_total{envoy_http_conn_manager_prefix="admin"} 16
+envoy_http_downstream_cx_total{envoy_http_conn_manager_prefix="eg-ready-http"} 816
+envoy_http_downstream_cx_total{envoy_http_conn_manager_prefix="http-10080"} 2
+# TYPE envoy_http_downstream_cx_tx_bytes_total counter
+envoy_http_downstream_cx_tx_bytes_total{envoy_http_conn_manager_prefix="admin"} 698664
+envoy_http_downstream_cx_tx_bytes_total{envoy_http_conn_manager_prefix="eg-ready-http"} 131376
+envoy_http_downstream_cx_tx_bytes_total{envoy_http_conn_manager_prefix="http-10080"} 1359
+# TYPE envoy_http_downstream_cx_upgrades_total counter
+envoy_http_downstream_cx_upgrades_total{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_upgrades_total{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_upgrades_total{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_flow_control_paused_reading_total counter
+envoy_http_downstream_flow_control_paused_reading_total{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_flow_control_paused_reading_total{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_flow_control_paused_reading_total{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_flow_control_resumed_reading_total counter
+envoy_http_downstream_flow_control_resumed_reading_total{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_flow_control_resumed_reading_total{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_flow_control_resumed_reading_total{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_completed counter
+envoy_http_downstream_rq_completed{envoy_http_conn_manager_prefix="admin"} 15
+envoy_http_downstream_rq_completed{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_completed{envoy_http_conn_manager_prefix="http-10080"} 2
+# TYPE envoy_http_downstream_rq_failed_path_normalization counter
+envoy_http_downstream_rq_failed_path_normalization{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_failed_path_normalization{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_failed_path_normalization{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_header_timeout counter
+envoy_http_downstream_rq_header_timeout{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_header_timeout{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_header_timeout{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_http1_total counter
+envoy_http_downstream_rq_http1_total{envoy_http_conn_manager_prefix="admin"} 16
+envoy_http_downstream_rq_http1_total{envoy_http_conn_manager_prefix="eg-ready-http"} 816
+envoy_http_downstream_rq_http1_total{envoy_http_conn_manager_prefix="http-10080"} 2
+# TYPE envoy_http_downstream_rq_http2_total counter
+envoy_http_downstream_rq_http2_total{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_http2_total{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_http2_total{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_http3_total counter
+envoy_http_downstream_rq_http3_total{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_http3_total{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_http3_total{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_idle_timeout counter
+envoy_http_downstream_rq_idle_timeout{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_idle_timeout{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_idle_timeout{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_max_duration_reached counter
+envoy_http_downstream_rq_max_duration_reached{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_max_duration_reached{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_max_duration_reached{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_non_relative_path counter
+envoy_http_downstream_rq_non_relative_path{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_non_relative_path{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_non_relative_path{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_overload_close counter
+envoy_http_downstream_rq_overload_close{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_overload_close{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_overload_close{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_redirected_with_normalized_path counter
+envoy_http_downstream_rq_redirected_with_normalized_path{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_redirected_with_normalized_path{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_redirected_with_normalized_path{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_rejected_via_ip_detection counter
+envoy_http_downstream_rq_rejected_via_ip_detection{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_rejected_via_ip_detection{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_rejected_via_ip_detection{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_response_before_rq_complete counter
+envoy_http_downstream_rq_response_before_rq_complete{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_response_before_rq_complete{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_response_before_rq_complete{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_rx_reset counter
+envoy_http_downstream_rq_rx_reset{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_rx_reset{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_rx_reset{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_timeout counter
+envoy_http_downstream_rq_timeout{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_timeout{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_timeout{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_too_large counter
+envoy_http_downstream_rq_too_large{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_too_large{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_too_large{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_too_many_premature_resets counter
+envoy_http_downstream_rq_too_many_premature_resets{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_too_many_premature_resets{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_too_many_premature_resets{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_total counter
+envoy_http_downstream_rq_total{envoy_http_conn_manager_prefix="admin"} 16
+envoy_http_downstream_rq_total{envoy_http_conn_manager_prefix="eg-ready-http"} 816
+envoy_http_downstream_rq_total{envoy_http_conn_manager_prefix="http-10080"} 2
+# TYPE envoy_http_downstream_rq_tx_reset counter
+envoy_http_downstream_rq_tx_reset{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_tx_reset{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_tx_reset{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_ws_on_non_ws_route counter
+envoy_http_downstream_rq_ws_on_non_ws_route{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_ws_on_non_ws_route{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_ws_on_non_ws_route{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_xx counter
+envoy_http_downstream_rq_xx{envoy_response_code_class="1",envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_xx{envoy_response_code_class="2",envoy_http_conn_manager_prefix="admin"} 15
+envoy_http_downstream_rq_xx{envoy_response_code_class="3",envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_xx{envoy_response_code_class="4",envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_xx{envoy_response_code_class="5",envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_rq_xx{envoy_response_code_class="1",envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_xx{envoy_response_code_class="2",envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_xx{envoy_response_code_class="3",envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_xx{envoy_response_code_class="4",envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_xx{envoy_response_code_class="5",envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_xx{envoy_response_code_class="1",envoy_http_conn_manager_prefix="http-10080"} 0
+envoy_http_downstream_rq_xx{envoy_response_code_class="2",envoy_http_conn_manager_prefix="http-10080"} 2
+envoy_http_downstream_rq_xx{envoy_response_code_class="3",envoy_http_conn_manager_prefix="http-10080"} 0
+envoy_http_downstream_rq_xx{envoy_response_code_class="4",envoy_http_conn_manager_prefix="http-10080"} 0
+envoy_http_downstream_rq_xx{envoy_response_code_class="5",envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_no_cluster counter
+envoy_http_no_cluster{envoy_http_conn_manager_prefix="async-client"} 0
+envoy_http_no_cluster{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_no_cluster{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_no_route counter
+envoy_http_no_route{envoy_http_conn_manager_prefix="async-client"} 0
+envoy_http_no_route{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_no_route{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_passthrough_internal_redirect_bad_location counter
+envoy_http_passthrough_internal_redirect_bad_location{envoy_http_conn_manager_prefix="async-client"} 0
+envoy_http_passthrough_internal_redirect_bad_location{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_passthrough_internal_redirect_bad_location{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_passthrough_internal_redirect_no_route counter
+envoy_http_passthrough_internal_redirect_no_route{envoy_http_conn_manager_prefix="async-client"} 0
+envoy_http_passthrough_internal_redirect_no_route{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_passthrough_internal_redirect_no_route{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_passthrough_internal_redirect_predicate counter
+envoy_http_passthrough_internal_redirect_predicate{envoy_http_conn_manager_prefix="async-client"} 0
+envoy_http_passthrough_internal_redirect_predicate{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_passthrough_internal_redirect_predicate{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_passthrough_internal_redirect_too_many_redirects counter
+envoy_http_passthrough_internal_redirect_too_many_redirects{envoy_http_conn_manager_prefix="async-client"} 0
+envoy_http_passthrough_internal_redirect_too_many_redirects{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_passthrough_internal_redirect_too_many_redirects{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_passthrough_internal_redirect_unsafe_scheme counter
+envoy_http_passthrough_internal_redirect_unsafe_scheme{envoy_http_conn_manager_prefix="async-client"} 0
+envoy_http_passthrough_internal_redirect_unsafe_scheme{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_passthrough_internal_redirect_unsafe_scheme{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_rds_config_reload counter
+envoy_http_rds_config_reload{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080"} 2
+# TYPE envoy_http_rds_init_fetch_timeout counter
+envoy_http_rds_init_fetch_timeout{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_rds_update_attempt counter
+envoy_http_rds_update_attempt{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080"} 3
+# TYPE envoy_http_rds_update_empty counter
+envoy_http_rds_update_empty{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_rds_update_failure counter
+envoy_http_rds_update_failure{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_rds_update_rejected counter
+envoy_http_rds_update_rejected{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_rds_update_success counter
+envoy_http_rds_update_success{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080"} 2
+# TYPE envoy_http_rq_direct_response counter
+envoy_http_rq_direct_response{envoy_http_conn_manager_prefix="async-client"} 0
+envoy_http_rq_direct_response{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_rq_direct_response{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_rq_overload_local_reply counter
+envoy_http_rq_overload_local_reply{envoy_http_conn_manager_prefix="async-client"} 0
+envoy_http_rq_overload_local_reply{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_rq_overload_local_reply{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_rq_redirect counter
+envoy_http_rq_redirect{envoy_http_conn_manager_prefix="async-client"} 0
+envoy_http_rq_redirect{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_rq_redirect{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_rq_reset_after_downstream_response_started counter
+envoy_http_rq_reset_after_downstream_response_started{envoy_http_conn_manager_prefix="async-client"} 0
+envoy_http_rq_reset_after_downstream_response_started{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_rq_reset_after_downstream_response_started{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_rq_total counter
+envoy_http_rq_total{envoy_http_conn_manager_prefix="async-client"} 1
+envoy_http_rq_total{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_rq_total{envoy_http_conn_manager_prefix="http-10080"} 2
+# TYPE envoy_http_rs_too_large counter
+envoy_http_rs_too_large{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_rs_too_large{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_rs_too_large{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_tracing_client_enabled counter
+envoy_http_tracing_client_enabled{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_tracing_client_enabled{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_tracing_health_check counter
+envoy_http_tracing_health_check{envoy_http_conn_manager_prefix="eg-ready-http"} 816
+envoy_http_tracing_health_check{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_tracing_not_traceable counter
+envoy_http_tracing_not_traceable{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_tracing_not_traceable{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_tracing_random_sampling counter
+envoy_http_tracing_random_sampling{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_tracing_random_sampling{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_tracing_service_forced counter
+envoy_http_tracing_service_forced{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_tracing_service_forced{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http1_dropped_headers_with_underscores counter
+envoy_http1_dropped_headers_with_underscores{} 0
+# TYPE envoy_http1_metadata_not_supported_error counter
+envoy_http1_metadata_not_supported_error{} 0
+# TYPE envoy_http1_requests_rejected_with_underscores_in_headers counter
+envoy_http1_requests_rejected_with_underscores_in_headers{} 0
+# TYPE envoy_http1_response_flood counter
+envoy_http1_response_flood{} 0
+# TYPE envoy_listener_admin_downstream_cx_destroy counter
+envoy_listener_admin_downstream_cx_destroy{} 8
+# TYPE envoy_listener_admin_downstream_cx_overflow counter
+envoy_listener_admin_downstream_cx_overflow{} 0
+# TYPE envoy_listener_admin_downstream_cx_overload_reject counter
+envoy_listener_admin_downstream_cx_overload_reject{} 0
+# TYPE envoy_listener_admin_downstream_cx_total counter
+envoy_listener_admin_downstream_cx_total{} 16
+# TYPE envoy_listener_admin_downstream_cx_transport_socket_connect_timeout counter
+envoy_listener_admin_downstream_cx_transport_socket_connect_timeout{} 0
+# TYPE envoy_listener_admin_downstream_global_cx_overflow counter
+envoy_listener_admin_downstream_global_cx_overflow{} 0
+# TYPE envoy_listener_admin_downstream_listener_filter_error counter
+envoy_listener_admin_downstream_listener_filter_error{} 0
+# TYPE envoy_listener_admin_downstream_listener_filter_remote_close counter
+envoy_listener_admin_downstream_listener_filter_remote_close{} 0
+# TYPE envoy_listener_admin_downstream_pre_cx_timeout counter
+envoy_listener_admin_downstream_pre_cx_timeout{} 0
+# TYPE envoy_listener_admin_http_downstream_rq_completed counter
+envoy_listener_admin_http_downstream_rq_completed{envoy_http_conn_manager_prefix="admin"} 15
+# TYPE envoy_listener_admin_http_downstream_rq_xx counter
+envoy_listener_admin_http_downstream_rq_xx{envoy_response_code_class="1",envoy_http_conn_manager_prefix="admin"} 0
+envoy_listener_admin_http_downstream_rq_xx{envoy_response_code_class="2",envoy_http_conn_manager_prefix="admin"} 15
+envoy_listener_admin_http_downstream_rq_xx{envoy_response_code_class="3",envoy_http_conn_manager_prefix="admin"} 0
+envoy_listener_admin_http_downstream_rq_xx{envoy_response_code_class="4",envoy_http_conn_manager_prefix="admin"} 0
+envoy_listener_admin_http_downstream_rq_xx{envoy_response_code_class="5",envoy_http_conn_manager_prefix="admin"} 0
+# TYPE envoy_listener_admin_main_thread_downstream_cx_total counter
+envoy_listener_admin_main_thread_downstream_cx_total{} 16
+# TYPE envoy_listener_admin_no_filter_chain_match counter
+envoy_listener_admin_no_filter_chain_match{} 0
+# TYPE envoy_listener_downstream_cx_destroy counter
+envoy_listener_downstream_cx_destroy{envoy_listener_address="0.0.0.0_10080"} 2
+envoy_listener_downstream_cx_destroy{envoy_listener_address="0.0.0.0_19001"} 816
+# TYPE envoy_listener_downstream_cx_overflow counter
+envoy_listener_downstream_cx_overflow{envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_downstream_cx_overflow{envoy_listener_address="0.0.0.0_19001"} 0
+# TYPE envoy_listener_downstream_cx_overload_reject counter
+envoy_listener_downstream_cx_overload_reject{envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_downstream_cx_overload_reject{envoy_listener_address="0.0.0.0_19001"} 0
+# TYPE envoy_listener_downstream_cx_total counter
+envoy_listener_downstream_cx_total{envoy_listener_address="0.0.0.0_10080"} 2
+envoy_listener_downstream_cx_total{envoy_listener_address="0.0.0.0_19001"} 816
+# TYPE envoy_listener_downstream_cx_transport_socket_connect_timeout counter
+envoy_listener_downstream_cx_transport_socket_connect_timeout{envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_downstream_cx_transport_socket_connect_timeout{envoy_listener_address="0.0.0.0_19001"} 0
+# TYPE envoy_listener_downstream_global_cx_overflow counter
+envoy_listener_downstream_global_cx_overflow{envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_downstream_global_cx_overflow{envoy_listener_address="0.0.0.0_19001"} 0
+# TYPE envoy_listener_downstream_listener_filter_error counter
+envoy_listener_downstream_listener_filter_error{envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_downstream_listener_filter_error{envoy_listener_address="0.0.0.0_19001"} 0
+# TYPE envoy_listener_downstream_listener_filter_remote_close counter
+envoy_listener_downstream_listener_filter_remote_close{envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_downstream_listener_filter_remote_close{envoy_listener_address="0.0.0.0_19001"} 0
+# TYPE envoy_listener_downstream_pre_cx_timeout counter
+envoy_listener_downstream_pre_cx_timeout{envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_downstream_pre_cx_timeout{envoy_listener_address="0.0.0.0_19001"} 0
+# TYPE envoy_listener_extension_config_missing counter
+envoy_listener_extension_config_missing{envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_extension_config_missing{envoy_listener_address="0.0.0.0_19001"} 0
+# TYPE envoy_listener_http_downstream_rq_completed counter
+envoy_listener_http_downstream_rq_completed{envoy_http_conn_manager_prefix="http-10080",envoy_listener_address="0.0.0.0_10080"} 2
+envoy_listener_http_downstream_rq_completed{envoy_http_conn_manager_prefix="eg-ready-http",envoy_listener_address="0.0.0.0_19001"} 0
+# TYPE envoy_listener_http_downstream_rq_xx counter
+envoy_listener_http_downstream_rq_xx{envoy_response_code_class="1",envoy_http_conn_manager_prefix="http-10080",envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_http_downstream_rq_xx{envoy_response_code_class="2",envoy_http_conn_manager_prefix="http-10080",envoy_listener_address="0.0.0.0_10080"} 2
+envoy_listener_http_downstream_rq_xx{envoy_response_code_class="3",envoy_http_conn_manager_prefix="http-10080",envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_http_downstream_rq_xx{envoy_response_code_class="4",envoy_http_conn_manager_prefix="http-10080",envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_http_downstream_rq_xx{envoy_response_code_class="5",envoy_http_conn_manager_prefix="http-10080",envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_http_downstream_rq_xx{envoy_response_code_class="1",envoy_http_conn_manager_prefix="eg-ready-http",envoy_listener_address="0.0.0.0_19001"} 0
+envoy_listener_http_downstream_rq_xx{envoy_response_code_class="2",envoy_http_conn_manager_prefix="eg-ready-http",envoy_listener_address="0.0.0.0_19001"} 0
+envoy_listener_http_downstream_rq_xx{envoy_response_code_class="3",envoy_http_conn_manager_prefix="eg-ready-http",envoy_listener_address="0.0.0.0_19001"} 0
+envoy_listener_http_downstream_rq_xx{envoy_response_code_class="4",envoy_http_conn_manager_prefix="eg-ready-http",envoy_listener_address="0.0.0.0_19001"} 0
+envoy_listener_http_downstream_rq_xx{envoy_response_code_class="5",envoy_http_conn_manager_prefix="eg-ready-http",envoy_listener_address="0.0.0.0_19001"} 0
+# TYPE envoy_listener_network_extension_config_missing counter
+envoy_listener_network_extension_config_missing{envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_network_extension_config_missing{envoy_listener_address="0.0.0.0_19001"} 0
+# TYPE envoy_listener_no_filter_chain_match counter
+envoy_listener_no_filter_chain_match{envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_no_filter_chain_match{envoy_listener_address="0.0.0.0_19001"} 0
+# TYPE envoy_listener_worker_downstream_cx_total counter
+envoy_listener_worker_downstream_cx_total{envoy_worker_id="0",envoy_listener_address="0.0.0.0_10080"} 2
+envoy_listener_worker_downstream_cx_total{envoy_worker_id="1",envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_worker_downstream_cx_total{envoy_worker_id="0",envoy_listener_address="0.0.0.0_19001"} 418
+envoy_listener_worker_downstream_cx_total{envoy_worker_id="1",envoy_listener_address="0.0.0.0_19001"} 398
+# TYPE envoy_listener_manager_lds_init_fetch_timeout counter
+envoy_listener_manager_lds_init_fetch_timeout{} 0
+# TYPE envoy_listener_manager_lds_update_attempt counter
+envoy_listener_manager_lds_update_attempt{} 2
+# TYPE envoy_listener_manager_lds_update_failure counter
+envoy_listener_manager_lds_update_failure{} 0
+# TYPE envoy_listener_manager_lds_update_rejected counter
+envoy_listener_manager_lds_update_rejected{} 0
+# TYPE envoy_listener_manager_lds_update_success counter
+envoy_listener_manager_lds_update_success{} 1
+# TYPE envoy_listener_manager_listener_added counter
+envoy_listener_manager_listener_added{} 2
+# TYPE envoy_listener_manager_listener_create_failure counter
+envoy_listener_manager_listener_create_failure{} 0
+# TYPE envoy_listener_manager_listener_create_success counter
+envoy_listener_manager_listener_create_success{} 4
+# TYPE envoy_listener_manager_listener_in_place_updated counter
+envoy_listener_manager_listener_in_place_updated{} 0
+# TYPE envoy_listener_manager_listener_modified counter
+envoy_listener_manager_listener_modified{} 0
+# TYPE envoy_listener_manager_listener_removed counter
+envoy_listener_manager_listener_removed{} 0
+# TYPE envoy_listener_manager_listener_stopped counter
+envoy_listener_manager_listener_stopped{} 0
+# TYPE envoy_main_thread_watchdog_mega_miss counter
+envoy_main_thread_watchdog_mega_miss{} 0
+# TYPE envoy_main_thread_watchdog_miss counter
+envoy_main_thread_watchdog_miss{} 0
+# TYPE envoy_overload_envoy_resource_monitors_global_downstream_max_connections_failed_updates counter
+envoy_overload_envoy_resource_monitors_global_downstream_max_connections_failed_updates{} 0
+# TYPE envoy_runtime_deprecated_feature_use counter
+envoy_runtime_deprecated_feature_use{} 2
+# TYPE envoy_runtime_load_error counter
+envoy_runtime_load_error{} 0
+# TYPE envoy_runtime_load_success counter
+envoy_runtime_load_success{} 1
+# TYPE envoy_runtime_override_dir_exists counter
+envoy_runtime_override_dir_exists{} 0
+# TYPE envoy_runtime_override_dir_not_exists counter
+envoy_runtime_override_dir_not_exists{} 1
+# TYPE envoy_sds_enable_backend_tls_default_ca_init_fetch_timeout counter
+envoy_sds_enable_backend_tls_default_ca_init_fetch_timeout{} 0
+# TYPE envoy_sds_enable_backend_tls_default_ca_key_rotation_failed counter
+envoy_sds_enable_backend_tls_default_ca_key_rotation_failed{} 0
+# TYPE envoy_sds_enable_backend_tls_default_ca_update_attempt counter
+envoy_sds_enable_backend_tls_default_ca_update_attempt{} 2
+# TYPE envoy_sds_enable_backend_tls_default_ca_update_failure counter
+envoy_sds_enable_backend_tls_default_ca_update_failure{} 0
+# TYPE envoy_sds_enable_backend_tls_default_ca_update_rejected counter
+envoy_sds_enable_backend_tls_default_ca_update_rejected{} 0
+# TYPE envoy_sds_enable_backend_tls_default_ca_update_success counter
+envoy_sds_enable_backend_tls_default_ca_update_success{} 1
+# TYPE envoy_sds_xds_certificate_init_fetch_timeout counter
+envoy_sds_xds_certificate_init_fetch_timeout{} 0
+# TYPE envoy_sds_xds_certificate_key_rotation_failed counter
+envoy_sds_xds_certificate_key_rotation_failed{} 0
+# TYPE envoy_sds_xds_certificate_update_attempt counter
+envoy_sds_xds_certificate_update_attempt{} 1
+# TYPE envoy_sds_xds_certificate_update_failure counter
+envoy_sds_xds_certificate_update_failure{} 0
+# TYPE envoy_sds_xds_certificate_update_rejected counter
+envoy_sds_xds_certificate_update_rejected{} 0
+# TYPE envoy_sds_xds_certificate_update_success counter
+envoy_sds_xds_certificate_update_success{} 1
+# TYPE envoy_sds_xds_trusted_ca_init_fetch_timeout counter
+envoy_sds_xds_trusted_ca_init_fetch_timeout{} 0
+# TYPE envoy_sds_xds_trusted_ca_key_rotation_failed counter
+envoy_sds_xds_trusted_ca_key_rotation_failed{} 0
+# TYPE envoy_sds_xds_trusted_ca_update_attempt counter
+envoy_sds_xds_trusted_ca_update_attempt{} 1
+# TYPE envoy_sds_xds_trusted_ca_update_failure counter
+envoy_sds_xds_trusted_ca_update_failure{} 0
+# TYPE envoy_sds_xds_trusted_ca_update_rejected counter
+envoy_sds_xds_trusted_ca_update_rejected{} 0
+# TYPE envoy_sds_xds_trusted_ca_update_success counter
+envoy_sds_xds_trusted_ca_update_success{} 1
+# TYPE envoy_server_debug_assertion_failures counter
+envoy_server_debug_assertion_failures{} 0
+# TYPE envoy_server_dropped_stat_flushes counter
+envoy_server_dropped_stat_flushes{} 0
+# TYPE envoy_server_dynamic_unknown_fields counter
+envoy_server_dynamic_unknown_fields{} 0
+# TYPE envoy_server_envoy_bug_failures counter
+envoy_server_envoy_bug_failures{} 0
+# TYPE envoy_server_main_thread_watchdog_mega_miss counter
+envoy_server_main_thread_watchdog_mega_miss{} 0
+# TYPE envoy_server_main_thread_watchdog_miss counter
+envoy_server_main_thread_watchdog_miss{} 0
+# TYPE envoy_server_static_unknown_fields counter
+envoy_server_static_unknown_fields{} 0
+# TYPE envoy_server_wip_protos counter
+envoy_server_wip_protos{} 0
+# TYPE envoy_server_worker_watchdog_mega_miss counter
+envoy_server_worker_watchdog_mega_miss{envoy_worker_id="0"} 0
+envoy_server_worker_watchdog_mega_miss{envoy_worker_id="1"} 0
+# TYPE envoy_server_worker_watchdog_miss counter
+envoy_server_worker_watchdog_miss{envoy_worker_id="0"} 0
+envoy_server_worker_watchdog_miss{envoy_worker_id="1"} 0
+# TYPE envoy_tcmalloc_released_by_timer counter
+envoy_tcmalloc_released_by_timer{} 0
+# TYPE envoy_workers_watchdog_mega_miss counter
+envoy_workers_watchdog_mega_miss{} 0
+# TYPE envoy_workers_watchdog_miss counter
+envoy_workers_watchdog_miss{} 0
+# TYPE envoy_cluster_circuit_breakers_default_cx_open gauge
+envoy_cluster_circuit_breakers_default_cx_open{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_circuit_breakers_default_cx_open{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_circuit_breakers_default_cx_open{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_circuit_breakers_default_cx_open{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_circuit_breakers_default_cx_pool_open gauge
+envoy_cluster_circuit_breakers_default_cx_pool_open{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_circuit_breakers_default_cx_pool_open{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_circuit_breakers_default_cx_pool_open{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_circuit_breakers_default_cx_pool_open{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_circuit_breakers_default_rq_open gauge
+envoy_cluster_circuit_breakers_default_rq_open{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_circuit_breakers_default_rq_open{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_circuit_breakers_default_rq_open{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_circuit_breakers_default_rq_open{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_circuit_breakers_default_rq_pending_open gauge
+envoy_cluster_circuit_breakers_default_rq_pending_open{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_circuit_breakers_default_rq_pending_open{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_circuit_breakers_default_rq_pending_open{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_circuit_breakers_default_rq_pending_open{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_circuit_breakers_default_rq_retry_open gauge
+envoy_cluster_circuit_breakers_default_rq_retry_open{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_circuit_breakers_default_rq_retry_open{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_circuit_breakers_default_rq_retry_open{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_circuit_breakers_default_rq_retry_open{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_circuit_breakers_high_cx_open gauge
+envoy_cluster_circuit_breakers_high_cx_open{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_circuit_breakers_high_cx_open{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_circuit_breakers_high_cx_open{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_circuit_breakers_high_cx_open{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_circuit_breakers_high_cx_pool_open gauge
+envoy_cluster_circuit_breakers_high_cx_pool_open{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_circuit_breakers_high_cx_pool_open{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_circuit_breakers_high_cx_pool_open{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_circuit_breakers_high_cx_pool_open{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_circuit_breakers_high_rq_open gauge
+envoy_cluster_circuit_breakers_high_rq_open{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_circuit_breakers_high_rq_open{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_circuit_breakers_high_rq_open{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_circuit_breakers_high_rq_open{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_circuit_breakers_high_rq_pending_open gauge
+envoy_cluster_circuit_breakers_high_rq_pending_open{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_circuit_breakers_high_rq_pending_open{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_circuit_breakers_high_rq_pending_open{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_circuit_breakers_high_rq_pending_open{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_circuit_breakers_high_rq_retry_open gauge
+envoy_cluster_circuit_breakers_high_rq_retry_open{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_circuit_breakers_high_rq_retry_open{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_circuit_breakers_high_rq_retry_open{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_circuit_breakers_high_rq_retry_open{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_deferred_stream_close gauge
+envoy_cluster_http2_deferred_stream_close{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_outbound_control_frames_active gauge
+envoy_cluster_http2_outbound_control_frames_active{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_outbound_frames_active gauge
+envoy_cluster_http2_outbound_frames_active{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_pending_send_bytes gauge
+envoy_cluster_http2_pending_send_bytes{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_http2_streams_active gauge
+envoy_cluster_http2_streams_active{envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_lb_subsets_active gauge
+envoy_cluster_lb_subsets_active{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_lb_subsets_active{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_lb_subsets_active{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_lb_subsets_active{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_max_host_weight gauge
+envoy_cluster_max_host_weight{envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_max_host_weight{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_max_host_weight{envoy_cluster_name="wasm_cluster"} 1
+envoy_cluster_max_host_weight{envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_membership_degraded gauge
+envoy_cluster_membership_degraded{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_membership_degraded{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_membership_degraded{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_membership_degraded{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_membership_excluded gauge
+envoy_cluster_membership_excluded{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_membership_excluded{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_membership_excluded{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_membership_excluded{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_membership_healthy gauge
+envoy_cluster_membership_healthy{envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_membership_healthy{envoy_cluster_name="prometheus_stats"} 1
+envoy_cluster_membership_healthy{envoy_cluster_name="wasm_cluster"} 1
+envoy_cluster_membership_healthy{envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_membership_total gauge
+envoy_cluster_membership_total{envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_membership_total{envoy_cluster_name="prometheus_stats"} 1
+envoy_cluster_membership_total{envoy_cluster_name="wasm_cluster"} 1
+envoy_cluster_membership_total{envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_outlier_detection_ejections_active gauge
+envoy_cluster_outlier_detection_ejections_active{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+# TYPE envoy_cluster_update_time gauge
+envoy_cluster_update_time{envoy_cluster_name="httproute/default/backend/rule/0"} 1738310794850
+# TYPE envoy_cluster_upstream_cx_active gauge
+envoy_cluster_upstream_cx_active{envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_upstream_cx_active{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_active{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_active{envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_upstream_cx_rx_bytes_buffered gauge
+envoy_cluster_upstream_cx_rx_bytes_buffered{envoy_cluster_name="httproute/default/backend/rule/0"} 762
+envoy_cluster_upstream_cx_rx_bytes_buffered{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_rx_bytes_buffered{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_rx_bytes_buffered{envoy_cluster_name="xds_cluster"} 17
+# TYPE envoy_cluster_upstream_cx_tx_bytes_buffered gauge
+envoy_cluster_upstream_cx_tx_bytes_buffered{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_cx_tx_bytes_buffered{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_tx_bytes_buffered{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_tx_bytes_buffered{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_active gauge
+envoy_cluster_upstream_rq_active{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_active{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_active{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_active{envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_upstream_rq_pending_active gauge
+envoy_cluster_upstream_rq_pending_active{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_upstream_rq_pending_active{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_rq_pending_active{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_rq_pending_active{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_version gauge
+envoy_cluster_version{envoy_cluster_name="httproute/default/backend/rule/0"} 7674613650421074157
+envoy_cluster_version{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_version{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_version{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_warming_state gauge
+envoy_cluster_warming_state{envoy_cluster_name="httproute/default/backend/rule/0"} 0
+envoy_cluster_warming_state{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_warming_state{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_warming_state{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_manager_active_clusters gauge
+envoy_cluster_manager_active_clusters{} 4
+# TYPE envoy_cluster_manager_cds_update_time gauge
+envoy_cluster_manager_cds_update_time{} 1738310794848
+# TYPE envoy_cluster_manager_cds_version gauge
+envoy_cluster_manager_cds_version{} 7674613650421074157
+# TYPE envoy_cluster_manager_warming_clusters gauge
+envoy_cluster_manager_warming_clusters{} 0
+# TYPE envoy_control_plane_connected_state gauge
+envoy_control_plane_connected_state{} 1
+# TYPE envoy_control_plane_pending_requests gauge
+envoy_control_plane_pending_requests{} 0
+# TYPE envoy_dns_cares_pending_resolutions gauge
+envoy_dns_cares_pending_resolutions{} 0
+# TYPE envoy_filesystem_write_total_buffered gauge
+envoy_filesystem_write_total_buffered{} 885
+# TYPE envoy_http_downstream_cx_active gauge
+envoy_http_downstream_cx_active{envoy_http_conn_manager_prefix="admin"} 8
+envoy_http_downstream_cx_active{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_active{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_http1_active gauge
+envoy_http_downstream_cx_http1_active{envoy_http_conn_manager_prefix="admin"} 8
+envoy_http_downstream_cx_http1_active{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_http1_active{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_http1_soft_drain gauge
+envoy_http_downstream_cx_http1_soft_drain{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_http1_soft_drain{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_http1_soft_drain{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_http2_active gauge
+envoy_http_downstream_cx_http2_active{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_http2_active{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_http2_active{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_http3_active gauge
+envoy_http_downstream_cx_http3_active{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_http3_active{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_http3_active{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_rx_bytes_buffered gauge
+envoy_http_downstream_cx_rx_bytes_buffered{envoy_http_conn_manager_prefix="admin"} 733
+envoy_http_downstream_cx_rx_bytes_buffered{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_rx_bytes_buffered{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_ssl_active gauge
+envoy_http_downstream_cx_ssl_active{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_ssl_active{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_ssl_active{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_tx_bytes_buffered gauge
+envoy_http_downstream_cx_tx_bytes_buffered{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_tx_bytes_buffered{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_tx_bytes_buffered{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_cx_upgrades_active gauge
+envoy_http_downstream_cx_upgrades_active{envoy_http_conn_manager_prefix="admin"} 0
+envoy_http_downstream_cx_upgrades_active{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_cx_upgrades_active{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_downstream_rq_active gauge
+envoy_http_downstream_rq_active{envoy_http_conn_manager_prefix="admin"} 1
+envoy_http_downstream_rq_active{envoy_http_conn_manager_prefix="eg-ready-http"} 0
+envoy_http_downstream_rq_active{envoy_http_conn_manager_prefix="http-10080"} 0
+# TYPE envoy_http_rds_config_reload_time_ms gauge
+envoy_http_rds_config_reload_time_ms{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080"} 1738307236143
+# TYPE envoy_http_rds_update_time gauge
+envoy_http_rds_update_time{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080"} 1738307236144
+# TYPE envoy_http_rds_version gauge
+envoy_http_rds_version{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080"} 6927017134761466251
+# TYPE envoy_listener_admin_downstream_cx_active gauge
+envoy_listener_admin_downstream_cx_active{} 8
+# TYPE envoy_listener_admin_downstream_pre_cx_active gauge
+envoy_listener_admin_downstream_pre_cx_active{} 0
+# TYPE envoy_listener_admin_main_thread_downstream_cx_active gauge
+envoy_listener_admin_main_thread_downstream_cx_active{} 8
+# TYPE envoy_listener_downstream_cx_active gauge
+envoy_listener_downstream_cx_active{envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_downstream_cx_active{envoy_listener_address="0.0.0.0_19001"} 0
+# TYPE envoy_listener_downstream_pre_cx_active gauge
+envoy_listener_downstream_pre_cx_active{envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_downstream_pre_cx_active{envoy_listener_address="0.0.0.0_19001"} 0
+# TYPE envoy_listener_worker_downstream_cx_active gauge
+envoy_listener_worker_downstream_cx_active{envoy_worker_id="0",envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_worker_downstream_cx_active{envoy_worker_id="1",envoy_listener_address="0.0.0.0_10080"} 0
+envoy_listener_worker_downstream_cx_active{envoy_worker_id="0",envoy_listener_address="0.0.0.0_19001"} 0
+envoy_listener_worker_downstream_cx_active{envoy_worker_id="1",envoy_listener_address="0.0.0.0_19001"} 0
+# TYPE envoy_listener_manager_lds_update_time gauge
+envoy_listener_manager_lds_update_time{} 1738307230046
+# TYPE envoy_listener_manager_lds_version gauge
+envoy_listener_manager_lds_version{} 13237225503670494420
+# TYPE envoy_listener_manager_total_filter_chains_draining gauge
+envoy_listener_manager_total_filter_chains_draining{} 0
+# TYPE envoy_listener_manager_total_listeners_active gauge
+envoy_listener_manager_total_listeners_active{} 2
+# TYPE envoy_listener_manager_total_listeners_draining gauge
+envoy_listener_manager_total_listeners_draining{} 0
+# TYPE envoy_listener_manager_total_listeners_warming gauge
+envoy_listener_manager_total_listeners_warming{} 0
+# TYPE envoy_listener_manager_workers_started gauge
+envoy_listener_manager_workers_started{} 1
+# TYPE envoy_runtime_admin_overrides_active gauge
+envoy_runtime_admin_overrides_active{} 0
+# TYPE envoy_runtime_deprecated_feature_seen_since_process_start gauge
+envoy_runtime_deprecated_feature_seen_since_process_start{} 2
+# TYPE envoy_runtime_num_keys gauge
+envoy_runtime_num_keys{} 3
+# TYPE envoy_runtime_num_layers gauge
+envoy_runtime_num_layers{} 1
+# TYPE envoy_sds_enable_backend_tls_default_ca_update_time gauge
+envoy_sds_enable_backend_tls_default_ca_update_time{} 1738310794856
+# TYPE envoy_sds_enable_backend_tls_default_ca_version gauge
+envoy_sds_enable_backend_tls_default_ca_version{} 7674613650421074157
+# TYPE envoy_sds_xds_certificate_update_time gauge
+envoy_sds_xds_certificate_update_time{} 1738307230036
+# TYPE envoy_sds_xds_certificate_version gauge
+envoy_sds_xds_certificate_version{} 17241709254077376921
+# TYPE envoy_sds_xds_trusted_ca_update_time gauge
+envoy_sds_xds_trusted_ca_update_time{} 1738307230037
+# TYPE envoy_sds_xds_trusted_ca_version gauge
+envoy_sds_xds_trusted_ca_version{} 17241709254077376921
+# TYPE envoy_server_compilation_settings_fips_mode gauge
+envoy_server_compilation_settings_fips_mode{} 0
+# TYPE envoy_server_concurrency gauge
+envoy_server_concurrency{} 2
+# TYPE envoy_server_days_until_first_cert_expiring gauge
+envoy_server_days_until_first_cert_expiring{} 364
+# TYPE envoy_server_hot_restart_epoch gauge
+envoy_server_hot_restart_epoch{} 0
+# TYPE envoy_server_hot_restart_generation gauge
+envoy_server_hot_restart_generation{} 1
+# TYPE envoy_server_live gauge
+envoy_server_live{} 1
+# TYPE envoy_server_memory_allocated gauge
+envoy_server_memory_allocated{} 6243120
+# TYPE envoy_server_memory_heap_size gauge
+envoy_server_memory_heap_size{} 10485760
+# TYPE envoy_server_memory_physical_size gauge
+envoy_server_memory_physical_size{} 15278558
+# TYPE envoy_server_parent_connections gauge
+envoy_server_parent_connections{} 0
+# TYPE envoy_server_seconds_until_first_ocsp_response_expiring gauge
+envoy_server_seconds_until_first_ocsp_response_expiring{} 0
+# TYPE envoy_server_state gauge
+envoy_server_state{} 0
+# TYPE envoy_server_stats_recent_lookups gauge
+envoy_server_stats_recent_lookups{} 4017
+# TYPE envoy_server_total_connections gauge
+envoy_server_total_connections{} 0
+# TYPE envoy_server_uptime gauge
+envoy_server_uptime{} 4093
+# TYPE envoy_server_version gauge
+envoy_server_version{} 5815641
+# TYPE envoy_thread_local_cluster_manager_main_thread_clusters_inflated gauge
+envoy_thread_local_cluster_manager_main_thread_clusters_inflated{} 4
+# TYPE envoy_thread_local_cluster_manager_worker_clusters_inflated gauge
+envoy_thread_local_cluster_manager_worker_clusters_inflated{envoy_worker_id="0"} 4
+envoy_thread_local_cluster_manager_worker_clusters_inflated{envoy_worker_id="1"} 4
+# TYPE envoy_cluster_internal_upstream_rq_time histogram
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="0.5"} 0
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="1"} 0
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="5"} 0
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="10"} 1
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="25"} 1
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="50"} 1
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="100"} 1
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="250"} 1
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="500"} 1
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="1000"} 1
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="2500"} 1
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="5000"} 1
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="10000"} 1
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="30000"} 1
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="60000"} 1
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="300000"} 1
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="600000"} 1
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="1800000"} 1
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="3600000"} 1
+envoy_cluster_internal_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="+Inf"} 1
+envoy_cluster_internal_upstream_rq_time_sum{envoy_cluster_name="httproute/default/backend/rule/0"} 8.0500000000000007105427357601002
+envoy_cluster_internal_upstream_rq_time_count{envoy_cluster_name="httproute/default/backend/rule/0"} 1
+# TYPE envoy_cluster_update_duration histogram
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="0.5"} 4
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="1"} 4
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="5"} 5
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="10"} 5
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="25"} 6
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="50"} 6
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="100"} 6
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="250"} 6
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="500"} 6
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="1000"} 6
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="2500"} 6
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="5000"} 6
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="10000"} 6
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="30000"} 6
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="60000"} 6
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="300000"} 6
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="600000"} 6
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="1800000"} 6
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="3600000"} 6
+envoy_cluster_update_duration_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="+Inf"} 6
+envoy_cluster_update_duration_sum{envoy_cluster_name="httproute/default/backend/rule/0"} 18.5500000000000007105427357601
+envoy_cluster_update_duration_count{envoy_cluster_name="httproute/default/backend/rule/0"} 6
+# TYPE envoy_cluster_upstream_cx_connect_ms histogram
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="0.5"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="1"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="5"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="10"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="25"} 2
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="50"} 2
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="100"} 2
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="250"} 2
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="500"} 2
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="1000"} 2
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="2500"} 2
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="5000"} 2
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="10000"} 2
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="30000"} 2
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="60000"} 2
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="300000"} 2
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="600000"} 2
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="1800000"} 2
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="3600000"} 2
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="+Inf"} 2
+envoy_cluster_upstream_cx_connect_ms_sum{envoy_cluster_name="httproute/default/backend/rule/0"} 10.5
+envoy_cluster_upstream_cx_connect_ms_count{envoy_cluster_name="httproute/default/backend/rule/0"} 2
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="0.5"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="1"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="5"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="10"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="25"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="50"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="100"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="250"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="500"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="1000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="2500"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="5000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="10000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="30000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="60000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="300000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="600000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="1800000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="3600000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="prometheus_stats",le="+Inf"} 0
+envoy_cluster_upstream_cx_connect_ms_sum{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_connect_ms_count{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="0.5"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="1"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="5"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="10"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="25"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="50"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="100"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="250"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="500"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="1000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="2500"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="5000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="10000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="30000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="60000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="300000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="600000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="1800000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="3600000"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="wasm_cluster",le="+Inf"} 0
+envoy_cluster_upstream_cx_connect_ms_sum{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_connect_ms_count{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="0.5"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="1"} 0
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="5"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="10"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="25"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="50"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="100"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="250"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="500"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="1000"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="2500"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="5000"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="10000"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="30000"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="60000"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="300000"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="600000"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="1800000"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="3600000"} 1
+envoy_cluster_upstream_cx_connect_ms_bucket{envoy_cluster_name="xds_cluster",le="+Inf"} 1
+envoy_cluster_upstream_cx_connect_ms_sum{envoy_cluster_name="xds_cluster"} 4.049999999999999822364316059975
+envoy_cluster_upstream_cx_connect_ms_count{envoy_cluster_name="xds_cluster"} 1
+# TYPE envoy_cluster_upstream_cx_length_ms histogram
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="0.5"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="1"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="5"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="10"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="25"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="50"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="100"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="250"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="500"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="1000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="2500"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="5000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="10000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="30000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="60000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="300000"} 1
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="600000"} 1
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="1800000"} 1
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="3600000"} 1
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="+Inf"} 1
+envoy_cluster_upstream_cx_length_ms_sum{envoy_cluster_name="httproute/default/backend/rule/0"} 275000
+envoy_cluster_upstream_cx_length_ms_count{envoy_cluster_name="httproute/default/backend/rule/0"} 1
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="0.5"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="1"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="5"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="10"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="25"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="50"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="100"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="250"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="500"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="1000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="2500"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="5000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="10000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="30000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="60000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="300000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="600000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="1800000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="3600000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="prometheus_stats",le="+Inf"} 0
+envoy_cluster_upstream_cx_length_ms_sum{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_length_ms_count{envoy_cluster_name="prometheus_stats"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="0.5"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="1"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="5"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="10"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="25"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="50"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="100"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="250"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="500"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="1000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="2500"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="5000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="10000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="30000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="60000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="300000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="600000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="1800000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="3600000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="wasm_cluster",le="+Inf"} 0
+envoy_cluster_upstream_cx_length_ms_sum{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_length_ms_count{envoy_cluster_name="wasm_cluster"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="0.5"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="1"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="5"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="10"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="25"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="50"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="100"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="250"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="500"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="1000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="2500"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="5000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="10000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="30000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="60000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="300000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="600000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="1800000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="3600000"} 0
+envoy_cluster_upstream_cx_length_ms_bucket{envoy_cluster_name="xds_cluster",le="+Inf"} 0
+envoy_cluster_upstream_cx_length_ms_sum{envoy_cluster_name="xds_cluster"} 0
+envoy_cluster_upstream_cx_length_ms_count{envoy_cluster_name="xds_cluster"} 0
+# TYPE envoy_cluster_upstream_rq_time histogram
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="0.5"} 0
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="1"} 0
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="5"} 0
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="10"} 1
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="25"} 1
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="50"} 1
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="100"} 1
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="250"} 1
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="500"} 1
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="1000"} 1
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="2500"} 1
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="5000"} 1
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="10000"} 1
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="30000"} 1
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="60000"} 1
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="300000"} 1
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="600000"} 1
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="1800000"} 1
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="3600000"} 1
+envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name="httproute/default/backend/rule/0",le="+Inf"} 1
+envoy_cluster_upstream_rq_time_sum{envoy_cluster_name="httproute/default/backend/rule/0"} 8.0500000000000007105427357601002
+envoy_cluster_upstream_rq_time_count{envoy_cluster_name="httproute/default/backend/rule/0"} 1
+# TYPE envoy_cluster_manager_cds_update_duration histogram
+envoy_cluster_manager_cds_update_duration_bucket{le="0.5"} 1
+envoy_cluster_manager_cds_update_duration_bucket{le="1"} 1
+envoy_cluster_manager_cds_update_duration_bucket{le="5"} 1
+envoy_cluster_manager_cds_update_duration_bucket{le="10"} 1
+envoy_cluster_manager_cds_update_duration_bucket{le="25"} 2
+envoy_cluster_manager_cds_update_duration_bucket{le="50"} 2
+envoy_cluster_manager_cds_update_duration_bucket{le="100"} 2
+envoy_cluster_manager_cds_update_duration_bucket{le="250"} 2
+envoy_cluster_manager_cds_update_duration_bucket{le="500"} 2
+envoy_cluster_manager_cds_update_duration_bucket{le="1000"} 2
+envoy_cluster_manager_cds_update_duration_bucket{le="2500"} 2
+envoy_cluster_manager_cds_update_duration_bucket{le="5000"} 2
+envoy_cluster_manager_cds_update_duration_bucket{le="10000"} 2
+envoy_cluster_manager_cds_update_duration_bucket{le="30000"} 2
+envoy_cluster_manager_cds_update_duration_bucket{le="60000"} 2
+envoy_cluster_manager_cds_update_duration_bucket{le="300000"} 2
+envoy_cluster_manager_cds_update_duration_bucket{le="600000"} 2
+envoy_cluster_manager_cds_update_duration_bucket{le="1800000"} 2
+envoy_cluster_manager_cds_update_duration_bucket{le="3600000"} 2
+envoy_cluster_manager_cds_update_duration_bucket{le="+Inf"} 2
+envoy_cluster_manager_cds_update_duration_sum{} 18.5
+envoy_cluster_manager_cds_update_duration_count{} 2
+# TYPE envoy_http_downstream_cx_length_ms histogram
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="0.5"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="1"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="5"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="10"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="25"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="50"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="100"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="250"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="500"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="1000"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="2500"} 8
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="5000"} 8
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="10000"} 8
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="30000"} 8
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="60000"} 8
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="300000"} 8
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="600000"} 8
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="1800000"} 8
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="3600000"} 8
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="admin",le="+Inf"} 8
+envoy_http_downstream_cx_length_ms_sum{envoy_http_conn_manager_prefix="admin"} 8400
+envoy_http_downstream_cx_length_ms_count{envoy_http_conn_manager_prefix="admin"} 8
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="0.5"} 392
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="1"} 392
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="5"} 812
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="10"} 815
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="25"} 816
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="50"} 816
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="100"} 816
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="250"} 816
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="500"} 816
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="1000"} 816
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="2500"} 816
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="5000"} 816
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="10000"} 816
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="30000"} 816
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="60000"} 816
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="300000"} 816
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="600000"} 816
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="1800000"} 816
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="3600000"} 816
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="+Inf"} 816
+envoy_http_downstream_cx_length_ms_sum{envoy_http_conn_manager_prefix="eg-ready-http"} 501.65000000000003410605131648481
+envoy_http_downstream_cx_length_ms_count{envoy_http_conn_manager_prefix="eg-ready-http"} 816
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="0.5"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="1"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="5"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="10"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="25"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="50"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="100"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="250"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="500"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="1000"} 0
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="2500"} 2
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="5000"} 2
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="10000"} 2
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="30000"} 2
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="60000"} 2
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="300000"} 2
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="600000"} 2
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="1800000"} 2
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="3600000"} 2
+envoy_http_downstream_cx_length_ms_bucket{envoy_http_conn_manager_prefix="http-10080",le="+Inf"} 2
+envoy_http_downstream_cx_length_ms_sum{envoy_http_conn_manager_prefix="http-10080"} 2100
+envoy_http_downstream_cx_length_ms_count{envoy_http_conn_manager_prefix="http-10080"} 2
+# TYPE envoy_http_downstream_rq_time histogram
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="0.5"} 4
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="1"} 4
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="5"} 7
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="10"} 7
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="25"} 8
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="50"} 8
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="100"} 8
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="250"} 8
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="500"} 8
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="1000"} 8
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="2500"} 8
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="5000"} 8
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="10000"} 8
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="30000"} 8
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="60000"} 8
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="300000"} 8
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="600000"} 8
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="1800000"} 8
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="3600000"} 8
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="admin",le="+Inf"} 8
+envoy_http_downstream_rq_time_sum{envoy_http_conn_manager_prefix="admin"} 19.6499999999999985789145284798
+envoy_http_downstream_rq_time_count{envoy_http_conn_manager_prefix="admin"} 8
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="0.5"} 811
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="1"} 811
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="5"} 815
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="10"} 815
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="25"} 816
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="50"} 816
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="100"} 816
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="250"} 816
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="500"} 816
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="1000"} 816
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="2500"} 816
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="5000"} 816
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="10000"} 816
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="30000"} 816
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="60000"} 816
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="300000"} 816
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="600000"} 816
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="1800000"} 816
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="3600000"} 816
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="eg-ready-http",le="+Inf"} 816
+envoy_http_downstream_rq_time_sum{envoy_http_conn_manager_prefix="eg-ready-http"} 14.6999999999999992894572642399
+envoy_http_downstream_rq_time_count{envoy_http_conn_manager_prefix="eg-ready-http"} 816
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="0.5"} 0
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="1"} 0
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="5"} 0
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="10"} 0
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="25"} 2
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="50"} 2
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="100"} 2
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="250"} 2
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="500"} 2
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="1000"} 2
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="2500"} 2
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="5000"} 2
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="10000"} 2
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="30000"} 2
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="60000"} 2
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="300000"} 2
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="600000"} 2
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="1800000"} 2
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="3600000"} 2
+envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix="http-10080",le="+Inf"} 2
+envoy_http_downstream_rq_time_sum{envoy_http_conn_manager_prefix="http-10080"} 29
+envoy_http_downstream_rq_time_count{envoy_http_conn_manager_prefix="http-10080"} 2
+# TYPE envoy_http_rds_update_duration histogram
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="0.5"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="1"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="5"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="10"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="25"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="50"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="100"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="250"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="500"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="1000"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="2500"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="5000"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="10000"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="30000"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="60000"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="300000"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="600000"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="1800000"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="3600000"} 2
+envoy_http_rds_update_duration_bucket{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080",le="+Inf"} 2
+envoy_http_rds_update_duration_sum{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080"} 0
+envoy_http_rds_update_duration_count{envoy_rds_route_config="default/eg/http",envoy_http_conn_manager_prefix="http-10080"} 2
+# TYPE envoy_listener_admin_connections_accepted_per_socket_event histogram
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="0.5"} 0
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="1"} 0
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="5"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="10"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="25"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="50"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="100"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="250"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="500"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="1000"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="2500"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="5000"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="10000"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="30000"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="60000"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="300000"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="600000"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="1800000"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="3600000"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_bucket{le="+Inf"} 8
+envoy_listener_admin_connections_accepted_per_socket_event_sum{} 8.4000000000000003552713678800501
+envoy_listener_admin_connections_accepted_per_socket_event_count{} 8
+# TYPE envoy_listener_admin_downstream_cx_length_ms histogram
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="0.5"} 0
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="1"} 0
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="5"} 0
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="10"} 0
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="25"} 0
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="50"} 0
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="100"} 0
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="250"} 0
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="500"} 0
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="1000"} 0
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="2500"} 8
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="5000"} 8
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="10000"} 8
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="30000"} 8
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="60000"} 8
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="300000"} 8
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="600000"} 8
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="1800000"} 8
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="3600000"} 8
+envoy_listener_admin_downstream_cx_length_ms_bucket{le="+Inf"} 8
+envoy_listener_admin_downstream_cx_length_ms_sum{} 8400
+envoy_listener_admin_downstream_cx_length_ms_count{} 8
+# TYPE envoy_listener_connections_accepted_per_socket_event histogram
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="0.5"} 0
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="1"} 0
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="5"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="10"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="25"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="50"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="100"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="250"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="500"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="1000"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="2500"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="5000"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="10000"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="30000"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="60000"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="300000"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="600000"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="1800000"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="3600000"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_10080",le="+Inf"} 2
+envoy_listener_connections_accepted_per_socket_event_sum{envoy_listener_address="0.0.0.0_10080"} 2.1000000000000000888178419700125
+envoy_listener_connections_accepted_per_socket_event_count{envoy_listener_address="0.0.0.0_10080"} 2
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="0.5"} 0
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="1"} 0
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="5"} 816
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="10"} 816
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="25"} 816
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="50"} 816
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="100"} 816
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="250"} 816
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="500"} 816
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="1000"} 816
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="2500"} 816
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="5000"} 816
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="10000"} 816
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="30000"} 816
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="60000"} 816
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="300000"} 816
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="600000"} 816
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="1800000"} 816
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="3600000"} 816
+envoy_listener_connections_accepted_per_socket_event_bucket{envoy_listener_address="0.0.0.0_19001",le="+Inf"} 816
+envoy_listener_connections_accepted_per_socket_event_sum{envoy_listener_address="0.0.0.0_19001"} 856.80000000000006821210263296962
+envoy_listener_connections_accepted_per_socket_event_count{envoy_listener_address="0.0.0.0_19001"} 816
+# TYPE envoy_listener_downstream_cx_length_ms histogram
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="0.5"} 0
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="1"} 0
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="5"} 0
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="10"} 0
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="25"} 0
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="50"} 0
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="100"} 0
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="250"} 0
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="500"} 0
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="1000"} 0
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="2500"} 2
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="5000"} 2
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="10000"} 2
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="30000"} 2
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="60000"} 2
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="300000"} 2
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="600000"} 2
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="1800000"} 2
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="3600000"} 2
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_10080",le="+Inf"} 2
+envoy_listener_downstream_cx_length_ms_sum{envoy_listener_address="0.0.0.0_10080"} 2100
+envoy_listener_downstream_cx_length_ms_count{envoy_listener_address="0.0.0.0_10080"} 2
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="0.5"} 433
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="1"} 433
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="5"} 812
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="10"} 815
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="25"} 816
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="50"} 816
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="100"} 816
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="250"} 816
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="500"} 816
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="1000"} 816
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="2500"} 816
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="5000"} 816
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="10000"} 816
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="30000"} 816
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="60000"} 816
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="300000"} 816
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="600000"} 816
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="1800000"} 816
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="3600000"} 816
+envoy_listener_downstream_cx_length_ms_bucket{envoy_listener_address="0.0.0.0_19001",le="+Inf"} 816
+envoy_listener_downstream_cx_length_ms_sum{envoy_listener_address="0.0.0.0_19001"} 452.60000000000007958078640513122
+envoy_listener_downstream_cx_length_ms_count{envoy_listener_address="0.0.0.0_19001"} 816
+# TYPE envoy_listener_manager_lds_update_duration histogram
+envoy_listener_manager_lds_update_duration_bucket{le="0.5"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="1"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="5"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="10"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="25"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="50"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="100"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="250"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="500"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="1000"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="2500"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="5000"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="10000"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="30000"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="60000"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="300000"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="600000"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="1800000"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="3600000"} 1
+envoy_listener_manager_lds_update_duration_bucket{le="+Inf"} 1
+envoy_listener_manager_lds_update_duration_sum{} 0
+envoy_listener_manager_lds_update_duration_count{} 1
+# TYPE envoy_overload_refresh_interval_delay histogram
+envoy_overload_refresh_interval_delay_bucket{le="0.5"} 0
+envoy_overload_refresh_interval_delay_bucket{le="1"} 0
+envoy_overload_refresh_interval_delay_bucket{le="5"} 0
+envoy_overload_refresh_interval_delay_bucket{le="10"} 0
+envoy_overload_refresh_interval_delay_bucket{le="25"} 0
+envoy_overload_refresh_interval_delay_bucket{le="50"} 0
+envoy_overload_refresh_interval_delay_bucket{le="100"} 0
+envoy_overload_refresh_interval_delay_bucket{le="250"} 0
+envoy_overload_refresh_interval_delay_bucket{le="500"} 0
+envoy_overload_refresh_interval_delay_bucket{le="1000"} 0
+envoy_overload_refresh_interval_delay_bucket{le="2500"} 0
+envoy_overload_refresh_interval_delay_bucket{le="5000"} 0
+envoy_overload_refresh_interval_delay_bucket{le="10000"} 0
+envoy_overload_refresh_interval_delay_bucket{le="30000"} 0
+envoy_overload_refresh_interval_delay_bucket{le="60000"} 0
+envoy_overload_refresh_interval_delay_bucket{le="300000"} 0
+envoy_overload_refresh_interval_delay_bucket{le="600000"} 0
+envoy_overload_refresh_interval_delay_bucket{le="1800000"} 0
+envoy_overload_refresh_interval_delay_bucket{le="3600000"} 0
+envoy_overload_refresh_interval_delay_bucket{le="+Inf"} 0
+envoy_overload_refresh_interval_delay_sum{} 0
+envoy_overload_refresh_interval_delay_count{} 0
+# TYPE envoy_sds_enable_backend_tls_default_ca_update_duration histogram
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="0.5"} 0
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="1"} 0
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="5"} 0
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="10"} 1
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="25"} 1
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="50"} 1
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="100"} 1
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="250"} 1
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="500"} 1
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="1000"} 1
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="2500"} 1
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="5000"} 1
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="10000"} 1
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="30000"} 1
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="60000"} 1
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="300000"} 1
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="600000"} 1
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="1800000"} 1
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="3600000"} 1
+envoy_sds_enable_backend_tls_default_ca_update_duration_bucket{le="+Inf"} 1
+envoy_sds_enable_backend_tls_default_ca_update_duration_sum{} 5.049999999999999822364316059975
+envoy_sds_enable_backend_tls_default_ca_update_duration_count{} 1
+# TYPE envoy_sds_xds_certificate_update_duration histogram
+envoy_sds_xds_certificate_update_duration_bucket{le="0.5"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="1"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="5"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="10"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="25"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="50"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="100"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="250"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="500"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="1000"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="2500"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="5000"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="10000"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="30000"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="60000"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="300000"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="600000"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="1800000"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="3600000"} 0
+envoy_sds_xds_certificate_update_duration_bucket{le="+Inf"} 0
+envoy_sds_xds_certificate_update_duration_sum{} 0
+envoy_sds_xds_certificate_update_duration_count{} 0
+# TYPE envoy_sds_xds_trusted_ca_update_duration histogram
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="0.5"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="1"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="5"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="10"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="25"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="50"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="100"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="250"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="500"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="1000"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="2500"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="5000"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="10000"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="30000"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="60000"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="300000"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="600000"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="1800000"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="3600000"} 0
+envoy_sds_xds_trusted_ca_update_duration_bucket{le="+Inf"} 0
+envoy_sds_xds_trusted_ca_update_duration_sum{} 0
+envoy_sds_xds_trusted_ca_update_duration_count{} 0
+# TYPE envoy_server_initialization_time_ms histogram
+envoy_server_initialization_time_ms_bucket{le="0.5"} 0
+envoy_server_initialization_time_ms_bucket{le="1"} 0
+envoy_server_initialization_time_ms_bucket{le="5"} 0
+envoy_server_initialization_time_ms_bucket{le="10"} 0
+envoy_server_initialization_time_ms_bucket{le="25"} 0
+envoy_server_initialization_time_ms_bucket{le="50"} 1
+envoy_server_initialization_time_ms_bucket{le="100"} 1
+envoy_server_initialization_time_ms_bucket{le="250"} 1
+envoy_server_initialization_time_ms_bucket{le="500"} 1
+envoy_server_initialization_time_ms_bucket{le="1000"} 1
+envoy_server_initialization_time_ms_bucket{le="2500"} 1
+envoy_server_initialization_time_ms_bucket{le="5000"} 1
+envoy_server_initialization_time_ms_bucket{le="10000"} 1
+envoy_server_initialization_time_ms_bucket{le="30000"} 1
+envoy_server_initialization_time_ms_bucket{le="60000"} 1
+envoy_server_initialization_time_ms_bucket{le="300000"} 1
+envoy_server_initialization_time_ms_bucket{le="600000"} 1
+envoy_server_initialization_time_ms_bucket{le="1800000"} 1
+envoy_server_initialization_time_ms_bucket{le="3600000"} 1
+envoy_server_initialization_time_ms_bucket{le="+Inf"} 1
+envoy_server_initialization_time_ms_sum{} 39.5
+envoy_server_initialization_time_ms_count{} 1
