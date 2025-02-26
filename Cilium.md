@@ -36,7 +36,42 @@ On high level, Cilium provides
 - JS => Browser
 - eBPF => Kernel
 
-## Multiple Projects
+## Cilium Commands
+
+### Install/Uninstall Cilium
+```bash
+# Using helm
+helm repo add cilium https://helm.cilium.io/
+helm repo update
+
+helm search repo cilium/cilium --versions
+
+helm install cilium cilium/cilium --namespace kube-system \
+  --set annotateK8sNode=true \
+  --set debug.enabled=true \
+  --set kubeProxyReplacement=true \
+  --version 1.16.6
+
+helm install cilium cilium/cilium --namespace kube-system \
+  --set debug.enabled=true \
+  --version 1.16.6
+
+# Uninstall 
+helm uninstall cilium --namespace kube-system
+
+# Install using cilium-cli
+
+cilium install --set annotateK8sNode=true --set debug.enabled=true
+
+```
+
+### restarts cilium pods
+Generally requires when you update any config params in cilium-config map
+```bash
+kubectl -n kube-system delete pod -l k8s-app=cilium
+```
+
+## Cilium Projects
 ### Cilium CNI
 - Scalable, secure, high performance CNI plugin
 
