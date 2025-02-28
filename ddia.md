@@ -393,32 +393,329 @@ ToDo - Fig 3-3
 ToDo Fig 3-4
 
 - SSTables have several big advantages over log segments with hash indexes
-    - 
+    - Merging segments is simple and efficient, even if the files are bigger than the available memory. Bec segments contains keys in sorted order already
+    - When multiple segments contain the same key, we can keep the value from the most recent segment and discard the values in older segments.
+    - No need to keep an index for all keys in the memory
+    - You still need an in-memory index to tell you the offsets for some of the keys, but it can be sparse
+    - range queries are possible
+    - compression reduces disk space + reduces I/O b/w use.
+ToDo Fig 3-5
+
+- How do you get your data to be sorted by key in the first place?
+    - When a write comes in, add it to an in-memory balanced tree data structure (AVL or red-black trees)
+        - in-memory tree called as memtable
+    - On threshold, write memtable into SSTable
+    - While the SSTable is being written out to disk, writes can continue to a new memtable instance.
+    - To serve read request, first find in memtable. Then in most recent on-disk segment, then in the next-older segment, etc.
+    - Run merging and compaction periodically to combine segments, and discard overwritten or deleted values.
+- How to handle server crashes 
+    - keep separate append-only log on disk where every write is immediately appended
+    - It's purpose is to restore memtable after crash
+    - On memtable written out to an SSTable, discard the corresponding log
+
+### LSM-Tree (Log Structured Merged Tree)
+- LevelDB and RocksDB uses above Storage engine algo
+- LevelDB can be used in Riak as an alternative to Bitcask (Storage Engine).
+- Similar Storage engine algo used in Cassandra and HBase DBs
+
+- Originally above indexing structure was described by Patrick O’Neil et al. under the name Log-Structured Merge-Tree (or LSM-Tree) 
+ - Storage engines that are based on this principle of merging and compacting sorted files are often called LSM storage engines.
+- Lucene, an indexing engine for full-text search used by Elasticsearch and Solr, uses a similar method for storing its term dictionary
+- A full-text index is much more complex than a key-value index but is based on a similar idea.
+
+### Performance Optimization
+- LSM alog can be slow when searching non existing keys.
+- Solution - Bloom filters
+    - memory-efficient data structure
+    - approximates the contents of a set
+    - can tell if a key does not appear in DB
+    - saves many unnecessary disk reads for nonexistent keys.
+
+- Diff strategies to determine the order and timing of how SSTables are compacted and merged.
+    - size-tiered compaction
+        - used by Cassandra
+    - leveled compaction
+        - used by LevelDB, RocksDB, Cassandra
+
+- Because the disk writes are sequential, the LSM-tree can support remarkably high write throughput. 
+
+### B-Trees
+- is a standard index implementation used by almost all Relational DBs
+
+- B-tree Storage mechanism
+    - B-trees break the DB down into fixed-size blocks or pages
+    - Generally, page size is 4 KB (sometimes bigger)
+    - read or write one page at a time
+    - This design corresponds more closely to the underlying hardware, as disks are also arranged in fixed-size blocks.
+
+ToDo Fig 3-6
+
+- leaf page
+    - either contains the value for each key inline Or
+    - contains references to the pages where the values can be found.
+- branching factor
+    - The number of references to child pages in one page of the B-tree
+
+- To updating a Key
+    - find a page containing key
+    - update the value and write complete page back to disk
+        - **This is major diff Vs LSM-Trees**
+    - any references to that page remain valid
+- To add new key
+    - first find the page whose range encompasses the new key
+    - then add the key
+    - If page is full
+        - split page into two half-full pages
+        - update parent page to account for the new subdivision of key ranges
+
+ToDo Fig 3-7
+
+- Above algo ensures tree remains balanced
+- B-tree with n keys always has a depth of O(log n). 
+- A four-level tree of 4 KB pages with a branching factor of 500 can store up to 250 TB
+
+- How to handle DB Crashes
+    - crash when updating parent page may end up DB in corrupted state
+        - orphan pages that won't have parent page
+    - Solution - write-ahead log (WAL) or redo log
+        - Append only file
+        - any modification first need to append in log file
+        - used while recovering indexes after crash
+
+- Concurrency Control
+    - updating pages in place requires careful Concurrency Control
+    - o/w a thread may see tree in inconsistent state
+    - Solution 
+        - protect tree data structure using latches (lightweight locks)
+    - Log-structured/LSM-Tree approach are simpler in this regard, because they do all the merging in the background without interfering with incoming queries and atomically swap old segments for new segments from time to time.
+
+#### B-Tree Optimizations
+- Many optimizations have been developed over the years.
+- Instead of overwriting pages and maintaining a WAL for crash recovery, some databases (like LMDB) use a copy-on-write scheme
+    - A modified page is written to a different location
+    - New version of the parent pages in the tree is created, pointing at the new location
+    - See “Snapshot Isolation and Repeatable Read” p237
+- save space in pages by not storing entire key, but abbreviating it
+    - Especially in pages on the interior of the tree
+    - keys only need to provide boundaries between key ranges
+    - This allows packing more keys into a page
+        - means higher branching factor
+        - thus fewer levels
+        - used in B+ trees
+- lay out the tree such that leaf pages appear in sequential order on disk.
+    - But diff to maintain this as tree grows
+    - This is little easy to do in LSM-Trees
+    - As LSM-trees rewrite large segments of the storage in one go during merging, it’s easier for them to keep sequential keys close to each other on disk
+- Each leaf page may have references to its sibling pages to the left and right,
+    - allows scanning keys in order without jumping back to parent pages.
+- B-tree variants such as fractal trees [22] borrow some log-structured ideas to reduce disk seeks
+
+### B-Trees Vs LSM-Trees
+- LSM-Trees
+    - faster for writes
+    - reads are slow bec
+        - need to check diff memtable/SSTables at different stages of compaction.
+- B-Trees
+    - faster for reads
+
+- **However**, *benchmarks are often inconclusive and sensitive to details of the workload. You need to test systems with your particular workload in order to make a valid comparison*
 
 
+- Things to consider when measuring the performance of a storage engine.
 
+- Both types suffers from write amplification
+    - one write to the DB results in multiple writes to the disk over the course of the database’s lifetime
+    - B-tree
+        - writes every piece of data at least twice
+            1. in WAL
+            2. in tree page itself
+        - writes entire page even if few bytes in the page are modified
+        - Some storage engines even overwrite the same page twice in order to avoid ending up with a partially updated page in the event of a power failure
+    - LSM-Trees
+        - rewrite data multiple times due to repeated compaction and merging of SSTables
 
+- write amplification is of concern with SSDs
+    - bec SSDs can only overwrite blocks a limited number of times before wearing out.
 
+- LSM-Trees 
+    - Adv
+        - have lower write amplification => higher write throughput than B-trees
+        - can be compressed better, and thus often produce smaller files on disk than B-trees.
+        - have lower storage overheads bec 
+            - they are not page oriented
+            - remove fragmentation by rewrite SSTables
+    - DisAdv
+        - compaction process can sometimes interfere with the performance of ongoing reads and writes
+        - at higher percentiles, response time of queries to log-structured storage engines can sometimes be quite high, and B-trees can be more predictable
+        - Disk’s finite write b/w needs to be shared between the initial write (logging and flushing a memtable to disk) and the compaction threads running in the background.
+        - Bigger the DB, more disk b/w required for compaction
+        - It may happen compaction may not keep up with rate of incoming writes. So unmerged segments on disk keeps growing until disk full.
+            - reads slows down as well bec it need to search more segments
+        - Generally STable-based storage engines do not throttle the rate of incoming writes, even if compaction cannot keep up
+            - So you need to monitor to detect this situation
+- B-Trees
+    - Adv
+        - key is located at exactly one place. In Log-structured engine, key may have multiple copies in diff segments
+        - This makes B-Trees more attractive in DBs that want to offer strong transactional semantics
 
+- There is no quick and easy rule for determining which type of storage engine is better for your use case, so it is worth testing empirically
 
+### Other indexing structure
+- It is also very common to have secondary indexes.
+- In relational databases, you can create several secondary indexes on the same table using the CREATE INDEX command.
+- secondary indexes helps to perform joins effectively.
+- In secondary indexes, indexed values are not necessarily unique. This can be solved in two ways
+    1. making each value in the index a list of matching row identifiers
+    2. by making each entry unique by appending a row identifier to it
+- Either way, both B-trees and log-structured indexes can be used as secondary indexes.
 
+### Storing values with indexes 
+- heap file
+    - the place where rows are stored DB
+    - stores data in no particular order
+    - The heap file approach is common because it avoids duplicating data when multiple secondary indexes are present: each index just references a location in the heap file, and the actual data is kept in one place.
 
+- Sometimes extra hop from index to heap file can reduce performance
+- So it can be desirable to store the indexed row directly within an index.
+- This is known as a clustered index
+- In MySQL’s InnoDB storage engine
+    - primary key of a table is always a clustered index
+    - secondary indexes refer to the primary key (rather than a heap file location)
+- Covering index
+    - compromise bet heap approach (storing only references to the data within the index) and clustered index
+    - stores some of a table’s columns within the index
+    - This allows some queries to index alone
 
+- Covering and clustered indexes speed up reads but
+    - they require additional storage
+    - can add overhead on writes
+    - bec some data is duplicated
+    - DB need to do additional efforts to enforce transactional guarantees bec applications should not see inconsistencies due to the duplication.
 
+### Multi-column indexes
+- The indexes discussed so far only map a single key to a value. 
+- That is not sufficient if we need to query multiple columns of a table (or multiple fields in a document) simultaneously.
+- most common type of multi-column index is called a concatenated index
+    - combines several fields into one key by appending one column to another
+    - This like old fashioned paper phone book which provides index as (lastname, firstname)
+    - So useful to search people with lastname-firstname combination
+    - However index can not be used to find people with firstname only
 
+### Transaction Processing or Analytics?
+- OLAP and OLTP have very different access patterns
+- The difference between OLTP and OLAP is not always clear-cut, but some typical characteristics are listed below
 
+| Property | Transaction processing systems (OLTP) | Analytic systems (OLAP)|
+| ---------|---------------------------------------|------------------------|
+|Main read pattern|Small number of records per query, fetched by key|Aggregate over large number of records|
+|Main write pattern|Random-access, low-latency writes from user input|Bulk import (ETL) or event stream|
+|Primarily used by|End user/customer, via web application|Internal analyst, for decision support|
+|What data represents|Latest state of data (current point in time)|History of events that happened over time|
+|Dataset size|Gigabytes to terabytes|Terabytes to petabytes|
 
+- OLAP DBs are called data warehouse
+- OLTP systems expected to
+    - be highly available 
+    - process transactions with low latency
+    - bec they are critical to business operations
+- DB Admins are reluctant to run analytics queries bec
+    - those queries are often expensive
+    - scanning large parts of the dataset
+    - can harm performance of concurrently executing transactions.
 
+ToDo Fig 3-8
 
+- Indexing algorithms discussed earlier work well for OLTP systems but not for OLAP systems
 
+#### Indexing for OLAP systems
 
+- OLAP DBs are generally Relation, bec SQL is good fit for analytics queries
+- They helps analyst to explore data through operations such as drill-down and slicing and dicing
+- Many database vendors now focus on supporting either transaction processing or analytics workloads, but not both
+- Data warehouse commercial vendors
+    - Teradata
+    - Vertica
+    - SAP HANA
+    - ParAccel
+    - Amazon RedShift => hosted version of ParAccel
+- Data warehouse Open source SQL-on-Hadoop projects
+    - Apache Hive, Spark SQL, Cloudera Impala, Facebook Presto, Apache Tajo, and Apache Drill
+    - Some of above based on ideas from Google’s Dremel
 
+#### Stars and Snowflakes: Schemas for Analytics
+- most common schema => star schema aka dimensional modeling
+    - At the center of the schema is a so-called fact table
+    - Each row of the fact table represents an event that occurred at a particular time
 
+ToDo Fig 3-9
 
+- Usually, facts are captured as individual events, because this allows maximum flexibility of analysis later.
+- Some of the cols in fact tables are attributes. Helps to calculate profit margins for example. 
+- Other columns in the fact table are foreign key references to other tables, called dimension tables
+- As each row in the fact table represents an event, the dimensions represent the who, what, where, when, how, and why of the event.
+- Notice, date and time are often represented using dimension tables, because this allows additional information about dates (such as public holidays) to be encoded, allowing queries to differentiate between sales on holidays and non-holidays.
+- snowflake schema
+    - variation of star schema
+    - dimensions are further broken down into subdimensions
+    - more normalized than star schemas
+- star schemas are often preferred because they are simpler for analysts to work with
+- In a typical data warehouse, tables are often very wide: fact tables often have over 100 columns, sometimes several hundred
+- Dimension tables can also be very wide
 
+#### Column-Oriented Storage
+- Although fact tables are often over 100 columns wide, a typical data warehouse query only accesses 4 or 5 of them at one time
+- But row-oriented storage engine still needs to load all of those rows (each consisting of over 100 attributes) from disk into memory, parse them, and filter out those that don’t meet the required conditions. That can take a long time.
+- The idea behind column-oriented storage is simple:
+    - don’t store all the values from one row together
+    - but store all the values from each column together instead
 
+- Column storage is easiest to understand in a relational data model, but it applies equally to nonrelational data
+    - Parquet is a columnar storage format that supports a document data model, based on Google’s Dremel 
 
+ToDo Fig 3-10
 
+- The column-oriented storage layout relies on each column file containing the rows in the same order
+- Thus, if you need to reassemble an entire row, you can take the 23rd entry from each of the individual column files and put them together to form the 23rd row of the table.
+
+#### Column Compression
+- column-oriented storage often lends itself very well to compression.
+- Check values for each column Figure 3-10. They often look quite repetitive, which is a good sign for compression.
+- Diff compression techniques can be used depending on data
+    - bitmap encoding
+
+#### Summary
+- Storage engines fall into two broad categories
+    - optimized for OLTP
+    - optimized for OLAP
+- OLTP System
+    - used by end users
+    - applications usually only touch a small number of records in each query
+    - applications asks for data using key, storage engine uses an index to find key-value
+    - Disk seek time is often the bottleneck here.
+- OLAP System
+    - used by business analysts
+    - handle a much lower volume of queries than OLTP 
+    - but each query is more demanding, requires millions records to scan in short time
+    - Disk bandwidth (not seek time) is often the bottleneck here
+    - column-oriented storage is an increasingly popular solution for this kind of workload.
+
+- OLTP side, storage engines from two main schools of thought
+    1. The log-structured. 
+        - Bitcask, SSTables, LSM-trees, LevelDB, Cassandra, HBase, Lucene, and others belong to this group
+    2. update-in-place school
+        - treats the disk as a set of fixed-size pages that can be overwritten
+        - B-trees used by almost all relation DBs
+
+- Log-structured storage engine's key idea 
+    - they systematically turn random-access writes into sequential writes on disk, 
+    - which enables higher write throughput due to the performance characteristics of hard drives and SSDs.
+
+- In OLAP, access pattern is diff than OLTP
+    - queries require sequentially scanning across a large number of rows
+    - This makes indexes less relevant. 
+    - Instead it becomes important to encode data very compactly. 
+    - This minimize the amount of data that the query needs to read from disk. 
+    - column-oriented storage helps achieve this goal
 
 
 
@@ -431,4 +728,6 @@ ToDo Fig 3-4
 - Nonfunctional Requirements => security, reliability, compliance, scalability, compatibility, maintainability, etc.
 - schema-on-read => the structure of the data is implicit, and only interpreted when the data is read
 - schema-on-write => the traditional approach of relational databases, where the schema is explicit and the database ensures all written data conforms to it
-
+- OLTP => Online Transaction Processing
+- OLAP => Online Analytics processing
+- ELT => Extract, Transform, Load
