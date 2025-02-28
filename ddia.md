@@ -319,6 +319,107 @@ ToDo Fig 2-1
     - Pregel - is a graph processing frameworks 
 
 ## Chapter 3: Storage and Retrieval
+- As a application developer, you need to have a rough idea of what the storage engine is doing under the hood.
+- big difference between storage engines optimized for 
+    - transactional workloads (OLTP)
+    - optimized for analytics (OLAP)
+- Two families of Storage engine
+    - log-structured
+        - append only data file
+    - page-oriented => B-trees
+
+- To search the same data in several different ways, you may need several different indexes on different parts of the data.
+- Add/remove indexes 
+    - do not affect contents
+    - affect performance of queries
+    - => affect write throughput
+- Adding new index speeds up read queries, but slows down write.
+
+### Hash Indexes
+ToDo Fig 3-1
+- Above approach used in Bitcask (the default storage engine in Riak)
+- Bitcask offers high-performance reads and writes, subject to the requirement that all the keys fit in the available RAM
+    - uses case value of each key updated frequently 
+
+- How to avoid running out of disk space when using single append-only log file
+    - on a threshold, break the log into certain size segment file
+    - make subsequent writes to a new segment file
+    - perform compaction on these segments
+    - can also perform merge of segments together along with compaction 
+    - Segments are never modified after they have been written, so the merged segment is written to a new file. 
+- Compaction => Throwing away duplicate keys in the log, and keeping only the most recent update for each key.
+
+ToDo - Fig 3-2
+ToDo - Fig 3-3
+- Each segment now has its own in-memory hash table, mapping keys to file offsets. 
+
+- Issues to handle with above
+    - File format => use binary format instead CSV
+    - Deleting records
+        - To delete a key, append special deletion record (called as tombstone)
+        - During merging, tombstone tells to discard any previous values for the deleted key.
+    - Crash recovery
+        - On DB restart, in-mem hash map are lost.
+        - rebuilding them by reading all segments  may take long time
+        - Bitcask speeds up recovery by storing a snapshot of each segment’s hash map on disk, which can be loaded into memory more quickly.
+    - Partially written records
+        - Bitcask uses checksums to detect and ignored corrupted parts
+    - Concurrency control
+        - writes should be in append-only strictly sequential order, common choice is to use only one writer
+        - as segments are append-only and immutable, read can happen concurrently by multiple threads.
+- Why append-only ? Why not update file in place?
+    - append-only sequential write operations are much faster than random writes
+    - random write causes fragmentation over time
+    - Concurrency and crash recovery are much simpler if segment files are append-only or immutable
+
+- Limitations of Hash table index
+    - The hash table must fit in memory
+    - you could maintain a hash map on disk, but it has performance issues.
+        - requires lot of random access
+        - expensive to grow when it becomes full
+        - hash collisions require fiddly logic
+    - Range queries are not efficient
+        - It is diff to scan over all keys between kitty00000 and kitty99999
+        - Have to lookup each key in hash map
+
+### SSTable and LSM-Trees
+- Solution to above limitations with hash map
+
+- Makes two requirements to the format of our segment files
+    1. key-value pairs should be sorted by key
+        - called this format as Sorted String Table (SSTable)
+    2. Each key only only appears once withing merged segment file
+        - compaction process ensures this
+ToDo Fig 3-4
+
+- SSTables have several big advantages over log segments with hash indexes
+    - 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## Glossary
