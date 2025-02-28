@@ -24,7 +24,7 @@ TODO: Figure 1-1
     - Orgs tolerance to risks 
     
 ### Reliability
-- System working as expected even when things go wrong.
+- System working as expected even when things go wrong or faults occur.
 - can tolerate 
     - user making mistakes
     - user using s/w in unexpected way 
@@ -62,7 +62,8 @@ TODO: Figure 1-1
     - setup monitoring, telemetry
 
 ### Scalability
-- Handle/cpe with increased load
+- Strategies for keeping performance good, even when load increases
+- Handle/cope with increased load
     - Concurrent uses 10K ---> 100K
     - data volume increased  
 - Describe Load in terms of..
@@ -110,16 +111,214 @@ TODO: Fig 1-3
     - increase load, keep system resources (cpu, mem, hdd) unchanged => How system performance is affected 
     - increase load and how much resources need to increase to keep performance unchanged.
 
-- In batch processing => cares about throughput
+- Batch processing => cares about throughput
     - e.g. Hadoop
     - number of records processed / sec
-- In online systems => cares about response time/Latency
+- Online systems => cares about response time/Latency
     - time bet client sending req and receiving response
 
 - Mean/Average time is not really good measure
     - it suppresses  outliers
 
+- Think response time not as single number but as a distributive value.
+- You get variations in response time bec of
+    - context switch of processes
+    - network drops
+    - TCP retransmissions  
+    - garbage collection pause
+    - page faults resulting in disk seek/read
+    - mechanical vibrations in server racks
+
+- median response time = 200 ms => half od request returns in < 200 ms and
+half requests take longer than that
+- median => 50th percentile => P50
+- tail latencies => Higher percentile of response time => how bad your outliers are
+    - 95th percentile => p95
+    - 99th percentile => p99
+    - 99.9th percentile => p999
+- p95 response time is 1.5 sec =>
+    - 95/100 requests took < 1.5 sec
+    - 5/100 requests took > 1.5 sec or more
+- p999 => affects 1 in 1000 requests.
+- Amazon uses 99.9th percentile for their internal services
+    - bec cust w/ slow requests often contains more data on their acct
+    - means they made many purchases
+    - means they are most valuable
+- Amazon study
+    - 100 ms increase in response time reduces sales by 1%
+    - 1 sec slowdown reduces cust satisfaction metric by 16%
+- However, optimizing 99.9th percentile is too expensive.
+- E.g SLA
+    - median response time < 200 ms
+    - 99the percentile under 1 sec
+    - service uptime is 99.9%
+- It is also required to measure response time at client side
+
+ToDo Figure 1.5
+- When several backend calls are needed to serve a request (Fanout), it takes just a single slow backend request to slow down the entire end-user request.
+
+#### Coping with Load
+- Shared-nothing architecture => distributing load across many machines
+- Good architecture involves good mix of pragmatic approaches
+    - using many fairly power full machines can still be simpler and cheaper that large number of small VMs
+- distributing stateless services is easy than stateful services
+- Common wisdom
+    - keep your DB on single node (scale up) until scaling cost or high availability requirements forced you to make it distributed.
+
+- However there is no single solution fits all
+- Following two systems w/ **same data throughput** are very different
+    - System designed to handle 100,000 req/sec each of size 1 kB
+        - 10^5 * 10^3 = 10^8 B/sec
+    - System designed to handle 3 req/min each of size 2 GB
+        - (3*2*10^9) / 60 = 10^8 B/sec
+
 ### Maintainability
+- Majority cost of s/w is it's ongoing maintenance and not the initial development cost
+- Three design principles
+    - Operability
+        - makes routine tasks easy
+        - Good operations can often work around the limitations of bad (or incomplete) software, 
+        - But good software cannot run reliably with bad operations
+    - Simplicity
+        - Easy to understand and modify
+        - reducing complexity improves Maintainability
+    - Evolvability/Extensibility/Modifiability/Plasticity
+        - easy to make changes in future
+        - adapt unanticipated uses cases/requirements
+
+## Chapter 2: Data Models and Query Languages
+- Relational Model => data is organized into relations (called tables in SQL), where each relation is an unordered collection of tuples (rows in SQL).
+- Alternatives to Relational Model were
+    - Network/CODASYL Model
+        - CODASYL => Conference on Data Systems Languages => was a committee
+    - Hierarchical model
+        - e.g IBM's IMS DB
+- NoSQL => Not only SQL
+- NoSQL driving forces
+    - greater scalability than Relational Model can easily achieve including very large datasets or very high write throughput
+    - OSS s/w over commercial DBs
+    - Specialized query operations that are not well supported by relational model
+    - more dynamic and expressive data model
+
+ToDo Fig 2-1
+
+- In one-to-many relationships (user-positions or user-education), can represent in three ways
+    1. Put positions, education info in separate table in connect using foreign key references
+    2. Some Relation DBs (Oracle, IBM DB2, MS SQL Server) support multi-valued data (structured data types or XML data) and support for querying and indexing inside those documents.
+    3. Encode jobs, education, and contact info as a JSON or XML document, store in text column in DB, and let apps interpret its structure and content. 
+        - here you cannot use the DB to query for values inside the encoded column
+
+- data structure like a resume/cv, which is mostly a self-contained document, a JSON representation can be quite appropriate
+- Document-oriented DBs 
+    - MongoDB
+    - RethinkDB
+    - CouchDB
+    - Espresso
+
+
+- Representing a LinkedIn profile as a JSON document
+```json
+{
+  "user_id":     251,
+  "first_name":  "Bill",
+  "last_name":   "Gates",
+  "summary":     "Co-chair of the Bill & Melinda Gates... Active blogger.",
+  "region_id":   "us:91",
+  "industry_id": 131,
+  "photo_url":   "/p/7/000/253/05b/308dd6e.jpg",
+  "positions": [
+    {"job_title": "Co-chair", "organization": "Bill & Melinda Gates Foundation"},
+    {"job_title": "Co-founder, Chairman", "organization": "Microsoft"}
+  ],
+  "education": [
+    {"school_name": "Harvard University",       "start": 1973, "end": 1975},
+    {"school_name": "Lakeside School, Seattle", "start": null, "end": null}
+  ],
+  "contact_info": {
+    "blog":    "https://www.gatesnotes.com/",
+    "twitter": "https://twitter.com/BillGates"
+  }
+}
+```
+
+- JSON lacks schema however the lack of a schema is often cited as an advantage
+- JSON model has better locality then multi-table schema
+    - In JSON, one query is sufficient to fetch
+    - In multi-table, need to query multiple tables or make complex join queries
+
+- Normalization in Relational Model/DBs
+    - removing duplicate data
+    - As a rule of thumb, if you’re duplicating values that could be stored in just one place, the schema is not normalized.
+
+- In Document DBs/Model
+    - many-to-one relationship don't fit nicely
+        - many people live in one particular region Or 
+        - many people work in one particular industry
+    - joins are not needed for one-to-many tree structure
+    - and support for joins is often weak (but RethinkDB and ConchDB supports them to some extend)
+
+- Data has a tendency of becoming more interconnected as features are added to applications.
+
+- In case of many-to-one and many-to-many relationships
+    - relational and document databases are not fundamentally different
+    - related item is referenced by unique identifier called as
+        - foreign key in the relational model
+        - document reference in the document model
+
+- Relational Vs Document Databases 
+    - fault-tolerance properties (Chapter 5)
+    - handling of concurrency (Chapter 7)
+
+- Document Databases 
+    - Advs
+        - schema flexibility
+        - better locality
+        - more closer to applications data structure
+        - useful in case of one-to-many relationships or no relationships.
+    - Dis-Adv
+        - can not refer nested items directly
+        - poor support for joins
+        - In many-to-many, denormalize helps, but application need to ensure denormalize data remain consistent.
+- Relational DBs
+    - Advs
+        - better support for joins, and many-to-one and many-to-many relationships.
+    - Dis-Adv
+        - Schema changes need migration and downtime, making it slow to deploy
+
+- For highly interconnected data 
+    - document model is awkward
+    - relational model is acceptable
+    - Graph models (see “Graph-Like Data Models”) are the most natural.
+
+- It seems that relational and document databases are becoming more similar over time, and that is a good thing. The data models complement each other
+
+- SQL is declarative query language, whereas IMS and CODASYL queried the database using imperative code
+
+### Graph like data models
+- Graph DBs => targeting use cases where anything is potentially related to everything.
+- Possible Use Cases
+    - Social graphs
+        - Vertices are people, and edges indicate which people know each other. 
+    - The web graph
+        - Vertices are web pages, and edges indicate HTML links to other pages.
+    - Road or rail networks
+        - Vertices are junctions, and edges represent the roads or railway lines between them.
+
+- Diff ways of structuring and querying data in graphs
+    - Property graph model
+        - implemented by Neo4j, Titan, and InfiniteGraph
+    - The triple-store model
+        - implemented by Datomic, AllegroGraph, and others
+
+- Declarative query languages for graphs
+    - Cypher (Property graph model)
+    - SPARQL (triple-store model)
+    - Datalog - oldest one
+- Imperative query languages for graphs    
+    - Gremlin
+    - Pregel - is a graph processing frameworks 
+
+## Chapter 3: Storage and Retrieval
 
 
 ## Glossary
@@ -128,5 +327,7 @@ TODO: Fig 1-3
 - Response time Vs Latency
     - Response time is a time that client sees
     - includes n/w + queueing delays
-
+- Nonfunctional Requirements => security, reliability, compliance, scalability, compatibility, maintainability, etc.
+- schema-on-read => the structure of the data is implicit, and only interpreted when the data is read
+- schema-on-write => the traditional approach of relational databases, where the schema is explicit and the database ensures all written data conforms to it
 
