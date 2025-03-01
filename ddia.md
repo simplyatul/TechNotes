@@ -1,7 +1,7 @@
 # Designing Data Intensive Applications
 Book by Martin Kleppmann
 
-## Chapter 1:  Reliable, Scalable and Maintainable  Application
+## Chapter 1. Reliable, Scalable and Maintainable  Application
 
 - DBs Vs Msg Qs
     - Both store data for some time
@@ -21,20 +21,20 @@ TODO: Figure 1-1
     - legacy system dependencies
     - time scale for delivery
     - regulatory constraints
-    - Orgs tolerance to risks 
-    
+    - Orgs tolerance to risks
+
 ### Reliability
 - System working as expected even when things go wrong or faults occur.
-- can tolerate 
+- can tolerate
     - user making mistakes
-    - user using s/w in unexpected way 
+    - user using s/w in unexpected way
 - system prevents unauthorized access and miss-use
 - fault => system deviating from its spec
 - failure => system stops providing required service
 - Chaos Engineering => Deliberately injecting faults
 
 - Why Reliability matters?
-    - outages on e-commerce website 
+    - outages on e-commerce website
         - lost revenue
         - damages reputation
 - So Reliability => Tolerate H/w, S/w and Human Errors
@@ -44,7 +44,7 @@ TODO: Figure 1-1
 - In AWS
     - it is common for a VM to become unavailable
     - bec AWS is designed for flexibility and elasticity over single VM reliability
-- It is seldom that large no of h/w components will fail at the same time 
+- It is seldom that large no of h/w components will fail at the same time
 
 #### S/w faults
 - Systematic Error
@@ -55,7 +55,7 @@ TODO: Figure 1-1
 #### Human Errors
 - Study => config errors by human operators were leading cause of outages than h/w failures
 - So design a system such that
-    - makes it easy to do right things and discourage the wrong thing  
+    - makes it easy to do right things and discourage the wrong thing
     - provide fully featured non-production env so people can play it
     - Test thoroughly
     - Effective automated testing
@@ -65,7 +65,7 @@ TODO: Figure 1-1
 - Strategies for keeping performance good, even when load increases
 - Handle/cope with increased load
     - Concurrent uses 10K ---> 100K
-    - data volume increased  
+    - data volume increased
 - Describe Load in terms of..
     - req/sec to Web App
     - ratio of read/writes to DB
@@ -73,7 +73,7 @@ TODO: Figure 1-1
 
 #### Twritter's Scaling Challenge
 - Post Tweet
-    - Avg => 4.6k req/sec 
+    - Avg => 4.6k req/sec
     - Peak => 12k req/sec
 - View Home timeline
     - user view tweets by people s/he follows
@@ -98,7 +98,7 @@ TODO: Fig 1-2
         - some user > 30M followers
         - So single tweets => 30M writes to home caches
     - Not satisfying SLA => deliver tweets withing 5 secs
- 
+
 TODO: Fig 1-3
 
 ##### Approach III - Hybrid of both
@@ -108,7 +108,7 @@ TODO: Fig 1-3
 
 #### Describing Performance
 - Look at it using Two ways
-    - increase load, keep system resources (cpu, mem, hdd) unchanged => How system performance is affected 
+    - increase load, keep system resources (cpu, mem, hdd) unchanged => How system performance is affected
     - increase load and how much resources need to increase to keep performance unchanged.
 
 - Batch processing => cares about throughput
@@ -124,7 +124,7 @@ TODO: Fig 1-3
 - You get variations in response time bec of
     - context switch of processes
     - network drops
-    - TCP retransmissions  
+    - TCP retransmissions
     - garbage collection pause
     - page faults resulting in disk seek/read
     - mechanical vibrations in server racks
@@ -177,7 +177,7 @@ ToDo Figure 1.5
 - Three design principles
     - Operability
         - makes routine tasks easy
-        - Good operations can often work around the limitations of bad (or incomplete) software, 
+        - Good operations can often work around the limitations of bad (or incomplete) software,
         - But good software cannot run reliably with bad operations
     - Simplicity
         - Easy to understand and modify
@@ -186,7 +186,7 @@ ToDo Figure 1.5
         - easy to make changes in future
         - adapt unanticipated uses cases/requirements
 
-## Chapter 2: Data Models and Query Languages
+## Chapter 2. Data Models and Query Languages
 - Relational Model => data is organized into relations (called tables in SQL), where each relation is an unordered collection of tuples (rows in SQL).
 - Alternatives to Relational Model were
     - Network/CODASYL Model
@@ -205,11 +205,11 @@ ToDo Fig 2-1
 - In one-to-many relationships (user-positions or user-education), can represent in three ways
     1. Put positions, education info in separate table in connect using foreign key references
     2. Some Relation DBs (Oracle, IBM DB2, MS SQL Server) support multi-valued data (structured data types or XML data) and support for querying and indexing inside those documents.
-    3. Encode jobs, education, and contact info as a JSON or XML document, store in text column in DB, and let apps interpret its structure and content. 
+    3. Encode jobs, education, and contact info as a JSON or XML document, store in text column in DB, and let apps interpret its structure and content.
         - here you cannot use the DB to query for values inside the encoded column
 
 - data structure like a resume/cv, which is mostly a self-contained document, a JSON representation can be quite appropriate
-- Document-oriented DBs 
+- Document-oriented DBs
     - MongoDB
     - RethinkDB
     - CouchDB
@@ -252,7 +252,7 @@ ToDo Fig 2-1
 
 - In Document DBs/Model
     - many-to-one relationship don't fit nicely
-        - many people live in one particular region Or 
+        - many people live in one particular region Or
         - many people work in one particular industry
     - joins are not needed for one-to-many tree structure
     - and support for joins is often weak (but RethinkDB and ConchDB supports them to some extend)
@@ -265,11 +265,11 @@ ToDo Fig 2-1
         - foreign key in the relational model
         - document reference in the document model
 
-- Relational Vs Document Databases 
+- Relational Vs Document Databases
     - fault-tolerance properties (Chapter 5)
     - handling of concurrency (Chapter 7)
 
-- Document Databases 
+- Document Databases
     - Advs
         - schema flexibility
         - better locality
@@ -285,7 +285,7 @@ ToDo Fig 2-1
     - Dis-Adv
         - Schema changes need migration and downtime, making it slow to deploy
 
-- For highly interconnected data 
+- For highly interconnected data
     - document model is awkward
     - relational model is acceptable
     - Graph models (see “Graph-Like Data Models”) are the most natural.
@@ -298,7 +298,7 @@ ToDo Fig 2-1
 - Graph DBs => targeting use cases where anything is potentially related to everything.
 - Possible Use Cases
     - Social graphs
-        - Vertices are people, and edges indicate which people know each other. 
+        - Vertices are people, and edges indicate which people know each other.
     - The web graph
         - Vertices are web pages, and edges indicate HTML links to other pages.
     - Road or rail networks
@@ -314,13 +314,13 @@ ToDo Fig 2-1
     - Cypher (Property graph model)
     - SPARQL (triple-store model)
     - Datalog - oldest one
-- Imperative query languages for graphs    
+- Imperative query languages for graphs
     - Gremlin
-    - Pregel - is a graph processing frameworks 
+    - Pregel - is a graph processing frameworks
 
-## Chapter 3: Storage and Retrieval
+## Chapter 3. Storage and Retrieval
 - As a application developer, you need to have a rough idea of what the storage engine is doing under the hood.
-- big difference between storage engines optimized for 
+- big difference between storage engines optimized for
     - transactional workloads (OLTP)
     - optimized for analytics (OLAP)
 - Two families of Storage engine
@@ -329,7 +329,7 @@ ToDo Fig 2-1
     - page-oriented => B-trees
 
 - To search the same data in several different ways, you may need several different indexes on different parts of the data.
-- Add/remove indexes 
+- Add/remove indexes
     - do not affect contents
     - affect performance of queries
     - => affect write throughput
@@ -339,19 +339,19 @@ ToDo Fig 2-1
 ToDo Fig 3-1
 - Above approach used in Bitcask (the default storage engine in Riak)
 - Bitcask offers high-performance reads and writes, subject to the requirement that all the keys fit in the available RAM
-    - uses case value of each key updated frequently 
+    - uses case value of each key updated frequently
 
 - How to avoid running out of disk space when using single append-only log file
     - on a threshold, break the log into certain size segment file
     - make subsequent writes to a new segment file
     - perform compaction on these segments
-    - can also perform merge of segments together along with compaction 
-    - Segments are never modified after they have been written, so the merged segment is written to a new file. 
+    - can also perform merge of segments together along with compaction
+    - Segments are never modified after they have been written, so the merged segment is written to a new file.
 - Compaction => Throwing away duplicate keys in the log, and keeping only the most recent update for each key.
 
 ToDo - Fig 3-2
 ToDo - Fig 3-3
-- Each segment now has its own in-memory hash table, mapping keys to file offsets. 
+- Each segment now has its own in-memory hash table, mapping keys to file offsets.
 
 - Issues to handle with above
     - File format => use binary format instead CSV
@@ -408,7 +408,7 @@ ToDo Fig 3-5
     - While the SSTable is being written out to disk, writes can continue to a new memtable instance.
     - To serve read request, first find in memtable. Then in most recent on-disk segment, then in the next-older segment, etc.
     - Run merging and compaction periodically to combine segments, and discard overwritten or deleted values.
-- How to handle server crashes 
+- How to handle server crashes
     - keep separate append-only log on disk where every write is immediately appended
     - It's purpose is to restore memtable after crash
     - On memtable written out to an SSTable, discard the corresponding log
@@ -418,7 +418,7 @@ ToDo Fig 3-5
 - LevelDB can be used in Riak as an alternative to Bitcask (Storage Engine).
 - Similar Storage engine algo used in Cassandra and HBase DBs
 
-- Originally above indexing structure was described by Patrick O’Neil et al. under the name Log-Structured Merge-Tree (or LSM-Tree) 
+- Originally above indexing structure was described by Patrick O’Neil et al. under the name Log-Structured Merge-Tree (or LSM-Tree)
  - Storage engines that are based on this principle of merging and compacting sorted files are often called LSM storage engines.
 - Lucene, an indexing engine for full-text search used by Elasticsearch and Solr, uses a similar method for storing its term dictionary
 - A full-text index is much more complex than a key-value index but is based on a similar idea.
@@ -437,7 +437,7 @@ ToDo Fig 3-5
     - leveled compaction
         - used by LevelDB, RocksDB, Cassandra
 
-- Because the disk writes are sequential, the LSM-tree can support remarkably high write throughput. 
+- Because the disk writes are sequential, the LSM-tree can support remarkably high write throughput.
 
 ### B-Trees
 - is a standard index implementation used by almost all Relational DBs
@@ -471,7 +471,7 @@ ToDo Fig 3-6
 ToDo Fig 3-7
 
 - Above algo ensures tree remains balanced
-- B-tree with n keys always has a depth of O(log n). 
+- B-tree with n keys always has a depth of O(log n).
 - A four-level tree of 4 KB pages with a branching factor of 500 can store up to 250 TB
 
 - How to handle DB Crashes
@@ -485,7 +485,7 @@ ToDo Fig 3-7
 - Concurrency Control
     - updating pages in place requires careful Concurrency Control
     - o/w a thread may see tree in inconsistent state
-    - Solution 
+    - Solution
         - protect tree data structure using latches (lightweight locks)
     - Log-structured/LSM-Tree approach are simpler in this regard, because they do all the merging in the background without interfering with incoming queries and atomically swap old segments for new segments from time to time.
 
@@ -537,11 +537,11 @@ ToDo Fig 3-7
 - write amplification is of concern with SSDs
     - bec SSDs can only overwrite blocks a limited number of times before wearing out.
 
-- LSM-Trees 
+- LSM-Trees
     - Adv
         - have lower write amplification => higher write throughput than B-trees
         - can be compressed better, and thus often produce smaller files on disk than B-trees.
-        - have lower storage overheads bec 
+        - have lower storage overheads bec
             - they are not page oriented
             - remove fragmentation by rewrite SSTables
     - DisAdv
@@ -569,7 +569,7 @@ ToDo Fig 3-7
     2. by making each entry unique by appending a row identifier to it
 - Either way, both B-trees and log-structured indexes can be used as secondary indexes.
 
-### Storing values with indexes 
+### Storing values with indexes
 - heap file
     - the place where rows are stored DB
     - stores data in no particular order
@@ -593,7 +593,7 @@ ToDo Fig 3-7
     - DB need to do additional efforts to enforce transactional guarantees bec applications should not see inconsistencies due to the duplication.
 
 ### Multi-column indexes
-- The indexes discussed so far only map a single key to a value. 
+- The indexes discussed so far only map a single key to a value.
 - That is not sufficient if we need to query multiple columns of a table (or multiple fields in a document) simultaneously.
 - most common type of multi-column index is called a concatenated index
     - combines several fields into one key by appending one column to another
@@ -615,7 +615,7 @@ ToDo Fig 3-7
 
 - OLAP DBs are called data warehouse
 - OLTP systems expected to
-    - be highly available 
+    - be highly available
     - process transactions with low latency
     - bec they are critical to business operations
 - DB Admins are reluctant to run analytics queries bec
@@ -650,7 +650,7 @@ ToDo Fig 3-8
 ToDo Fig 3-9
 
 - Usually, facts are captured as individual events, because this allows maximum flexibility of analysis later.
-- Some of the cols in fact tables are attributes. Helps to calculate profit margins for example. 
+- Some of the cols in fact tables are attributes. Helps to calculate profit margins for example.
 - Other columns in the fact table are foreign key references to other tables, called dimension tables
 - As each row in the fact table represents an event, the dimensions represent the who, what, where, when, how, and why of the event.
 - Notice, date and time are often represented using dimension tables, because this allows additional information about dates (such as public holidays) to be encoded, allowing queries to differentiate between sales on holidays and non-holidays.
@@ -670,7 +670,7 @@ ToDo Fig 3-9
     - but store all the values from each column together instead
 
 - Column storage is easiest to understand in a relational data model, but it applies equally to nonrelational data
-    - Parquet is a columnar storage format that supports a document data model, based on Google’s Dremel 
+    - Parquet is a columnar storage format that supports a document data model, based on Google’s Dremel
 
 ToDo Fig 3-10
 
@@ -694,28 +694,174 @@ ToDo Fig 3-10
     - Disk seek time is often the bottleneck here.
 - OLAP System
     - used by business analysts
-    - handle a much lower volume of queries than OLTP 
+    - handle a much lower volume of queries than OLTP
     - but each query is more demanding, requires millions records to scan in short time
     - Disk bandwidth (not seek time) is often the bottleneck here
     - column-oriented storage is an increasingly popular solution for this kind of workload.
 
 - OLTP side, storage engines from two main schools of thought
-    1. The log-structured. 
+    1. The log-structured.
         - Bitcask, SSTables, LSM-trees, LevelDB, Cassandra, HBase, Lucene, and others belong to this group
     2. update-in-place school
         - treats the disk as a set of fixed-size pages that can be overwritten
         - B-trees used by almost all relation DBs
 
-- Log-structured storage engine's key idea 
-    - they systematically turn random-access writes into sequential writes on disk, 
+- Log-structured storage engine's key idea
+    - they systematically turn random-access writes into sequential writes on disk,
     - which enables higher write throughput due to the performance characteristics of hard drives and SSDs.
 
 - In OLAP, access pattern is diff than OLTP
     - queries require sequentially scanning across a large number of rows
-    - This makes indexes less relevant. 
-    - Instead it becomes important to encode data very compactly. 
-    - This minimize the amount of data that the query needs to read from disk. 
+    - This makes indexes less relevant.
+    - Instead it becomes important to encode data very compactly.
+    - This minimize the amount of data that the query needs to read from disk.
     - column-oriented storage helps achieve this goal
+
+## Chapter 4. Encoding and Evolution
+- In most cases, a change to an application’s features => change to data that it stores
+- Relation DBs
+    - exactly one schema exists
+- Document DBs (schema-on-read / schemaless) DBs
+    - don't enforce schema
+    - DBs contains data with old and new schema at the same time
+- Backward compatibility
+    - Newer code can read data that was written by older code.
+    - Not hard to achieve
+- Forward compatibility
+    - Older code can read data that was written by newer code.
+    - bit tricky 
+
+- Encoding/Marshalling/Serialization
+    - In memory to Byte Stream
+- Decoding/Un-marshalling/De-serialization
+    - Byte Stream to memory
+
+- Many programming languages comes with in-built support for Encoding and Decoding
+    - Java 
+        - Native - java.io.Serializable
+        - Third-Party - Kyro
+    - Ruby => Marshal
+    - Python => pickle
+    - Such languages have few problems
+        - reading the data in another language is very difficult
+        - decoding process need to instantiate arbitrary classes
+            - security risk
+            - remotely executing arbitrary code
+        - Versioning data is often an afterthought in these libraries
+        - Efficiency issues
+            - Java’s built-in serialization is notorious for its bad performance and bloated encoding
+
+- JSON, XML, CVS and popular encoding format, but they have few issues
+    - JSON distinguishes strings and numbers, 
+    - but it doesn’t distinguish integers and floating-point numbers, and it doesn’t specify a precision
+    - Twitter used 64-bit number to identify each tweet
+        - numbers > 2^53 cannot be exactly represented in an IEEE 754 double-precision floating-point number
+        - So these numbers are incorrectly parsed in languages which uses IEEE 754 (JavaScript)
+        - Workaround Solution
+            - Twitter puts Tweet id twice.
+            - once as a JSON number and once as a decimal string
+    - JSON and XML have good support for Unicode character strings (i.e., human-readable text),
+    but they don’t support binary strings (seq of bytes w/o char encoding)
+        - One solution => Encode in Base64
+        - But it increases the data size by 33%.
+    - Optional schema supported by JSON/XML is quite complex to learn
+
+- Despite above limitations, JSON, XML, CVS are used especially as data interchange formats
+    - i.e., for sending data from one organization to another
+    - as long as people agree on what the format is, it often doesn’t matter 
+    how pretty or efficient the format is. 
+
+### Binary Encoding
+- mainly used internally within your organization.
+- more compact and faster to parse
+- for a large dataset in terabytes, choice of data format can have a big impact
+- MessagePack is binary encoding format for JSON
+    - but this does not provide sizable space reduction
+
+
+### Thrift and Protocol Buffers
+- Both libraries require schema
+- Let's take a record to be encoded
+    ```json
+    {
+        "userName": "Martin",
+        "favoriteNumber": 1337,
+        "interests": ["daydreaming", "hacking"]
+    }
+    ```
+- Protocol Buffers
+    - developed at Google
+    - schema for above record looks like
+        ```
+        message Person {
+        required string user_name       = 1;
+        optional int64  favorite_number = 2;
+        repeated string interests       = 3;
+        }
+        ```
+- Thrift
+    - developed at meta/facebook
+    - schema language => Thrift interface definition language (IDL)
+    - IDL for above record looks like
+        ```
+        struct Person {
+        1: required string       userName,
+        2: optional i64          favoriteNumber,
+        3: optional list<string> interests
+        }
+        ```
+    - has two binary encoding format
+        - BinaryProtocol
+        - CompactProtocol
+        - DenseProtocol
+            - supported in C++ only
+            - So not counted as cross-language
+
+- Both come with a code generation tool
+    - takes a schema definition and produces classes that implement the schema
+        - useful in statically typed languages (C++, Java, golang)
+        - allows efficient in memory structure
+        - But not so useful in dynamically typed languages (Python, Ruby)
+            - there is no compilation step
+    - supports in various programming languages 
+
+It is reasonable to assume that all the servers will be updated first, and all the clients second.
+    - Thus, you only need backward compatibility on requests
+    - and forward compatibility on responses.
+
+
+### ApacheAvro
+- another binary encoding format
+- started in 2009 as a subproject of Hadoop
+    - as result of Thrift not being a good fit for Hadoop’s use cases
+- has two schema languages
+    - Avro IDL
+        - intended for human editing
+    - based on JSON 
+        - more easily machine-readable
+- This is more compact than Thrift or Protocol Buffers
+- Avro supports schema evolution by having 
+    - Writers schema
+        - used by application wants to encode some data (write to file or send over n/w)
+    - Readers schema
+        - to decode the encoded data
+
+- The key idea with Avro => writer’s and reader’s schema don’t have to be the same
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
