@@ -14,7 +14,9 @@ Book by Martin Kleppmann
 - So no single tool (DBs, Msg Qs, Caches, etc) can meet all storage and data processing needs
 - Generally, its application code responsibility to keep caches in sync w/ main DB.
 
-TODO: Figure 1-1
+<img src="/resources/images/ddia/Fig-1-1.png" title="Figure 1-1" style="height: 400px; width:800px;"/>
+
+Figure 1-1. One possible architecture for a data system that combines several components.
 
 - Many factors influence design of data systems
     - resource skill and experience (in house and in market at that movement)
