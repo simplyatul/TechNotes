@@ -88,7 +88,9 @@ Figure 1-1. One possible architecture for a data system that combines several co
 ##### Approach I
 - Make join query on following tables
 - This fails on high load. So Twitter switched to [Approach II](Approach II)
-TODO: Fig 1-2
+
+<img src="/resources/images/ddia/Fig-1-2.png" title="Figure 1-2" style="height: 400px; width:800px;"/>
+Figure 1-2. Simple relational schema for implementing a Twitter home timeline.
 
 ##### Approach II
 - maintain a cache for user's home timeline
@@ -101,7 +103,8 @@ TODO: Fig 1-2
         - So single tweets => 30M writes to home caches
     - Not satisfying SLA => deliver tweets withing 5 secs
 
-TODO: Fig 1-3
+<img src="/resources/images/ddia/Fig-1-3.png" title="Figure 1-3" style="height: 400px; width:800px;"/>
+Figure 1-3. Twitter’s data pipeline for delivering tweets to followers, with load parameters as of November 2012
 
 ##### Approach III - Hybrid of both
 - for users having much more followers => Approach I
@@ -109,6 +112,9 @@ TODO: Fig 1-3
 - This provides good performance
 
 #### Describing Performance
+
+Figure 1-4. Illustrating mean and percentiles: response times for a sample of 100 requests to a service.
+
 - Look at it using Two ways
     - increase load, keep system resources (cpu, mem, hdd) unchanged => How system performance is affected
     - increase load and how much resources need to increase to keep performance unchanged.
@@ -156,7 +162,9 @@ half requests take longer than that
     - service uptime is 99.9%
 - It is also required to measure response time at client side
 
-ToDo Figure 1.5
+<img src="/resources/images/ddia/Fig-1-5.png" title="Figure 1-5" style="height: 400px; width:800px;"/>
+Figure 1-5. When several backend calls are needed to serve a request, it takes just a single slow backend request to slow down the entire end-user request.
+
 - When several backend calls are needed to serve a request (Fanout), it takes just a single slow backend request to slow down the entire end-user request.
 
 #### Coping with Load
@@ -202,7 +210,8 @@ ToDo Figure 1.5
     - Specialized query operations that are not well supported by relational model
     - more dynamic and expressive data model
 
-ToDo Fig 2-1
+<img src="/resources/images/ddia/Fig-2-1.png" title="Figure 2-1" style="height: 400px; width:800px;"/>
+Figure 2-1. Representing a LinkedIn profile using a relational schema. Photo of Bill Gates courtesy of Wikimedia Commons, Ricardo Stuckert, Agência Brasil.
 
 - In one-to-many relationships (user-positions or user-education), can represent in three ways
     1. Put positions, education info in separate table in connect using foreign key references
@@ -338,7 +347,9 @@ ToDo Fig 2-1
 - Adding new index speeds up read queries, but slows down write.
 
 ### Hash Indexes
-ToDo Fig 3-1
+<img src="/resources/images/ddia/Fig-3-1.png" title="Figure 3-1" style="height: 400px; width:800px;"/>
+Figure 3-1. Storing a log of key-value pairs in a CSV-like format, indexed with an in-memory hash map.
+
 - Above approach used in Bitcask (the default storage engine in Riak)
 - Bitcask offers high-performance reads and writes, subject to the requirement that all the keys fit in the available RAM
     - uses case value of each key updated frequently
@@ -351,8 +362,13 @@ ToDo Fig 3-1
     - Segments are never modified after they have been written, so the merged segment is written to a new file.
 - Compaction => Throwing away duplicate keys in the log, and keeping only the most recent update for each key.
 
-ToDo - Fig 3-2
-ToDo - Fig 3-3
+<img src="/resources/images/ddia/Fig-3-2.png" title="Figure 3-2" style="height: 400px; width:800px;"/>
+Figure 3-2. Compaction of a key-value update log (counting the number of times each cat video was played), retaining only the most recent value for each key.
+
+
+<img src="/resources/images/ddia/Fig-3-3.png" title="Figure 3-3" style="height: 400px; width:800px;"/>
+Figure 3-3. Performing compaction and segment merging simultaneously.
+
 - Each segment now has its own in-memory hash table, mapping keys to file offsets.
 
 - Issues to handle with above
@@ -392,7 +408,9 @@ ToDo - Fig 3-3
         - called this format as Sorted String Table (SSTable)
     2. Each key only only appears once withing merged segment file
         - compaction process ensures this
-ToDo Fig 3-4
+<img src="/resources/images/ddia/Fig-3-4.png" title="Figure 3-4" style="height: 400px; width:800px;"/>
+Figure 3-4. Merging several SSTable segments, retaining only the most recent value for each key.
+
 
 - SSTables have several big advantages over log segments with hash indexes
     - Merging segments is simple and efficient, even if the files are bigger than the available memory. Bec segments contains keys in sorted order already
@@ -401,7 +419,10 @@ ToDo Fig 3-4
     - You still need an in-memory index to tell you the offsets for some of the keys, but it can be sparse
     - range queries are possible
     - compression reduces disk space + reduces I/O b/w use.
-ToDo Fig 3-5
+
+<img src="/resources/images/ddia/Fig-3-5.png" title="Figure 3-5" style="height: 400px; width:800px;"/>
+Figure 3-5. An SSTable with an in-memory index.
+
 
 - How do you get your data to be sorted by key in the first place?
     - When a write comes in, add it to an in-memory balanced tree data structure (AVL or red-black trees)
@@ -450,7 +471,9 @@ ToDo Fig 3-5
     - read or write one page at a time
     - This design corresponds more closely to the underlying hardware, as disks are also arranged in fixed-size blocks.
 
-ToDo Fig 3-6
+<img src="/resources/images/ddia/Fig-3-6.png" title="Figure 3-6" style="height: 400px; width:800px;"/>
+Figure 3-6. Looking up a key using a B-tree index.
+
 
 - leaf page
     - either contains the value for each key inline Or
@@ -470,7 +493,9 @@ ToDo Fig 3-6
         - split page into two half-full pages
         - update parent page to account for the new subdivision of key ranges
 
-ToDo Fig 3-7
+<img src="/resources/images/ddia/Fig-3-7.png" title="Figure 3-7" style="height: 400px; width:800px;"/>
+Figure 3-7. Growing a B-tree by splitting a page.
+
 
 - Above algo ensures tree remains balanced
 - B-tree with n keys always has a depth of O(log n).
@@ -625,7 +650,9 @@ ToDo Fig 3-7
     - scanning large parts of the dataset
     - can harm performance of concurrently executing transactions.
 
-ToDo Fig 3-8
+<img src="/resources/images/ddia/Fig-3-8.png" title="Figure 3-8" style="height: 400px; width:800px;"/>
+Figure 3-8. Simplified outline of ETL into a data warehouse.
+
 
 - Indexing algorithms discussed earlier work well for OLTP systems but not for OLAP systems
 
@@ -649,7 +676,9 @@ ToDo Fig 3-8
     - At the center of the schema is a so-called fact table
     - Each row of the fact table represents an event that occurred at a particular time
 
-ToDo Fig 3-9
+<img src="/resources/images/ddia/Fig-3-9.png" title="Figure 3-9" style="height: 400px; width:800px;"/>
+Figure 3-9. Example of a star schema for use in a data warehouse.
+
 
 - Usually, facts are captured as individual events, because this allows maximum flexibility of analysis later.
 - Some of the cols in fact tables are attributes. Helps to calculate profit margins for example.
@@ -674,7 +703,9 @@ ToDo Fig 3-9
 - Column storage is easiest to understand in a relational data model, but it applies equally to nonrelational data
     - Parquet is a columnar storage format that supports a document data model, based on Google’s Dremel
 
-ToDo Fig 3-10
+<img src="/resources/images/ddia/Fig-3-10.png" title="Figure 3-10" style="height: 400px; width:800px;"/>
+Figure 3-10. Storing relational data by column, rather than by row.
+
 
 - The column-oriented storage layout relies on each column file containing the rows in the same order
 - Thus, if you need to reassemble an entire row, you can take the 23rd entry from each of the individual column files and put them together to form the 23rd row of the table.
