@@ -883,19 +883,145 @@ It is reasonable to assume that all the servers will be updated first, and all t
 
 
 
+# Part II:  
+## Distributed Data
 
+Why to distribute a DB?
+- Scalability
+    - if data volume, read load or write load grows.
+- Fault tolerance / High Availability 
+    - Application on m/c fails r n/w went down or entire DC goes down
+- Latency
+    - Keep the DB closer to user location for min latency
 
+### Scaling to High Load
+- Vertical Scaling / Scaling Up
+    - Add more CPUs, RAM, Storage
+    - aka shared-memory architecture
+    - DisAdv
+        - Cost grows faster than linearly
+        - m/c twice the size may not necessarily handle high load
+        - limited fault tolerance
+        - limited single geo location
+- Horizontal Scaling / / Scaling Out
+    - aka shared-nothing architecture
+    - Adv
+        - No special h/w required
 
+## Chapter 5. Replication
+Why replicate data?
+- keep data closer to user geographically => reduce latency
+- allow system to work even if some of its parts fail => high availability
+- helps to scale out => handle more load (read/write queries or more data volume)
 
+In this Chapter, will assume our dataset is small enough to accommodate in single machine.
+In Chapter 6, we will relax this assumption and discuss partitioning/sharding
 
+Three Popular Replication Alogs
+- Single-leader aka
+    - leader based replication
+    - master-slave
+    - active/passive (hot standby)
+- Multi-leader
+- leaderless
 
+Many trade-offs to consider in Replication
+- sync Vs async replicate
+- handle failed replica
 
+### Leaders and Followers (Single-leader Replication)
 
+ToDo Figure 5-1
 
+- Leader sends data change to all of it's followers as part of replication log or change stream
+- Followers applies all write in the same order
+- clients can query either leader or follower, but writes are only accepted on leader
+- This mode of replication is built in most relational DBs
+    - PostgreSQL - (since version 9.0)
+    - MySQL
+    - Oracle Data Guard
+    - SQL Server's AlwaysOn Availability Group
+- Also used in some NoSQL DBs too
+    - MongoDB, RethinkDB, Espresso
+- Distributed Message brokers used this well
+    - Kafka
+    - RabbitMQ
 
+#### Sync Vs Async Replication
 
+ToDo Figure 5-2
+- replication to follower 1 is synchronous 
+- replication to follower 2 is asynchronous
+- Often configurable option in DBs
+- Normally replication is quite fast, but it may lag behind in case
+    - follower recovering from failure
+    - system operating near maximum capacity
+    - n/w problems bet nodes
 
+- Adv of Sync Replication
+    - follower is guaranteed to have up-to-date copy
+- DisAdv of Sync Replication    
+    - If follower doesn't respond then all writes are blocked till that time
+    - So it is impractical for all follower to be synchronous
+    - Sol => semi-synchronous
+        - at least one follower to be synchronous
+- Leader based replication can be configured to be completely async
+    - Adv
+        - leader can accept writes even if all followers have fallen behind
+        - increase availability
+    - DisAdv
+        - weakening durability 
 
+#### Setting up New Followers
+Why?
+- handle high read traffic => scaling out
+- replace failed replica
+
+Setting up follower is done w/o downtime
+- Take a consistent snapshot of the leader’s database at some point in time
+    - Most DB supports this
+    - Required for backup
+    - third-party tools (innobackupex for MySQL) are used as well
+- Copy snapshot to follower
+- Follower connects to leader and asks for all changes post snapshot
+    - This requires snapshot to point exact position in replication log
+    - This position has various names
+        - PostgreSQL => log sequence number
+        - MySQL => binlog coordinates
+- Once follower catches up with Leader, it can start processing reads
+
+#### Handling Node Outages
+How to achieve high availability with leader-based replication?
+
+- Follower failure: Catch-up recovery
+    - follower keeps a log of the data changes it has received from the leader
+    - post crash recovery, follower can recover easily from it's log
+
+- Leader failure: Failover
+    - Trickier handling
+        - one of the follower to be promoted as leader 
+        - clients to route all write requests to new leader
+        - other followers to start following new leader => consuming data from this new leader
+
+- Automatic leader failover process
+    - Determining that the leader has failed
+        - multiple reasons
+            - crashes, power outages, n/w issues
+        - so most systems simply use a timeout
+    - Choosing a new leader
+        - through an election process
+        - best candidate is replica with most up-to-date data changes
+        - This is consensus problem => Discussed in Chapter 9
+    - Reconfiguring the system to use the new leader
+        - clients to send write requests to new leader
+        - System to ensure old leader to become follower (if it comes back) and recognizes the new leader.
+
+- Issues in Leader Failover
+    - In async replication, new leader may not have received all writes
+    - What happens to those writes if old leader comes back
+    - Common Sol - old leaders write to be discarded => may violates durability
+    - Discarding writes is dangerous if other storage systems outside DBs need to be 
+     coordinated with the database contents
 
 
 ## Glossary
