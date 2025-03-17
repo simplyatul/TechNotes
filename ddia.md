@@ -1019,9 +1019,279 @@ How to achieve high availability with leader-based replication?
 - Issues in Leader Failover
     - In async replication, new leader may not have received all writes
     - What happens to those writes if old leader comes back
-    - Common Sol - old leaders write to be discarded => may violates durability
+    - Common Sol - old leader's write to be discarded => may violates durability
     - Discarding writes is dangerous if other storage systems outside DBs need to be 
      coordinated with the database contents
+        - e.g. in once GitHub incident, 
+        - an out of date MySQL follower was promoted to leader
+        - DB was using auto incrementing counter to assign primary keys
+        - but leader’s counter lagged behind the old leader’s,
+        it reused some primary keys that were previously assigned by the old leader. 
+        - These primary keys were also used in a Redis store
+        - This introduces inconsistency bet MySQL and Redis
+        - Causes some private data to be disclosed to the wrong users
+    - Split brain situation can occur. Two nodes believe they are leader
+        - data may be lost or corrupted
+    - Right timeout before leader declared dead?
+        - longer timeout => longer time to recovery
+        - short timeout => leads to unnecessary failover. 
+            - If system already structuring with high load or network problems, 
+            an unnecessary failover makes situation worse, not better.
+
+- There are no easy solutions to above issues
+- So some ops teams prefer to perform failover manually even if s/w supports automatic failover
+
+- These issues—node failures; unreliable networks; and trade-offs around replica consistency,
+durability, availability, and latency—are in fact fundamental problems in distributed systems. In
+Chapter 8 and Chapter 9 we will discuss them in greater depth.
+
+#### Implementation of Replication Logs
+- Statement-based replication
+    - used in MySQL before version 5.1.
+    - leaders sends every write SQL request to follower
+    - follower parses and execute that SQL request
+    - DisAdv
+        - If SQL query uses nondeterministic function (NOW() or RAND()), 
+        it is likely to generate different values in replicas
+        - If autoincrementing used or it depends on existing data (UPDATE … WHERE <some condition>)
+        they must execute in exactly same order
+        - Statements that have side effects (triggers, stored procedures, user-defined functions)
+        may result diff values in diff replicas
+    - Work around possible, but since there are many edge cases, 
+    other replication methods are preferred.
+    - VoltDB uses statement-based replication, and makes it safe by requiring transactions to be deterministic
+
+- Write-ahead log (WAL) shipping
+    - WAL used in both  log-structured and B-tree storage engines for crash recovery purpose
+    - Same can be send to follower
+    - used in PostgreSQL and Oracle
+    - DisAdv
+        - log describes the data on a very low level
+        - This makes replication closely coupled to the storage engine
+        - So if DB changes it's storage format, this could not be used
+        - Also, leader and follower can not use diff storage formats at the same time
+        - This has operational impact
+
+- Logical (row-based) log replication
+    - uses diff log formats for WAL and storage engine => decoupling
+    - aka logical log
+    - Relational DBs
+        - logical log means sequence of records describing writes to DB 
+        tables at the granularity of a row
+        - MySQL uses this approach, called as binlog 
+    - Adv
+        - decoupling helps to ensure backward compatibility
+        - easier for external applications to parse
+            - e.g. DB warehouse for offline analysis
+            - building custom indexes and caches
+        - This technique is called as change data capture (CDC)
+
+- Trigger-based replication
+    - performed by application code and not by DB
+    - can be achieved using triggers and stored procedures in relational DBs
+    - used if requires some flexibility
+        - e.g want to replicate only subset of DB
+    - Oracle GoldenGate can make CDC changes available to application
+    - DisAdv
+        - greater overheads than other replication methods
+        - more prone to bugs
+
+#### Problems with Replication Lag
+- In Leader-based replication
+    - all writes go through leader
+    - all reads go through any replicas
+- This is an attractive option for workloads requiring many reads and 
+small % of writes (a common pattern on the web)
+    - aka read-scaling architecture
+    - can serve more reads by adding more nodes 
+- But client can see old data if reading from follower which is not up-to-date w/ leader
+- This section highlights issues w/ replication lag and some sol to solve them
+
+##### Reading Your Own Writes
+ToDo Fig 5-3
+- User can not see it's own write made just a movement before
+- So we need read-after-write consistency Or read-your-write consistency guarantee
+- This is a guarantee that if the user reloads the page, 
+they will always see any updates they submitted themselves.
+- It makes no promises about other users 
+
+- How to implement read-after-write consistency
+    - When reading something that the user may have modified, read it from 
+    the leader; otherwise, read it from a follower.
+    - e.g. user profile on social n/w
+        - always read from leader bec generally owner only modifies it
+    - Do not read from followers having large replication lag (say > 1 min)
+    - If replicas are in multiple DCs, there is additional complexity
+    - Another complication 
+        - if user accessing service from diff devices
+        - additionally if those devices are on diff n/ws (desktop and mobile)
+        - so need to support cross-device read-after-write consistency
+        - So need to route all read requests from same user to same leader
+
+
+##### Monotonic Reads
+ToDo Figure 5-4
+- means users see things moving backward in time.
+- Above, user 2345 sees user 1234's comment, but does not see it again second time
+- Sols
+    - each user reads is served from same replica
+    - replica can be selected using hash of used id rather randomly
+
+##### Consistent Prefix Reads
+ToDo Fig 5-5
+- Concerns violation of causality (the relationship between cause and effect)
+- There is a causal dependency between those two sentences: Mrs. Cake heard Mr. Poons’s question
+and answered it.
+- Observer sees Mrs Cakes answer first
+- So guarantee requires => if a sequence of writes happens in a certain order, 
+then anyone reading those writes will see them appear in the same order.
+- Will discuss this in “The “happens-before” relationship and concurrency” section
+
+#### Solutions for Replication Lag
+- There are ways an application can provide a stronger guarantee than the 
+underlying database
+    - e.g. by performing certain kinds of reads on the leader.
+- However, dealing with these issues in application code is complex and easy to get wrong.
+- It would be better to keep application away from handling such issues
+- This is why transactions exist
+    - They are the DB way of providing stronger guarantees
+    - Makes application simpler
+
+- Many systems claim transactions are too expensive in terms of performance 
+and availability for distributed DBs
+- And eventual consistency is inevitable in a scalable system
+- This is somewhat true, but it is overly simplistic
+- We will return to this in Chapters 7 and 9 and then in Part III
+
+### Multi-Leader Replication
+- Natural extension of leader-based replication model 
+- Allow more than once node to accept writes
+- aka master-master or active/active replication
+- each leader simultaneously acts as a follower to the other leaders.
+
+#### Use Cases for Multi-Leader Replication
+ToDo Fig 5-6
+- Multi-datacenter operation
+    - In leader-based replication, all writes must go through DC hosting leader
+    - In multi DC, each DC hosts one leader
+- Compare single-leader and multi-leader configs in a multi DC deployment
+    - Performance
+        - single-leader => since write go through DC hosting leader, users located far from 
+        that DC may observer higher latency
+        - multi-leader => less latency as leader is available in each DC to accept write requests
+    - Tolerance of datacenter outages
+        - single-leader => If DC hosting leader fails, failover to follower i another DC
+        - multi-leader => DC can operate independently than other DC
+    - Tolerance of network problems
+        - multi-leader => with asynchronous replication can usually tolerate network problems better
+- Some DBs support multi-leader configurations by default
+- Some are implemented with external tools
+    - Tungsten Replicator for MySQL
+    - BDR for PostgreSQL
+    - GoldenGate for Oracle
+
+- Big downside of multi-leader configs
+    - same data same data may be concurrently modified in two different datacenters
+    - Those write conflicts must be resolved.
+    - Also, has subtle configuration pitfalls
+        - autoincrementing keys, triggers, and integrity constraints can be problematic
+
+##### Clients with offline operation
+- e.g. calender apps on your mobile
+- allows to create meetings even if there is no n/w connectivity
+- Every device has local DB that acts as a leader 
+
+##### Collaborative editing
+- e.g. Etherpad and Google Docs allow multiple people to concurrently edit a text 
+document or spreadsheet. (“Automatic Conflict Resolution” algo briefly discussed this)
+
+#### Handling Write Conflicts
+ToDo Fig 5-7
+
+- Above problem does not occur in a single-leader database.
+
+##### Synchronous versus asynchronous conflict detection
+- In single-leader, only single write wins at a time
+- In multi-leader, both/all writes win and conflict observed at later some point of time
+
+- Solutions 
+    - Conflict avoidance
+    - Converging toward a consistent state
+        - every replication system must ensure that the data is eventually the same in all replicas.
+        - DBs must resolve the conflict in a convergent way
+        - means all replicas must arrive at the same final value when all 
+        changes have been replicated
+        - Various ways to achieve this
+            - Give each write unique ID
+            - winner => writer with highest ID
+            - If timestamp used as ID then this is called LWW (Last Write Wins) 
+            - LWW is popular, but it is dangerously prone to data loss
+            - For other ways, see p173
+    - Custom conflict resolution logic
+        - most multi-leader replication tools let you write conflict resolution 
+        logic using application code
+        - This code may be executed on write or on read
+        - On write
+            - DB calls this code as soon as it detects conflict
+            - The code typically cannot prompt a user and must runs in 
+            background process and execute quickly
+        - On read
+            - all the conflicting writes are stored
+            - On read, these multiple versions of data is returned to application to resolve
+            - Application prompt user or amy resolve conflict automatically
+            - CouchDB works this way
+        - Note that conflict resolution usually applies at the level of an 
+        individual row or document, not for an entire transaction. 
+        Thus, if you have a transaction that atomically makes several different
+        writes (see Chapter 7), each write is still considered separately 
+        for the purposes of conflict resolution.
+
+##### What is a conflict?
+- Some conflicts are easier to detect (Figure 5-7)
+- But other kinds of conflict can be more subtle to detect.
+- There isn’t a quick ready-made answer, but in the following chapters 
+we will trace a path toward a good understanding of this problem. 
+We will see some more examples of conflicts in Chapter 7, and in Chapter 12 
+we will discuss scalable approaches for detecting and resolving conflicts in 
+a replicated system.
+
+#### Multi-Leader Replication Topologies
+- A replication topology describes path => how writes are propagated from one node to another
+- If there are only two leaders (Figure 5-7), one one possible topology exists
+- If more than two leaders, diff topologies exists
+ToDo Fig 5-8
+
+- The most general topology is all-to-all
+    - every leader sends writes to every other leader
+- MySQL by default supports only a circular topology
+- To prevent infinite replication loops in circular and star topologies
+    - each node is given a unique identifier,
+    - In the replication log, each write is tagged with the identifiers of 
+    all the nodes it has passed through
+    - Node ignores the changes with it's own ID
+
+- all-to-all topology Vs circular & star topologies
+    - if one node/link fails in circular & star topologies then it stops the replication until node is recovered
+    - In all-to-all, there are multiple paths of replication, so it can tolerate few nodes/links failures
+
+- But all-to-all topologies can have issues too
+ToDo Fig 5-9
+
+- Above is problem of causality similar to what we see in “Consistent Prefix Reads”
+- Simply attaching a timestamp to every write is not sufficient, because 
+clocks cannot be trusted to be sufficiently in sync to correctly order these 
+events at leader 2 (see Chapter 8).
+- To order these events correctly, a technique called version vectors can be used
+- Discussed in “Detecting Concurrent Writes” section
+- However, conflict detection techniques are poorly implemented in many 
+multi-leader replication systems.
+
+- If you are using a system with multi-leader replication, it is worth being 
+aware of these issues, carefully reading the documentation, and thoroughly 
+testing your database to ensure that it really does provide the guarantees you 
+believe it to have.
+
+### Leaderless Replication
 
 
 ## Glossary
