@@ -931,7 +931,8 @@ Many trade-offs to consider in Replication
 
 ### Leaders and Followers (Single-leader Replication)
 
-ToDo Figure 5-1
+<img src="/resources/images/ddia/Fig-5-1.png" title="Figure 5-1" style="height: 400px; width:800px;"/>
+Figure 5-1. Leader-based (master–slave) replication.
 
 - Leader sends data change to all of it's followers as part of replication log or change stream
 - Followers applies all write in the same order
@@ -949,7 +950,9 @@ ToDo Figure 5-1
 
 #### Sync Vs Async Replication
 
-ToDo Figure 5-2
+<img src="/resources/images/ddia/Fig-5-2.png" title="Figure 5-2" style="height: 400px; width:800px;"/>
+Figure 5-2. Leader-based replication with one synchronous and one asynchronous follower.
+
 - replication to follower 1 is synchronous 
 - replication to follower 2 is asynchronous
 - Often configurable option in DBs
@@ -1108,7 +1111,11 @@ small % of writes (a common pattern on the web)
 - This section highlights issues w/ replication lag and some sol to solve them
 
 ##### Reading Your Own Writes
-ToDo Fig 5-3
+
+<img src="/resources/images/ddia/Fig-5-3.png" title="Figure 5-3" style="height: 400px; width:800px;"/>
+Figure 5-3. A user makes a write, followed by a read from a stale replica. To prevent this anomaly, we need
+read-after-write consistency.
+
 - User can not see it's own write made just a movement before
 - So we need read-after-write consistency Or read-your-write consistency guarantee
 - This is a guarantee that if the user reloads the page, 
@@ -1130,7 +1137,10 @@ they will always see any updates they submitted themselves.
 
 
 ##### Monotonic Reads
-ToDo Figure 5-4
+<img src="/resources/images/ddia/Fig-5-4.png" title="Figure 5-4" style="height: 400px; width:800px;"/>
+Figure 5-4. A user first reads from a fresh replica, then from a stale replica. Time appears to go backward. To prevent this
+anomaly, we need monotonic reads.
+
 - means users see things moving backward in time.
 - Above, user 2345 sees user 1234's comment, but does not see it again second time
 - Sols
@@ -1138,7 +1148,11 @@ ToDo Figure 5-4
     - replica can be selected using hash of used id rather randomly
 
 ##### Consistent Prefix Reads
-ToDo Fig 5-5
+<img src="/resources/images/ddia/Fig-5-5.png" title="Figure 5-5" style="height: 400px; width:800px;"/>
+Figure 5-5. If some partitions are replicated slower than others, an observer may see the answer before they see the
+question.
+
+
 - Concerns violation of causality (the relationship between cause and effect)
 - There is a causal dependency between those two sentences: Mrs. Cake heard Mr. Poons’s question
 and answered it.
@@ -1170,7 +1184,9 @@ and availability for distributed DBs
 - each leader simultaneously acts as a follower to the other leaders.
 
 #### Use Cases for Multi-Leader Replication
-ToDo Fig 5-6
+<img src="/resources/images/ddia/Fig-5-6.png" title="Figure 5-6" style="height: 400px; width:800px;"/>
+Figure 5-6. Multi-leader replication across multiple datacenters.
+
 - Multi-datacenter operation
     - In leader-based replication, all writes must go through DC hosting leader
     - In multi DC, each DC hosts one leader
@@ -1206,7 +1222,8 @@ ToDo Fig 5-6
 document or spreadsheet. (“Automatic Conflict Resolution” algo briefly discussed this)
 
 #### Handling Write Conflicts
-ToDo Fig 5-7
+<img src="/resources/images/ddia/Fig-5-7.png" title="Figure 5-7" style="height: 400px; width:800px;"/>
+Figure 5-7. A write conflict caused by two leaders concurrently updating the same record.
 
 - Above problem does not occur in a single-leader database.
 
@@ -1259,7 +1276,9 @@ a replicated system.
 - A replication topology describes path => how writes are propagated from one node to another
 - If there are only two leaders (Figure 5-7), one one possible topology exists
 - If more than two leaders, diff topologies exists
-ToDo Fig 5-8
+
+<img src="/resources/images/ddia/Fig-5-8.png" title="Figure 5-8" style="height: 400px; width:800px;"/>
+Figure 5-8. Three example topologies in which multi-leader replication can be set up
 
 - The most general topology is all-to-all
     - every leader sends writes to every other leader
@@ -1275,7 +1294,10 @@ ToDo Fig 5-8
     - In all-to-all, there are multiple paths of replication, so it can tolerate few nodes/links failures
 
 - But all-to-all topologies can have issues too
-ToDo Fig 5-9
+
+<img src="/resources/images/ddia/Fig-5-9.png" title="Figure 5-9" style="height: 400px; width:800px;"/>
+Figure 5-9. With multi-leader replication, writes may arrive in the wrong order at some replicas
+
 
 - Above is problem of causality similar to what we see in “Consistent Prefix Reads”
 - Simply attaching a timestamp to every write is not sufficient, because 
@@ -1312,7 +1334,9 @@ believe it to have.
     - quorum write and quorum read is used
     - conflicts resolved n reading with versioning support
 
-ToDo Fig 5-10
+<img src="/resources/images/ddia/Fig-5-10.png" title="Figure 5-10" style="height: 400px; width:800px;"/>
+Figure 5-10. A quorum write, quorum read, and read repair after a node outage
+
 
 ##### Read repair and anti-entropy
 - entropy => measures of randomness or disorder of a system
@@ -1347,7 +1371,9 @@ ToDo Fig 5-10
         - but one node fail will cause all writes t fail
 
 - With w + r > n tolerates unavailable nodes as follows
-ToDo Fig 5-11
+
+<img src="/resources/images/ddia/Fig-5-11.png" title="Figure 5-11" style="height: 400px; width:800px;"/>
+Figure 5-11. If w + r > n, at least one of the r replicas you read from must have seen the most recent successful write.
 
 ##### Limitations of Quorum Consistency
 - w + r > n => tolerates up to n/2 node failures
@@ -1423,7 +1449,9 @@ within its local datacenter
     - means invitation to conflics
 - In Dynamo-style databases conflicts can also arise during read repair or hinted handoff.
 
-ToDo Fig 5-12
+<img src="/resources/images/ddia/Fig-5-12.png" title="Figure 5-12" style="height: 400px; width:800px;"/>
+Figure 5-12. Concurrent writes in a Dynamo-style datastore: there is no well-defined ordering.
+
 
 - Above, two clients, A and B, simultaneously writing to a key X in a three-node datastore
 - If each node simply overwrote the value for a key whenever it received a 
@@ -1440,9 +1468,11 @@ toward the same value. How ?
     - Virsion Vectors
         - Ensures data is not lost
 
-ToDo Fig 5-13
+<img src="/resources/images/ddia/Fig-5-13.png" title="Figure 5-13" style="height: 400px; width:800px;"/>
+Figure 5-13. Capturing causal dependencies between two clients concurrently editing a shopping cart.
 
-ToDo Fig 5-14
+<img src="/resources/images/ddia/Fig-5-14.png" title="Figure 5-14" style="height: 400px; width:800px;"/>
+Figure 5-14. Graph of causal dependencies in Figure 5-13
 
 ## Glossary
 - Fanout => In transaction processing systems,number of request to other services that need to make in order to satisfy one incoming request.
