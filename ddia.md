@@ -1292,7 +1292,157 @@ testing your database to ensure that it really does provide the guarantees you
 believe it to have.
 
 ### Leaderless Replication
+- allows any replica to accept write
+- Amazon uses this in it's in-house Dynamo system
+    - Dynamo is not available outside Amazon
+    - DynamoDB is Amazon's hosted DB product
+    - DynamoDB uses completely diff architecture than Dynamo
+    - DynamoDB uses single-leader replication
+- Riak, Cassandra, and Voldemort uses this replication inspired by Dynamo
+- So such DBs are also called as Dynamo-style DBs
 
+- Writing mechanism
+    - client directly sends its writes to several replicas, Or 
+    - a coordinator node does this on behalf of the client. Coordinator does 
+    not enforce a particular ordering of writes.
+
+#### Writing to the Database When a Node Is Down
+- In leader based replication, system need to perform failover
+- In Leaderless Replication, failover does not exists
+    - quorum write and quorum read is used
+    - conflicts resolved n reading with versioning support
+
+ToDo Fig 5-10
+
+##### Read repair and anti-entropy
+- entropy => measures of randomness or disorder of a system
+- replication should ensure that eventually all the data is copied to every replica.
+- How a node catches up with writes once he come back from crash or n/w outage
+    - Read Repair
+        - Per Figure 5-10, client sees that replica 3 has a stale value and 
+        writes the newer value back to that replica. 
+        - This works well for values that are frequently read.
+        - Means Read Repairs are performed only when values are read by application
+    - Anti-entropy process
+        - A background process that constantly looks for differences
+        - Unlike the replication log in leader-based replication, 
+        anti-entropy process does not copy writes in any particular order
+        - And there may be a significant delay before data is copied.
+    - Not all systems implement both
+        - Voldemort currently does not have an anti-entropy process.
+    - Note => w/o anti-entropy process, values that are rarely read may be missing 
+    from some replicas => reduced durability
+
+##### Quorums for reading and writing
+- n => number of replicas
+- w => nodes confirming writes
+- n => nodes confirming reads
+- Configs with which reads are up-to-date
+    - w + r > n
+- Reads and writes that obey these r and w values are called quorum reads and write
+- One can adjust n,w,n as per use case
+- workload w/ few writes and many reads
+    - w = n and r = 1
+        - makes reads faster
+        - but one node fail will cause all writes t fail
+
+- With w + r > n tolerates unavailable nodes as follows
+ToDo Fig 5-11
+
+##### Limitations of Quorum Consistency
+- w + r > n => tolerates up to n/2 node failures
+- You may also set w and r to smaller numbers => w + r ≤ n
+    - quorum condition is not satisfied
+    - reads and writes will still be sent to n nodes, but a smaller number of 
+    successful responses is required for the operation to succeed.
+    - allows lower latency and higher availability
+
+- Although quorums appear to guarantee that a read returns the latest written 
+value, in practice it is not so simple
+- Dynamo-style DBs are generally optimized for use cases that can tolerate 
+eventual consistency. 
+- w and r allow you to adjust the probability of stale values being read, 
+but it’s wise to not take them as absolute guarantees
+- In particular, you usually do not get the guarantees discussed in 
+“Problems with Replication Lag” (reading your writes, monotonic reads, or 
+consistent prefix reads), so the previously mentioned anomalies can occur in 
+applications.
+- Stronger guarantees generally require transactions or consensus. We will 
+return to these topics in Chapter 7 and Chapter 9.
+
+##### Monitoring staleness
+- In leader based replication, replication lag can be measured using diff bet 
+leader and follower's current position in WAL
+- In leaderless replication, there is no fixed order in which writes are 
+applied, which makes monitoring more difficult.
+- Moreover, if DB uses only read repairs (and no anti-entropy), there is no 
+limit to how old a value might be, if a value is infrequently read
+    - value returned by a stale replica may be ancient.
+- But it is always good to include staleness measurements in the standard set 
+of metrics for databases
+
+##### Sloppy Quorums and Hinted Handoff
+- With appropriately configured quorums
+    - can tolerate node failures w/o need for failover
+    - also tolerate individual nodes going slow (bec of overload), bec 
+    requests don’t have to wait for all n nodes to respond
+        - requests can return when w/r nodes have responded
+
+- Above chars suits systems requiring high availability and low latency
+    - provided systems can tolerate occasional stale reads.
+
+- However, n/w breaks may prevent clients to reach w/r nodes
+- In large clusters (with more n nodes), during n/w interruption, client can connect to some nodes, 
+but not required Quorums
+- Two trade-offs to consider
+    - return error
+    - allow writes to some w nodes, not necessarily from quorum => Sloppy Quorums
+- Sloppy Quorums
+    - writes and reads still require w and r successful responses, but those 
+    may include nodes that are not among the designated n “home” nodes for a value. 
+    - once n/w recovers, nodes can send writes to appropriate home nodes => Hinted Handoff
+    - uses full t increase write availability
+    - But clients are not sure to read latest value
+    - So Sloppy Quorum is just assurance to durability
+    - Sloppy Quorum is optional in all Dynamo (Cassandra and Voldemort) implementations
+    - In Riak, it is enabled by default
+
+##### Multi-datacenter operation
+- Leaderless replication is also suitable for multi-datacenter operation since 
+it is designed to 
+    - Tolerate conflicting concurrent writes
+    - Network interruptions and 
+    - latency spikes (some nodes going slow)
+- Each write is send to all replicas in all DCs, but 
+- client client usually only waits for acknowledgment from a quorum of nodes 
+within its local datacenter
+- higher-latency writes to other datacenters are often configured to happen asynchronously
+
+#### Detecting Concurrent Writes
+- Dynamo-style databases allow several clients to concurrently write to the same key
+    - means invitation to conflics
+- In Dynamo-style databases conflicts can also arise during read repair or hinted handoff.
+
+ToDo Fig 5-12
+
+- Above, two clients, A and B, simultaneously writing to a key X in a three-node datastore
+- If each node simply overwrote the value for a key whenever it received a 
+write request from a client, the nodes would become permanently inconsistent
+- In order to become eventually consistent, the replicas should converge 
+toward the same value. How ?
+
+- Solutions to conflic resolutions
+    - LWW (Last Write Wins)
+        - Only supported conflict resolution method in Cassandra
+        - An optional feature in Riak
+        - LWW achieves eventual convergence, but at the cost of durability
+        - If loosing data is not acceptable then LWW is not suitable
+    - Virsion Vectors
+        - Ensures data is not lost
+
+ToDo Fig 5-13
+
+ToDo Fig 5-14
 
 ## Glossary
 - Fanout => In transaction processing systems,number of request to other services that need to make in order to satisfy one incoming request.
