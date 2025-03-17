@@ -1474,6 +1474,308 @@ Figure 5-13. Capturing causal dependencies between two clients concurrently edit
 <img src="/resources/images/ddia/Fig-5-14.png" title="Figure 5-14" style="height: 400px; width:800px;"/>
 Figure 5-14. Graph of causal dependencies in Figure 5-13
 
+## Chapter 6. Partitioning
+- Partitioning 
+    - Intensionally breaking large DB into small one
+    - Helps to acheive very high query throughput
+- Different names to partitining
+    - Shards - MongoDB, Elasticsearch and SolrCloud
+    - region - HBase
+    - tablet - Bigtable
+    - vnode - Cassandra and Riak
+    - vBucket - Couchbase
+- Partitions are defined such that each piece of data (each record, row, 
+or document) belongs to exactly one partition
+- Each Partition is small DB as it's own
+- DB supports operations that supprt multiple partitions at the same time
+- Main reason to partition is Scalability
+- Different partitions can be placed on different nodes in a shared-nothing cluster
+- Query load distributed across many nodes
+
+- In this Chapter, will see
+    - Different approaches for partitioning large datasets
+    - how the indexing of data interacts with partitioning
+    - How rebalancing works
+        - requires when nodes are added/removed in cluster
+    - How DB routes requests to right partitions 
+
+### Partitioning and Replication
+- Everything about replication of databases applies equally to replication of partitions. 
+- The choice of partitioning scheme is mostly independent of the choice of replication scheme
+- so we will ignore replication in this chapter.
+
+<img src="/resources/images/ddia/Fig-6-1.png" title="Figure 6-1" style="height: 400px; width:800px;"/>
+Figure 6-1. Combining replication and partitioning: each node acts as leader for some partitions and follower for other partitions.
+
+### Partitioning of Key-Value Data
+- If partitioning is unfair, data skewed can happen
+    - makes partitioning less effective
+    - only some nodes will serve queries
+- A partition with disproportionately high load is called a hot spot
+- The simplest approach for avoiding hot spots => assign records to nodes randomly
+    - Big DisAdv => while reading, no way to know which node contains key.
+    - So have to query all nodes in parallel
+
+### Partitioning by Key Range
+<img src="/resources/images/ddia/Fig-6-2.png" title="Figure 6-2" style="height: 400px; width:800px;"/>
+Figure 6-2. A print encyclopedia is partitioned by key range.
+
+- Partitioning is to assign a continuous range of keys
+- from some minimum to some maximum to each partition
+- DisAdv 
+    - The ranges of keys are not necessarily evenly spaced
+- Partition boundaries might be chosen
+    - manually by DB Admin
+    - automatically by DB it self, used by
+        - BigTable, HBase, RethinkDB, and MongoDB before version 2.4 
+
+- Within each partition, we can keep keys in sorted order => makes range scan very fast
+- DisAdv
+    - certain access patterns can lead to hot spots
+
+### Partitioning by Hash Key
+- To mitigate risk of skew and hot stop, many distributed DBs uses a hash function to decide partition
+- A good hash function takes skewed data and makes it uniformly distributed
+- 32-bit hash function returns random no bet 0 To 2^32 - 1
+- Even if the input strings are very similar, their hashes are evenly distributed across that range of numbers.
+
+- hash function need not be cryptographically strong for partition purpose.
+- MongoDB uses MD5, Cassandra uses Murmur3, and Voldemort uses the Fowler–Noll–Vo function.
+- Many programming languages have simple hash built in functions
+    - Java’s Object.hashCode()
+    - Ruby’s Object#hash
+    - But are not suitable for partitining
+    - Bec same key may have a different hash value in different processes
+- Post selecting suitable hash functin,  assign each partition a range of 
+hashes (rather than a range of keys)
+
+<img src="/resources/images/ddia/Fig-6-3.png" title="Figure 6-3" style="height: 400px; width:800px;"/>
+Figure 6-3. Partitioning by hash of key.
+
+- This technique is good at distributing keys fairly among the partitions.
+- The partition boundaries can be 
+    - evenly spaced, or 
+    - chosen pseudorandomly => consistent hashing
+- Big DisAdv
+    - range queries are more expensive
+    - adjacent keys are now distributed across all partitions => sort order is lost
+    - So range query has to sent to all partitions
+
+- Cassandra achieves a compromise between the two partitioning strategies
+    - you can define compound primary key consisting of several columns.
+    - Only the first part of that key is hashed to determine the partition
+    - other columns are used as a concatenated index for sorting the data in Cassandra’s SSTables.
+    - so range queries on first column is not supported, but
+    - with fixed value of first column, it can perform an efficient range scan over the other columns of the key
+    - This approach helps in one-to-many relationships
+        - e.g. on a social media site, one user may post many updates
+        - compound primary key => (user_id, update_timestamp)
+        - Different users may be stored on different partitions
+        - But within each user, the updates are stored ordered by timestamp on a single partition.
+        - So you can efficiently retrieve all updates made by a particular user within some time interval
+
+### Skewed Workloads and Relieving Hot Spots
+- Key hashing can reduce hot spots, but can't avoid entirely
+- extream case => celebrity user => all read and writes ends up on single partition
+- Today, most data systems are not able to automatically compensate for such 
+a highly skewed workload, so it’s the responsibility of the application to reduce the skew.
+- Sol
+    - for small number of hot keys, append some random number so they get ditributed across partitions
+
+### Partitioning and Secondary Indexes
+- A secondary index usually doesn’t identify a record uniquely but rather is 
+a way of searching for occurrences of a particular value
+- e.g. find all cars whose color is red
+
+- The problem with secondary indexes is that they don’t map neatly to partitions
+- Two main approaches to partitioning a database with secondary indexes
+    - document-based partitioning
+    - term-based partitioning.
+
+#### Partitioning Secondary Indexes by Document
+<img src="/resources/images/ddia/Fig-6-4.png" title="Figure 6-4" style="height: 400px; width:800px;"/>
+Figure 6-4. Partitioning secondary indexes by document.
+- aka local index
+- Each partition maintains it's own Secondary Indexes covering only documents/rows in that partition
+- However, reading from a document-partitioned index requires 
+    - query to each partition
+    - combine results before sending it to client
+    - aka scatter/gather pattern
+    - makes read queries expensive
+- This pattern used in MongoDB, Riak, Cassandra, Elasticsearch, SolrCloud, and VoltDB
+- Mst DB vendors recommend to structure partitioning scheme so that secondary 
+index queries can be served from a single partition
+    - But this is not always possible
+    - e.g. filtering cars by color and make at the same time
+
+
+#### Partitioning Secondary Indexes by Term
+<img src="/resources/images/ddia/Fig-6-5.png" title="Figure 6-5" style="height: 400px; width:800px;"/>
+Figure 6-5. Partitioning secondary indexes by term.
+
+- aka global index => covers data in all partitions
+- A global index must also be partitioned, but it can be partitioned 
+differently from the primary key index
+- In above fig, car colors starting with the letters a to r appear in partition 0 
+and colors starting with s to z appear in partition 1
+- This is useful for range scans => makes read more efficient
+- DisAdv
+    - writes are slow and more complicated
+    - Write to single document now affect multiple partitions 
+- Term partitioned index require a distributed transaction across all partitions 
+affected by a write, which is not supported in all databases (see Chapter 7 and Chapter 9).
+- Often, updates to secondary indexes are asynchronous
+- Riak's search feature lets you choose bet local and global indexing
+
+### Rebalancing Partitions
+- moving load from one node in the cluster to another is called rebalancing.
+- rebalancing is usually expected to meet some min requirements irrespctive of 
+partitioning schema
+    - After rebalancing, the load (data storage, read and write requests) 
+    should be shared fairly between the nodes in the cluster.
+    - While rebalancing is happening, the database should continue accepting 
+    reads and writes.
+    - No more data than necessary should be moved between nodes, to make 
+    rebalancing fast and to minimize the network and disk I/O load.
+
+#### Strategies for Rebalancing
+
+##### How not to do it: hash mod N
+- The problem with the mod N approach is that if the number of nodes N changes, 
+most of the keys will need to be moved from one node to another. 
+- Such frequent moves makes Rebalancing expensive
+- So need other approach. Solutions
+    - Fixed partitioning
+    - Dynamic partitioning
+
+ ###### Fixed partitioning
+    - Keep fixed number of partitions over N nodes
+    - select number of partitions sufficiently large to accomodate future growth
+    - e.g. 100 nodes, 1000 partitions => each node get 100 partitions
+    - Only entire partitions are moved between nodes. 
+    - The number of partitions does not change, nor does the assignment of 
+    keys to partitions.
+    - Only change is assignment of patitions to nodes
+    - You can also assign more partitions of m/c's with more powerfull h/w
+    - This approach used in Riak, Elasticsearch, Couchbase, and Voldemort.
+
+<img src="/resources/images/ddia/Fig-6-6.png" title="Figure 6-6" style="height: 400px; width:800px;"/>
+Figure 6-6. Adding a new node to a database cluster with multiple partitions per node.
+
+- There are trade-offs how large partition should be...
+    - large partitions => expensive rebalancing and recovery from node failure
+    - small partitions => incurs too much overheads
+    - if dataset is highly variable (e.g. staets small, but grows very rapidly), 
+    it is difficult to choose partition size
+
+###### Dynamic partitioning
+- DBs that uses Key range partitioning, if you select partition boundaries incorrectly 
+then you may end up having data in one partition and other partitions being empty
+- To avoid this, Key range partitioning DBs (HBase, RethinkDB) creats partitions dynamically
+- 10 GB => HBase's default partition size
+- If partition grows over threshold, it splits it int two
+- Conversely, if data shrinks below threshold, it merges with an adjacent partition
+- Adv 
+    - no of partitions adapat t dataset size / data volume
+- DisAdv
+    - Empty DB starts with single partition and all queries server by single node only
+    - Sol => HBase and MongoDB allows to set initial set of partitions, aka pre-splitting
+- Dynamic partitioning is useful for hash partitioned data as well
+- MongoDB since version 2.4 supports both key-range and hash partitioning
+    - it splits partitions dynamically in either case
+
+
+##### Partitioning proportionally to nodes
+- In Dynamic partitioning
+    - number of partitions   is proportional to the size of the dataset
+- In Fixed partitioning
+    - size of each partition is proportional to the size of the dataset
+- Third option used by Cassandra and Ketama
+    - number of partitions proportional to the number of nodes
+    - size of each partition grows proportionally to the dataset size while 
+    the number of nodes remains unchanged
+    - But when you increase the number of nodes, the partitions become smaller again
+    - This approach also keeps the size of each partition fairly stable.
+
+#### Operations: Automatic or Manual Rebalancing
+- Fully automated rebalancing can be convenient, but it can be unpredictable
+- Rebalancing is expensive operation
+    - requires re-routing requests
+    - moving large amount of data
+- If not done carefully, can overload n/w and nodes. May hamper ongoing read/write queries
+- If failover happens during Rebalancing, situation may worsen causing a cascading failure
+- So it is good to keep human in loop while rebalcing
+    - slower than fully automatic process, but prevents operational suprises. 
+- Couchbase, Riak, and Voldemort generate a suggested partition assignment automatically, 
+but require an administrator to commit it before it takes effect.
+
+### Request Routing
+- This is an instance of a more general problem called service discovery
+- Few appraches used. See Figure 6-7
+<img src="/resources/images/ddia/Fig-6-7.png" title="Figure 6-7" style="height: 400px; width:800px;"/>
+Figure 6-7. Three different ways of routing a request to the right node.
+
+- Cassandra uses approach one
+- In all cases, the key problem is: 
+    - how does the component making the routing decision (which may be one 
+    of the nodes, or the routing tier, or the client) learn about changes 
+    in the assignment of partitions to nodes?
+
+- Most systems ely on a separate coordination service such as ZooKeeper to 
+keep track of this cluster metadata. See Figure 6-8
+<img src="/resources/images/ddia/Fig-6-8.png" title="Figure 6-8" style="height: 400px; width:800px;"/>
+Figure 6-8. Using ZooKeeper to keep track of assignment of partitions to nodes.
+
+- ZooKeeper maintains the authoritative mapping of partitions to nodes
+- ZooKeeper informs changes (node or partition changes) to routing layer
+- HBase, SolrCloud, and Kafka also use ZooKeeper to track partition assignment
+- MongoDB has a similar architecture, but it relies on its own config server 
+implementation and mongos daemons as the routing tier.
+
+- Cassandra and Riak take a different approach
+    - use a gossip protocol among the nodes to disseminate any changes in cluster state. 
+    - This model puts more more complexity in the database nodes but avoids 
+    dependency on an external coordination service such as ZooKeeper.
+- Couchbase does not rebalance automatically,
+    - Normally it is configured with a routing tier called moxi
+    - moxi learns about routing changes from the cluster nodes 
+
+### Summary
+- Goal of partitioning
+    - spread data and query load evenly across nodes
+- Two approaches to partitioning
+    - Key range partitioning
+        - keys are srted
+        - partition owns keys from some min to max range
+        - makes range queries efficient
+        - risk - creating hot spots for frequently accessed keys
+        - Sol
+            - Partitions are rebalanced dynamically when partition grows
+    - Hash partitioning
+        - hash(key), partition by hash ranges
+        - Destroyes sort order => inefficient range queries
+        - may distribute load evenly
+        - It is common to create fixed no of partitions in advance
+    - Hybrid approach also possible with compund key
+        - one key used to find partition
+        - other key for srt order
+- Socondary indexes need to partitioned as well. Two methds
+    - Document-partitioned indexes (local indexes)
+        - Write - Socondary indexes stored in same partition as that of key
+        - read - requires expensive scatter/gather approach 
+    - Term-partitioned indexes (global indexes)
+        - write - many partitions need to update when key is created/updated
+        - read - can be served from a single partition
+- Every partition operates mostly independently
+- And with this, DB can scale to multiple m/c's
+- But writting to several partitions makes things complex 
+- What happen if write to one partition succeeds, but failed on another
+- Will discuss this question in Chapter 7 
+
+
+
+
+
 ## Glossary
 - Fanout => In transaction processing systems,number of request to other services that need to make in order to satisfy one incoming request.
 - Latency => is a duration that a req is waiting to be handled. Means during which it is latent, awaiting service
