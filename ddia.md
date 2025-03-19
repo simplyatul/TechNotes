@@ -1773,6 +1773,179 @@ implementation and mongos daemons as the routing tier.
 - Will discuss this question in Chapter 7 
 
 
+## Chapter 7. Transactions
+
+Transaction => group of several reads and writes put together into logical unit
+
+- In DB, things may go wrong bec of
+    - DB s/w or h/W fails at any time (say in middle of write transaction)
+    - application crashs (in mid of operations)
+    - N/W interruption cut of app and DB
+    - several clients writes to DB at the same time, overwriting each other changes
+    - Race conditions bet clients
+
+- To be reliable, you need to deal above faults to prevent catastrophic failures
+- Implementing fault tolerance mechanism requires careful thinking and lot of testing
+- For decades, Transactions solves/simplifies  these issues.
+- Transaction execute as one operatin. Either it fails or succeeds
+- This makes application much simpler. 
+- It need not to worry if some operations fails and some fails (for any reason)
+
+- However, transactions shuld not be taken as granted. They are not a law of nature 
+- Transaction's main purpose => simplify programming model
+- By using transactions, the application is free to ignore certain potential 
+error scenarios and concurrency issues, bec DB takes care of them 
+instead => aka safety guarantees
+
+- Sometimes there are advantages to weakening transactional guarantees or 
+abandoning them entirely => to acheive higher performance and availability
+- Some safety properties can be achieved without transactions
+
+- How to decide if transaction is required?
+    - First, understand which safety guarantees they provide
+    - and cost of it
+- In this Chapter
+    - will see things that go wrong
+    - How DB handle them
+    - will see concurrency control, diff race conditions
+    - How DB implements isolation levels. e.g.
+        - read committed
+        - snapshot isolation
+        - serializability
+- This chapter applies to both single-node and distributed databases; 
+- In Chapter 8 we will focus the discussion on the particular challenges 
+that arise only in distributed systems.
+
+### The Slippery Concept of a Transaction
+- Almost all relational DBs and some non-relational DBs support transactions
+- Mosy of them follow the style used by IBM's System R (introdcued in 1975)
+- With new crop of NoSQL DBs, popular belief emerged that 
+    - transactions were the antithesis of scalability
+    - any large-scale system would have to abandon transactions in order 
+    to maintain good performance and high availability
+- On the other hand, relational DB vendors presses for transactional guarantees 
+for “serious applications” with “valuable data.”
+- Both viewpoints are pure hyperbole.
+- like every design choice, transactions have advantages and limitations.
+
+#### The Meaning of ACID
+- ACID => Atomicity, Consistency, Isolation, and Durability
+- System not meeting ACID criteria are called BASE (Basically Available, 
+Soft state, and Eventual consistency)
+- But sensible definition of BASE is “not ACID”
+
+##### Atomicity
+- something that cannot be broken down into smaller parts
+- ACID atomicity
+    - describes what happens if a client wants to make several writes, but 
+    a fault occurs after some of the writes have been processed
+    - faults => n/w interrupted, disk full, or some integrity constraint is violated
+    - If writes are gruped into transaction, then either it fails or succeeds. No other state.
+    - ability to abort a transaction on error => discard all writes from that transaction
+    - This can be called as *abortability*
+
+##### Consistency
+- In the context of ACID, consistency refers to an application-specific 
+notion of the database being in a “good state.”
+- you have certain statements about your data (invariants) that must always be true
+    - e.g. accounting system, credits and debits across all accounts must always be balanced
+- It’s the application’s responsibility to define its transactions correctly 
+so that they preserve consistency
+- If you write bad data that violates your invariants, the database can’t stop you
+- Atomicity, isolation, and durability are properties of the database, 
+whereas consistency (in the ACID sense) is a property of the application.
+- The application may rely on the database’s atomicity and isolation 
+properties in order to achieve consistency
+
+##### Isolation
+- Isolation in the sense of ACID means that concurrently executing transactions 
+are isolated from each other
+- Each transaction can pretend that it is the only transaction running on the entire DB
+    - known as serializability
+- DB ensures when transactions are committed, the result is the same as if 
+they had run serially (one after another), even though they have run concurrently in reality 
+- In practice, serializable isolation is rarely used
+    - Bec of performance penalty
+- Some DBs implement snapshot isolation => weaker guarantee than serializability
+
+##### Durability
+- Is the promise that once a transaction has committed successfully, any data 
+it has written will not be forgotten, even if there is a h/w fault or DB crashes.
+- Durability => data is written to non-volatile storage
+- In practice, there is no one technique that can provide absolute guarantees
+- only various risk-reduction techniques
+    - writing to disk, replicating to remote machines, and backups etc
+
+### Single-Object and Multi-Object Operations
+- Multi-object transactions are often needed if several pieces of data need to be kept in sync
+- See Figure 7-2
+
+<img src="/resources/images/ddia/Fig-7-2.png" title="Figure 7-2" style="height: 400px; width:800px;"/>
+Figure 7-2. Violating isolation: one transaction reads another transaction’s 
+uncommitted writes (a “dirty read”).
+
+- When user 2 checks emails table, s/he sees one unread email
+- But mailboxes (where numbe of unread message count is stored) returns 0
+- This happens bec user 2 trying to read user 1's uncommitted transaction
+
+
+<img src="/resources/images/ddia/Fig-7-3.png" title="Figure 7-3" style="height: 400px; width:800px;"/>
+Figure 7-3. Atomicity ensures that if an error occurs any prior writes from 
+that transaction are undone, to avoid an inconsistent state.
+
+- Figure 7-3 insists need to atomacity. 
+- If error occurs inbet two writes, DB remain in inconsistent state
+- Multi-object transactions require some way of determining which read and 
+write operations belong to the same transaction
+- Generally, everything bet BEGIN TRANSACTION and COMMIT considered as same transaction.
+- However, many NoSQL DBs don’t have such a way of grouping operations together
+
+#### Single-object writes
+#### The need for multi-object transactions
+#### Handling errors and aborts
+
+### Weak Isolation Levels
+#### Read Committed
+##### No dirty reads
+##### No dirty writes
+##### Implementing read committed
+
+### Snapshot Isolation and Repeatable Read
+
+
+<img src="/resources/images/ddia/Fig-7-1.png" title="Figure 7-1" style="height: 400px; width:800px;"/>
+Figure 7-1. A race condition between two clients concurrently incrementing a counter.
+
+
+<img src="/resources/images/ddia/Fig-7-4.png" title="Figure 7-4" style="height: 400px; width:800px;"/>
+Figure 7-4. No dirty reads: user 2 sees the new value for x only 
+after user 1’s transaction has committed.
+
+
+<img src="/resources/images/ddia/Fig-7-5.png" title="Figure 7-5" style="height: 400px; width:800px;"/>
+Figure 7-5. With dirty writes, conflicting writes from different transactions 
+can be mixed up.
+
+<img src="/resources/images/ddia/Fig-7-6.png" title="Figure 7-6" style="height: 400px; width:800px;"/>
+Figure 7-6. Read skew: Alice observes the database in an inconsistent state.
+
+<img src="/resources/images/ddia/Fig-7-7.png" title="Figure 7-7" style="height: 400px; width:800px;"/>
+Figure 7-7. Implementing snapshot isolation using multi-version objects.
+
+<img src="/resources/images/ddia/Fig-7-8.png" title="Figure 7-8" style="height: 400px; width:800px;"/>
+Figure 7-8. Example of write skew causing an application bug.
+
+<img src="/resources/images/ddia/Fig-7-9.png" title="Figure 7-9" style="height: 400px; width:800px;"/>
+Figure 7-9. The difference between an interactive transaction and a stored 
+procedure (using the example transaction of Figure 7-8).
+
+<img src="/resources/images/ddia/Fig-7-10.png" title="Figure 7-10" style="height: 400px; width:800px;"/>
+Figure 7-10. Detecting when a transaction reads outdated values from an MVCC snapshot.
+
+<img src="/resources/images/ddia/Fig-7-11.png" title="Figure 7-11" style="height: 400px; width:800px;"/>
+Figure 7-11. In serializable snapshot isolation, detecting when one transaction 
+modifies another transaction’s reads.
+
 
 
 
