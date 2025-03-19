@@ -1858,6 +1858,14 @@ whereas consistency (in the ACID sense) is a property of the application.
 properties in order to achieve consistency
 
 ##### Isolation
+- A race condition can be intrduced of > two clients reading/writing same DB record
+
+<img src="/resources/images/ddia/Fig-7-1.png" title="Figure 7-1" style="height: 400px; width:800px;"/>
+Figure 7-1. A race condition between two clients concurrently incrementing a counter.
+
+- See Figure 7-1. 
+    - Counter should have incremented to from 42 to 44 bec two increment happens
+    - But it actually went to 43 bec of race condition
 - Isolation in the sense of ACID means that concurrently executing transactions 
 are isolated from each other
 - Each transaction can pretend that it is the only transaction running on the entire DB
@@ -1959,30 +1967,69 @@ effect as if they ran serially => one at a time, without any concurrency
 - So rather blindly replying on tools, understand concurrency problems that 
 exist, and how to prevent them
 
-
-
-
-
 #### Read Committed
+- is most basic level of transaction isolation
+- Some DBs support even less weaker isolation level => read uncommitted
+    - It prevents dirty writes, but does not prevent dirty reads
+
+- Read Committed makes two guarantees
+    - no dirty reads => when reading DB, client only sees data that has committed
+    - no dirty writes => when writing DB, client only overwrites data that has been committed
+
 ##### No dirty reads
-##### No dirty writes
-##### Implementing read committed
-
-### Snapshot Isolation and Repeatable Read
-
-
-<img src="/resources/images/ddia/Fig-7-1.png" title="Figure 7-1" style="height: 400px; width:800px;"/>
-Figure 7-1. A race condition between two clients concurrently incrementing a counter.
-
+- See Figure 7-4. User 2 sees value of x only after User 1 commits it.
 
 <img src="/resources/images/ddia/Fig-7-4.png" title="Figure 7-4" style="height: 400px; width:800px;"/>
 Figure 7-4. No dirty reads: user 2 sees the new value for x only 
 after user 1’s transaction has committed.
 
+- Why it’s useful to prevent dirty reads:
+    - It prevents issues mentined in Figure 7-2
+    - If transaction rolled back, then any writes will be reverted. See Figure 7-3
+    If dirty reads allowed, then transaction may see data that is later rolled back
+
+##### No dirty writes
+- When two transaction concurrently try to update the same DB object?
+    - we don't t know in which order the writes will happen, but
+    - normally assume that the later write overwrites the earlier write.
+- dirty write => later write transaction overwrites uncommitted value of earlier transaction
+- Transactions running at the read committed isolation level must prevent dirty writes
+    - usually by delaying the second write until the first write’s transaction has committed or aborted
+
 
 <img src="/resources/images/ddia/Fig-7-5.png" title="Figure 7-5" style="height: 400px; width:800px;"/>
 Figure 7-5. With dirty writes, conflicting writes from different transactions 
 can be mixed up.
+
+- Dirty writes avoids some some kinds of concurrency problems:
+    - See Figure 7-5 showing use case of used car sales website
+        - Alice and Bob, are simultaneously trying to buy the same car
+        - Sale is awarded t Bob, while invice is sent to Alice
+        - Read committed prevents such mishaps. 
+    - However, Read committed does not prevent race condition in Figure 7-1
+        - the second write happens after the first transaction has committed, 
+        so it’s not a dirty write.
+        - It is still incorrect, but for diff reason
+        - In “Preventing Lost Updates” section, we will see how to make such counter increment safe
+
+##### Implementing Read Committed
+- Read Committed is very popular isolation level. 
+- is default setting in Oracle 11g, PostgreSQL, SQL Server 2012, MemSQL, and many other DBs
+- DB prevent dirty writes by using row-level locks.
+- This locking is done automatically in Read Committed mode
+- How to prevent dirty reads
+    - Option 1: use same lock mechanism
+        - But this has big issues
+        - long-running write transaction make many read transaction to wait 
+        and harms response time => causes bad operability
+        - this slowdown can propgate to diff part of the application
+    - Most DB uses apprached mentioned in Figure 7-4
+        - DB remembers both old committed value and new value of currently ongoing uncommitted transaction
+        - Other transactions that read the objects are given old values 
+        - DB starts retuning new value, once ongoing transaction is committed.
+
+### Snapshot Isolation and Repeatable Read
+
 
 <img src="/resources/images/ddia/Fig-7-6.png" title="Figure 7-6" style="height: 400px; width:800px;"/>
 Figure 7-6. Read skew: Alice observes the database in an inconsistent state.
