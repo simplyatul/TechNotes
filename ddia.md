@@ -1901,10 +1901,68 @@ write operations belong to the same transaction
 - However, many NoSQL DBs don’t have such a way of grouping operations together
 
 #### Single-object writes
+- storage engines almost universally aim to provide atomicity and isolation 
+on the level of a single object (such as a key-value pair) on one node
+- Atomicity can be implemented using a log (e.g. WAL) for crash recovery
+- isolation can be implemented using a lock on each object
+- Some DB supprts few complex operations like 
+    - increment operation => eleminates read-modify-write cycle
+    - compare-and-set operation => write only if value not changed concurrently
+
 #### The need for multi-object transactions
+- Use Cases where multi-object transactions are required => several different 
+objects need to be coordinated
+    - In relatinal model, when inserting several records that refer to one 
+    another, the foreign keys have to be correct and up to date
+    - Document data model lacks join functionality. Sol => Denormalization. 
+    - But when denormalize data (like in Figure 7-2) need to update, you need to 
+    update several documents in one go
+    - secondary indexes need to be updated every time you change a value
+    - without transaction isolation, it’s possible for a record to appear in 
+    one index but not another. Bec second index hasn't updated yet.
+
+- Above use cases can still be implemented w/o transactions, but 
+    - w/o atomacity error handling becomes much more complicated
+    - and lack of isolation can cause concurrency issues
+
 #### Handling errors and aborts
+- ACID DB philosophy
+    - if DB in danger to violet it's atomicity, isolation, or durability, 
+    guarantees then abandon the transaction entirely rather keep it half-finished
+- Application can retry failed transaction, but it's not simple and effective error
+handling mechanism
+    - Bec of n/w failure, if client does not receive commit ack then client 
+    can retry same transaction causing it running twice. 
+    - You need to have deduplication mechanism to address above case
+    - If error occure bec of overloading, retrying can cause more issues. Sol is
+        - limit no of retries
+        - use exponential backoff
+        - handle overload-related errors differently from other errors (if possible).
+    - retry only after transient errors and not after permanent error.
+    - If transaction also has side effects outside DB, then it need to 
+    rollback as well on transaction abort
+    - 2PC can help if you want several systems to either commit or abort together
 
 ### Weak Isolation Levels
+- => Non-serializable
+- Concurrency issues / race conditions happens when
+    - when one transaction reads data that is concurrently modified by 
+    another transaction
+    - two transactions try to simultaneously modify the same data
+- Concurrency bugs are hard to find and reproduced as they are timing related
+- Therefore DBs hide concurrency issues from application developers by providing transaction isolation.
+- Serializable isolation => DB guarantees that transactions have the same 
+effect as if they ran serially => one at a time, without any concurrency
+- But Serializable isolation has performance cost
+- So systems uses weak isolation levels which protect sme concurrency issues, but not all
+- However, weak isolation levels are used in practice
+- So rather blindly replying on tools, understand concurrency problems that 
+exist, and how to prevent them
+
+
+
+
+
 #### Read Committed
 ##### No dirty reads
 ##### No dirty writes
