@@ -2029,16 +2029,273 @@ can be mixed up.
         - DB starts retuning new value, once ongoing transaction is committed.
 
 ### Snapshot Isolation and Repeatable Read
-
+- Even after DB supports read committed isolation, there are ways to occure 
+concurrency bugs. See Figure 7-6
 
 <img src="/resources/images/ddia/Fig-7-6.png" title="Figure 7-6" style="height: 400px; width:800px;"/>
 Figure 7-6. Read skew: Alice observes the database in an inconsistent state.
 
+- Alice feels that she has 900 balance, but actually balance is 1000
+- If Alice refreshes her page of bank account after some time, she would see balance as 1000
+- This anomaly is called as Read skew (timing anomaly) or nonrepeatable read
+
+- For above scenario, read skew is acceptable, but it would not be 
+acceptable for other scenarios, like
+    - Backups
+        - If a Backup is going on and it sees what Alice saw above and then 
+        later backup is restored then DB will be in inconsistent state
+        - And that state would become permanent
+    - Analytic queries and integrity checks
+        - will return nonsensical results
+- Snapshot isolation is common solution to Read skew.
+- Idea is each transaction sees consistent snapshot of DB
+- Snapshot isolation is a boon for long-running, read-only queries such 
+as backups and analytics.
+- Snapshot isolation is popular feature supported by many DBs
+    - PostgreSQL, 
+    - MySQL with the InnoDB storage engine, 
+    - Oracle, 
+    - SQL Server and others
+
+#### Implementing snapshot isolation
+- Key principle =>  readers never block writers, and writers never block readers
+- This allows DB to support long running read queries and hanlde write queries 
+at the same time w/o any lock contention
+- snapshot isolation is generalization of the mechanism we saw for preventing 
+dirty reads in Figure 7-4.
+- DB keeps diff committed versions of an object side by side => MVCC
+    - multi-version concurrency control
+- DB supporting snapshot isolation typically uses MVCC for read committed isolation as well
+
 <img src="/resources/images/ddia/Fig-7-7.png" title="Figure 7-7" style="height: 400px; width:800px;"/>
 Figure 7-7. Implementing snapshot isolation using multi-version objects.
 
+- Figure 7-7 illustrates MVCC
+
+#### Visibility rules for observing a consistent snapshot
+- While reading, transaction IDs are used to decide which objects it can see and which are invisible
+- Visibility rules are 
+    1. At start of each transaction, DB creates list of all other in progress 
+    transactions
+        - Any writes that those transactions have made are ignored, even if the transactions subsequently commit
+    2. Any writes made by aborted transactions are ignored.
+    3. Any writes made by transactions with a later transaction ID (i.e., 
+    which started after the current transaction started) are ignored, 
+    regardless of whether those transactions have committed.
+    4. All other writes are visible to the application’s queries.
+
+#### Indexes and snapshot isolation
+- Option 1
+    - Index to pint all versions of objects and filter out any version that are 
+    not visible to current transaction
+    - Used by PostgreSQL 
+- Option 2
+    - use an append-only/copy-on-write variant
+    - This is used by CouchDB, Datomic, and LMDB
+
+#### Repeatable read and naming confusion
+- snapshot isolation is called by diff names in diff DBs
+    - serializable => Oracle
+    - repeatable read => PostgreSQL and MySQL
+- Reason for diff names is SQL standard does not have snapshot isolation concept
+- IBM DB2 uses “repeatable read” to refer to serializability
+
+### Preventing Lost Updates
+- Read committed and snapshot isolation levels guarantees of what a 
+read-only transaction can see in the presence of concurrent writes
+- What about two transactions writing concurrently
+- dirty writes => only one type of write-write conflict
+- Several other conflicts can occur bet concurrently writing transactions.
+    - Like Lost Update Problem 
+    - Figure 7-1 => Two concurrent counter increments.
+- Lost Updates occure during read-mdify-write cycle
+- If two transactions doing read-mdify-write simultaneously, one's modification can be lost
+- This pattern occur in diff scenarios
+    - Incrementing a counter or updating an account balance
+    - adding an element to a list within a JSON document (requires parsing 
+    document, making the change, and writing back the modified document)
+    - Two users editing a wiki page at the same time
+- variety of solutions have been developed.
+
+##### Atomic write operations
+- DB removes read-mdify-write cycle and support atomic update operations instead
+
+```SQL
+UPDATE counters SET value = value + 1 WHERE key = 'foo';
+```
+- MongoDB and Redis supports this
+- But not all operatins can be supported with above
+- Like updating wiki page involving arbitrary text editing
+- Atomic operations => takes exclusive lock on object when it is read, so no
+other transactions can read it until update happens. aka cursor stability
+
+##### Explicit locking
+- Application explicitly lock objects that are going to be updated
+
+Example 7-1. Explicitly locking rows to prevent lost updates
+```SQL
+BEGIN TRANSACTION;
+
+SELECT * FROM figures
+  WHERE name = 'robot' AND game_id = 222
+  FOR UPDATE; -- => lock all rows returned by above query
+
+-- Check whether move is valid, then update the position
+-- of the piece that was returned by the previous SELECT.
+UPDATE figures SET position = 'c4' WHERE id = 1234;
+
+COMMIT;
+```
+- Above works, but it is easy to forget by programmer
+
+##### Automatically detecting lost updates
+- transaction manager to detects a lost update, abort the transaction and 
+force it to retry its read-modify-write cycle.
+- This is less error prone comapred with Explicit locking
+- DBs can perform this check efficiently in conjunction with snapshot isolation
+- Supprted by
+    - PostgreSQL’s repeatable read
+    - Oracle’s serializable
+    - SQL Server's snapshot isolation levels
+- But MySQL/InnoDB’s repeatable read does not detect lost updates 
+
+##### Compare-and-set
+- DBs that don't support transactions, can support atomic compare-and-set operation
+    - avoids lost update
+    - allow an update to happen only if the value has not changed since you 
+    last read it.
+
+##### Conflict resolution and replication
+- Some additional steps required if data is replicated on diff nodes
+- DBs with multi-leader or leaderless replication 
+    - allow several writes to happen concurrently and 
+    - replicate them asynchronously
+    - So can not guarantee single up-to-date copy of the data
+    - So locks and Compare-and-set do not apply here
+    - Will see this issue in  “Linearizability”
+- Common Solution
+    - allow concurrent writes to create several conflicting versions of a value
+    - use application code or special data structures to resolve and merge these versions
+
+### Write Skew and Phantoms
+- dirty writes and lost updates race conditions can occur when different 
+transactions concurrently try to write to the same objects
+- Let's see another race condition. See Figure 7-8
+
 <img src="/resources/images/ddia/Fig-7-8.png" title="Figure 7-8" style="height: 400px; width:800px;"/>
 Figure 7-8. Example of write skew causing an application bug.
+
+- Above use case requirement => you must have at least one Dr on call
+- But above, Alice and Bob goes off call at the same time and above requirement is violated
+- Since DB using snapshot isolation, both the checks return 2 (currently_on_call = 2)
+- So both transactions moves futher with update
+- This anomaly is called Write Skew
+
+#### Characterizing write skew
+- This is neither dirty write or lost update
+- Bec tow transactions updating diff objects (Alice’s and Bob’s on-call records, respectively)
+- if the two transactions had run one after another, the second doctor would 
+have been prevented from going off call.
+- The anomalous behavior was only possible because the transactions ran concurrently.
+- Write skew is generalization of the lost update problem
+- Write skew can occur if two transactions read the same objects, and then 
+update some of those objects
+- If transactions update same object, you either get dirty write or lost update
+anomaly depending on time
+
+- We see various different ways of preventing lost updates, but write skew, 
+our options are more restricted:
+    - Automatically preventing write skew requires true serializable isolation
+    - Constraints can be used, but not all DBs support them
+        - But you can implement them using triggers or materialized views
+    - If you can't use serializable isolation, then second best option is to use locks
+        ```SQL
+        BEGIN TRANSACTION;
+
+        SELECT * FROM doctors
+        WHERE on_call = true
+        AND shift_id = 1234 FOR UPDATE; 
+
+        UPDATE doctors
+        SET on_call = false
+        WHERE name = 'Alice'
+        AND shift_id = 1234;
+
+        COMMIT;
+
+        ```
+#### More examples of write skew
+
+- Meeting room booking system
+    - Example 7-2. A meeting room booking system tries to avoid double-booking 
+    (not safe under snapshot isolation)
+        ```SQL
+        BEGIN TRANSACTION;
+
+        -- Check for any existing bookings that overlap with the period of noon-1pm
+        SELECT COUNT(*) FROM bookings
+        WHERE room_id = 123 AND
+            end_time > '2015-01-01 12:00' AND start_time < '2015-01-01 13:00';
+
+        -- If the previous query returned zero:
+        INSERT INTO bookings
+        (room_id, start_time, end_time, user_id)
+        VALUES (123, '2015-01-01 12:00', '2015-01-01 13:00', 666);
+
+        COMMIT;
+        ```
+    - Unfortunately, snapshot isolation does not prevent another user from 
+    concurrently inserting a conflicting meeting.
+    - Here, you need serializable isolation.
+
+- Multiplayer game    
+    - In Example 7-1, we used a lock to prevent lost updates
+    - But lock doesn’t prevent players from moving two different figures to 
+    the same position on the board
+- Claiming a username
+    - Two users trying to create an accunt with same username
+    - Fortunately, a unique constraint is a simple solution here
+- Preventing double-spending
+    - A service that allows users to spend money or points needs to check 
+    that a user doesn’t spend more than they have
+    - With write skew, two spending items can inserted concurrently which 
+    can make balance negative
+
+#### Phantoms causing write skew
+
+- All above examples follow a similar pattern:
+    1. SELECT query checks some requirement is satisfied
+        - at least two Drs are on call
+        - no existing booking for meeting room
+        - username isn't already taken
+        - positive and sufficient money in the account
+    2. Depending on SELECT query result, application code moves ahead with update
+    3. Application do either INSERT, UPDATE, or DELETE
+
+- The effect of this write changes the precondition of the decision of step 2
+- In Dr's case transactions checks for some existence of rows 
+    - So you can lock those rows and prevent issue
+- But in other cases, transactions checks for absense of rows
+    - If the query in step 1 doesn’t return any rows, SELECT FOR UPDATE 
+    can’t attach locks to anything.
+- This effect, where a write in one transaction changes the result of a 
+search query in another transaction, is called a phantom
+- Snapshot isolation avoids phantoms in read-only queries
+- But in read-write transactions (like above examples) phantoms can lead 
+to particularly tricky cases of write skew.
+
+##### Materializing conflicts
+- The problem of phantoms is there is no objects/rows to lock
+- One Solution - Inject such rows in advance.
+    - Like all possible meeting rooms schedule for upcoming week
+- materializing conflicts => it takes a phantom and turns it into a lock 
+conflict on a concrete set of rows that exist in the database
+- Unfortunately, it can be hard and error-prone to figure out how to materialize conflicts,
+- Therefre materializing conflicts should be considered a last resort if no 
+alternative is possible
+- A serializable isolation level is much preferable in most cases.
+
+### Serializability
 
 <img src="/resources/images/ddia/Fig-7-9.png" title="Figure 7-9" style="height: 400px; width:800px;"/>
 Figure 7-9. The difference between an interactive transaction and a stored 
