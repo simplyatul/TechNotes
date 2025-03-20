@@ -1593,8 +1593,10 @@ a way of searching for occurrences of a particular value
     - term-based partitioning.
 
 #### Partitioning Secondary Indexes by Document
+
 <img src="/resources/images/ddia/Fig-6-4.png" title="Figure 6-4" style="height: 400px; width:800px;"/>
 Figure 6-4. Partitioning secondary indexes by document.
+
 - aka local index
 - Each partition maintains it's own Secondary Indexes covering only documents/rows in that partition
 - However, reading from a document-partitioned index requires 
@@ -1603,7 +1605,7 @@ Figure 6-4. Partitioning secondary indexes by document.
     - aka scatter/gather pattern
     - makes read queries expensive
 - This pattern used in MongoDB, Riak, Cassandra, Elasticsearch, SolrCloud, and VoltDB
-- Mst DB vendors recommend to structure partitioning scheme so that secondary 
+- Most DB vendors recommend to structure partitioning scheme so that secondary 
 index queries can be served from a single partition
     - But this is not always possible
     - e.g. filtering cars by color and make at the same time
