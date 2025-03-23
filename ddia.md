@@ -2519,6 +2519,353 @@ of a database running on a single machine.
 challenges, which we’ll discuss in the next two chapters.
 
 
+## Chapter 9. Consistency and Consensus
+
+In this chapter
+- Will see algorithms and protocols for building fault-tolerant distributed systems
+- Will assume all the problems from Chapter 8 can occur
+    - packets lost, reordered, duplicated, or arbitrarily delayed 
+    - clocks are approximate at best
+    - nodes can pause (e.g., due to gc) or crash
+- The best way of building fault-tolerant systems is
+    - find some general-purpose abstractions with useful guarantees
+    - implement them once, and 
+    - then let applications rely on those guarantees
+- Above is same approach used in Transactions (Chapert 7). 
+- Transaction abstraction can hide following issues and Application can pretent
+    - There are no crashes (atomicity)
+    - Nobody else is concurrently accessing the database (isolation)
+    - Storage devices are perfectly reliable (durability)
+
+- most important abstractions for distributed systems is consensus
+    - means getting all of the nodes to agree on something
+
+- Correct implementations of consensus help avoid issues like 
+    - split brain (see Chapter 5)
+- In Distributed Transactions and Consensus section, will see algorithms to 
+solve consensus and related problems
+- Need to understand the scope of what can and cannot be done
+    - In some cases, system can tolerate faults and continue working
+    - However in some cases, it is not possible 
+    - Will explore the limits of what is and isn’t possible in depth in this chapter
+
+### Consistency Guarantees
+- Inconsistencies like Replication Lag can occur no matter what replication 
+method the database uses (single-leader, multi-leader, or leaderless replication)
+- Most DBs support eventual consistency
+    - means inconsistency is temporary, and it eventually resolves itself
+    - assuming network faults are also eventually repaired
+    - A better name for eventual consistency may be convergence
+- eventual consistency weak guarantee
+    - Until the time of convergence, reads could return anything or nothing
+- The edge cases of eventual consistency only become apparent when there is 
+a fault in the system (e.g., a network interruption) or at high concurrency.
+- You need to aware of limitations of DBs providing weak guarantees.
+
+- Will explore strong guarantees, but they come at cost of being 
+    - less tolerant comapred with weaker guarantees
+
+- distributed consistency models and transaction isolation levels are diff
+- Transaction isolation means
+    - avoiding race conditions due to concurrently executing transactions
+- Distributed consistency means
+    - coordinating the state of replicas in the face of delays and faults
+
+- In this Chapert, will cover
+    - linearizability - one of the strongest consistency models commonly used
+    - Ordering events in a distributed system => Ordering Guarantees
+    - how to atomically commit a distributed transaction => Distributed Transactions and Consensus
+
+### Linearizability
+- aka atomic consistency, strong consistency, immediate consistency, or external consistency
+- Idea is to make a system appear as
+    - there were only one copy of the data and 
+    - all operations on it are atomic
+- Single copy of the data means guaranteeing 
+    - value read is the most recent, up-to-date value, and 
+    - doesn’t come from a stale cache or replica (bec of replication lag)
+- linearizability is a recency guarantee
+    - recency => ability of being recent
+
+ToDo
+Figure 9-1. This system is not linearizable, causing football fans to be confused.
+
+- In above Figure 9-1, Bob's query returns stale result => violation of linearizability 
+
+#### What Makes a System Linearizable?
+
+ToDo
+Figure 9-2. If a read request is concurrent with a write request, it may return either the old or the new value.
+
+- In the distributed systems literature, 
+    - x is called a register—in practice, means it could be 
+    - one key in a key-value store or
+    - one row in a relational database or 
+    - one document in a document database
+
+- read(x) ⇒ v => client requested value if x and DB returns the value as v
+- write(x, v) ⇒ r => client requested to set the register x to value v and 
+DB returns response r (which could be ok/success or error)
+
+- In Figure 9-2
+    - Any read operations that overlap in time with the write operation might 
+    return either 0 or 1
+- This is not linearizability
+- if reads that are concurrent with a write can return either the old or 
+the new value, then readers could see a value flip back and forth between 
+the old and the new value several times while a write is going on.
+- That is not what we expect of a system that emulates a “single copy of the data"
+
+- To make the system linearizable, we need to add another constraint, 
+illustrated in Figure 9-3.
+
+ToDo
+Figure 9-3. After any one read has returned the new value, 
+all following reads (on the same or other clients) must also return the new value.
+
+Let' see another example Figure 9-4
+
+ToDo
+Figure 9-4. Visualizing the points in time at which the reads and writes 
+appear to have taken effect. The final read by B is not linearizable.
+
+- cas(x, v<sub>old</sub>, v<sub>new</sub>) ⇒ r means 
+    - client requested an atomic compare-and-set operation 
+    - If the current value of the register x equals v<sub>old</sub>, then
+    - it should be atomically set to v<sub>new</sub>
+    - If x != v<sub>old</sub>, then the operation should leave the register 
+    unchanged and return an error. 
+    - r is the database’s response (ok or error).
+
+- Model shown in Figure 9-4 does not assume any transaction isolation
+    - means another client may change a value at any time.
+- In Figure 9-4
+    - The final read by client B (in a shaded bar) is not linearizable
+    - client A has already read the new value 4 before B’s read started
+    - so B is not allowed to read an older value than A
+    - it’s the same situation as with Alice and Bob in Figure 9-1.
+
+##### Linearizability Versus Serializability
+- both are quite different guarantees
+
+- Serializability
+    - concurrent transactions behave the same as if they had executed 
+    in some serial order
+    - And It is okay for that serial order to be different from the 
+    order in which transactions were actually run
+- Linearizability
+    - is a recency guarantee on  reads and writes of a register (an individual object).
+    - doesn’t group operations together into transactions,
+    - so it does not prevent problems such as write skew unless you take 
+    additional measures such as materializing conflicts
+- DB supporting both Linearizability and Serializability is called as
+    - strict serializability or 
+    - strong one-copy serializability (strong-1SR)
+- serializable snapshot isolation (SSI) is not linearizable
+    - bec it makes reads from a consistent snapshot, to avoid lock 
+    contention between readers and writers
+    - consistent snapshot does not include writes that are more recent than 
+    the snapshot
+    - thus reads from snapshot are not linearizable.
+
+#### Relying on Linearizability
+- Issue described in Figure 9-1 is unlikely to cause any real harm
+- However, there a few areas in which linearizability is an important 
+requirement for making a system work correctly.
+
+##### Locking and leader election
+- In single-leader replication, lock can be used to elect a leader
+    - every node on start up tries to acquire the lock
+    - and the one that succeeds becomes the leader
+- No matter how this lock is implemented, it must be linearizable
+    - means all nodes must agree which node owns the lock
+- ZooKeeper and etcd are often used to implement distributed locks and leader election
+- They use consensus algorithms to implement linearizable operations in a fault-tolerant way
+- Apache Curator help by providing higher-level recipes on top of ZooKeeper.
+- linearizable storage service is the basic foundation for these coordination tasks.
+
+- Distributed DBs like Oracle Real Application Clusters (RAC), uses Distributed locking
+    - RAC uses a lock per disk page, with multiple nodes sharing access 
+    to the same disk storage system.
+
+##### Constraints and uniqueness guarantees
+- examples where uniqueness guarantees required
+    - two clients trying to create username or file with same string/path
+    - bank account balance never goes -ve
+    - two uses don't concurrently book same seat
+- In some situations, you can tolerate few constraint violations
+    - like if flight is overbooked, you can move cust to diff flights
+    and compensate for inconvenience
+    - will see such loosely interpreted constraints in “Timeliness and Integrity”.
+- hard uniqueness constraint, typically find in relational databases requires linearizability.
+- However, constraints such as  foreign key or attribute constraints, can be implemented without requiring linearizability
+
+##### Cross-channel timing dependencies
+- In Figure 9-1, linearizability violation was only noticed because there 
+was an additional communication channel in the system (Alice’s voice to Bob’s ears).
+- See another example in Figure 9-5
+
+Figure 9-5. The web server and image resizer communicate both through 
+file storage and a message queue, opening the potential for race conditions.
+
+- Image resizer may receive the message to resize faster.
+- So it might see an old version of the image, or nothing at all.
+- This problem arises because there are two different communication channels 
+between the web server and the resizer
+- If you control the additional communication channel (like in the case 
+of the message queue, but not in the case of Alice and Bob), you can use 
+alternative approaches similar to what we discussed in 
+“Reading Your Own Writes”, at the cost of additional complexity.
+
+#### Implementing Linearizable Systems
+- Simple solution is really use single copy of data
+    - but this approach is not fault tolerant.
+    - what if node holding data crashes or n/w breaks happen?
+- Most common approach making a system fault-tolerant is to use replication
+- Let's compare whether diff replication methods can be made linearizable
+
+- Single-leader replication (potentially linearizable)
+    - If you make reads from the leader, or from synchronously updated followers, 
+    they have the potential to be linearizable
+    - However, not every single-leader DB is actually linearizable, either 
+        - by design (e.g., because it uses snapshot isolation) or 
+        - due to concurrency bugs
+    - In split brain scenario, if the delusional leader continues to serve 
+    requests, it is likely to violate linearizability
+    - With asynchronous replication, failover may even lose committed writes 
+    (see “Handling Node Outages”), which violates durability and linearizability both
+
+- Consensus algorithms (linearizable)
+    - consensus protocols contain measures to prevent split brain and 
+    stale replicas. 
+    - consensus algorithms can implement linearizable storage safely. 
+    - This is how ZooKeeper and etcd work
+
+- Multi-leader replication (not linearizable)
+    - bec they concurrently process writes on multiple nodes and asynchronously 
+    replicate them to other nodes
+    - this can produce conflicting writes that require resolution
+    - Such conflics means lack of single copy of data
+
+- Leaderless replication (probably not linearizable)
+    - Leaderless replication used by Dynamo-style DBs
+    - people claim you can obtain “strong consistency” by requiring quorum 
+    reads and writes (w + r > n), but this is not quite true
+    - LWW based on time-of-day clocks are almost certainly nonlinearizable bec 
+    of clock skew
+    - Sloppy quorums also ruin any chance of linearizability.
+    - Even with strict quorums, nonlinearizable behavior is possible, see Figure 9-6
+
+##### Linearizability and quorums
+
+ToDo
+Figure 9-6. A nonlinearizable execution, despite using a strict quorum
+
+- when we have variable network delays, it is possible to have nonlinearizable behavior
+- Writer writes with n=3 and w=3 configuration
+- B’s request begins after A’s request completes, 
+- but B returns the old value while A returns the new value. 
+- Even though quorum condition (w + r > n) is met
+- At cost of reduced performance, it is possible to make Dynamo-style quorums linearizable
+    - reader must perform read repair synchronously (see Read repair and anti-entropy)
+    - writer must read the latest state of a quorum of nodes before sending its writes
+- Riak does not perform synchronous read repair due to the performance penalty 
+- Cassandra does wait for read repair to complete on quorum reads 
+    - but it loses linearizability if there are multiple concurrent writes 
+    to the same key due to LWW conflict resolution
+- Moreover, only linearizable read and write operations can be implemented 
+in this way; a linearizable compare-and-set operation cannot, because it 
+requires a consensus algorithm
+- In summary, it is safest to assume that a leaderless system with 
+Dynamo-style replication does not provide linearizability.
+
+#### The Cost of Linearizability
+Lets explore pros and cons of linearizability in more depth.
+
+ToDo 
+Figure 9-7. A network interruption forcing a choice between 
+linearizability and availability.
+
+- multi-leader replication is often a good choice for multi-datacenter replication
+- If two DC cut offs due to n/w break, DCs can continue operating normally with multi-leader DB
+    - since writes from one datacenter are asynchronously replicated to 
+    the other DC, 
+    - Writes are simply queued up and exchanged when network connectivity is restored.
+- In single leader replication
+    - leader must be in one DC
+    - Any writes and any linearizable reads must be sent to the leader
+    - So clients connected to follower DC, those read and write requests 
+    must be sent synchronously over the network to the leader DC
+    - Such client can not make any writes/linearizable reads as n/w is broken bet DCs
+    - They can make reads from followers, but they can be stale => nonlinearizable
+
+##### The CAP theorem
+
+Unreliable n/w can happen within single DC. So trade-off is as follows
+
+- If application requires linearizability, 
+    - they must wait until n/w problem is fixed or return error
+    - either way, they become unavailable
+- If application does not require linearizability
+    - application can remain available even with n/w faults
+    - but its behavior is not linearizable
+    - such applications can be more tolerant to n/w faults
+
+- CAP was originally proposed as a rule of thumb
+    - without precise definitions, 
+    - with the goal of starting a discussion about trade-offs in databases.
+- At the time, many distributed DBs focused on providing linearizable semantics 
+on a cluster of m/cs with shared storage, and CAP encouraged DB engineers 
+to explore a wider design space of distributed shared-nothing systems, 
+which were more suitable for implementing large-scale web services. 
+- CAP deserves credit for this culture shift—witness the explosion of new 
+DB technologies since the mid-2000s (known as NoSQL).
+
+###### The Unhelpful CAP Theorem
+- CAP is sometimes presented as Consistency, Availability, 
+Partition tolerance: pick 2 out of 3. 
+- But in distributed systems, you can not opt out P
+- So when a network fault occurs, you have to choose between either 
+linearizability or total availability
+- Thus, a better way of phrasing CAP would be either Consistent or 
+Available when Partitioned
+- Also, CAP doesn’t say anything about network delays, dead nodes, or 
+other trade-offs. 
+
+##### Linearizability and network delays
+
+- RAM on a modern multi-core CPU is not linearizable
+    - every CPU core has its own memory cache and store buffer
+    - Memory access first goes to the cache by default
+    - And any changes are asynchronously written out to main memory
+    - since cache is fast, this is required for performance
+    - But with several copies of data, linearizability is lost.
+        - one in RAM
+        - others in several caches (on several CPUs)
+- therefore if a thread running on one CPU core writes to a memory address, 
+and a thread on another CPU core reads the same address shortly afterward, 
+it is not guaranteed to read the value written by the first thread 
+(unless a memory barrier or fence is used).
+- Within one computer we usually assume reliable communication
+- Here, the reason for dropping linearizability is performance, 
+not fault tolerance
+
+- Linearizability is slow—and this is true all the time, not only during a 
+network fault.
+
+- Can’t we maybe find a more efficient implementation of linearizable storage? 
+- It seems the answer is no
+- Attiya and Welch prove that if you want linearizability, the response time 
+of read and write requests is at least proportional to the uncertainty of 
+delays in the network.
+
+- Trade-off is important for latency-sensitive systems.
+    - A faster algorithm for linearizability does not exist
+    - but weaker consistency models can be much faster
+
+- In Chapter 12 we will discuss some approaches for avoiding linearizability 
+without sacrificing correctness.
+
 ## Glossary
 - Fanout => In transaction processing systems,number of request to other services that need to make in order to satisfy one incoming request.
 - Latency => is a duration that a req is waiting to be handled. Means during which it is latent, awaiting service
