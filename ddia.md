@@ -2587,14 +2587,14 @@ a fault in the system (e.g., a network interruption) or at high concurrency.
 - linearizability is a recency guarantee
     - recency => ability of being recent
 
-ToDo
+<img src="/resources/images/ddia/Fig-9-1.png" title="Figure 9-1" style="height: 400px; width:800px;"/>
 Figure 9-1. This system is not linearizable, causing football fans to be confused.
 
 - In above Figure 9-1, Bob's query returns stale result => violation of linearizability 
 
 #### What Makes a System Linearizable?
 
-ToDo
+<img src="/resources/images/ddia/Fig-9-2.png" title="Figure 9-2" style="height: 400px; width:800px;"/>
 Figure 9-2. If a read request is concurrent with a write request, it may return either the old or the new value.
 
 - In the distributed systems literature, 
@@ -2619,13 +2619,13 @@ the old and the new value several times while a write is going on.
 - To make the system linearizable, we need to add another constraint, 
 illustrated in Figure 9-3.
 
-ToDo
+<img src="/resources/images/ddia/Fig-9-3.png" title="Figure 9-3" style="height: 400px; width:800px;"/>
 Figure 9-3. After any one read has returned the new value, 
 all following reads (on the same or other clients) must also return the new value.
 
 Let' see another example Figure 9-4
 
-ToDo
+<img src="/resources/images/ddia/Fig-9-4.png" title="Figure 9-4" style="height: 400px; width:800px;"/>
 Figure 9-4. Visualizing the points in time at which the reads and writes 
 appear to have taken effect. The final read by B is not linearizable.
 
@@ -2705,6 +2705,7 @@ requirement for making a system work correctly.
 was an additional communication channel in the system (Alice’s voice to Bob’s ears).
 - See another example in Figure 9-5
 
+<img src="/resources/images/ddia/Fig-9-5.png" title="Figure 9-5" style="height: 400px; width:800px;"/>
 Figure 9-5. The web server and image resizer communicate both through 
 file storage and a message queue, opening the potential for race conditions.
 
@@ -2758,7 +2759,7 @@ alternative approaches similar to what we discussed in
 
 ##### Linearizability and quorums
 
-ToDo
+<img src="/resources/images/ddia/Fig-9-6.png" title="Figure 9-6" style="height: 400px; width:800px;"/>
 Figure 9-6. A nonlinearizable execution, despite using a strict quorum
 
 - when we have variable network delays, it is possible to have nonlinearizable behavior
@@ -2782,7 +2783,7 @@ Dynamo-style replication does not provide linearizability.
 #### The Cost of Linearizability
 Lets explore pros and cons of linearizability in more depth.
 
-ToDo 
+<img src="/resources/images/ddia/Fig-9-7.png" title="Figure 9-7" style="height: 400px; width:800px;"/> 
 Figure 9-7. A network interruption forcing a choice between 
 linearizability and availability.
 
@@ -3010,7 +3011,7 @@ numbers for operations.
 - is a simple method for generating sequence numbers that is consistent with causality
 - proposed in 1978 by Leslie Lamport
 
-ToDo 
+<img src="/resources/images/ddia/Fig-9-8.png" title="Figure 9-8" style="height: 400px; width:800px;"/> 
 Figure 9-8. Lamport timestamps provide a total ordering consistent with causality.
 
 - The Lamport timestamp is then simply a pair of (counter, node ID).
