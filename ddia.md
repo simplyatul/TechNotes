@@ -2866,6 +2866,240 @@ delays in the network.
 - In Chapter 12 we will discuss some approaches for avoiding linearizability 
 without sacrificing correctness.
 
+### Ordering Guarantees
+- we saw linearizable register behaves as 
+    - there is only single copy of data
+    - every operation happens atomically
+- It means operations are executed in some well-defined order
+
+- Let’s briefly recap some of the other contexts in which we have discussed ordering:
+    - In single-leader replication, replication log maintains order of writes
+        - And followers apply those writes in same order
+        - If there is no single leader, conflicts can occur due to concurrent 
+        operations (see “Handling Write Conflicts”)
+    - Serializability
+        - ensures concurrent transactions behave as if they were executed in 
+        some sequential order.
+        - Serializability can be achieved by
+            - literally executing transactions in that serial order or
+            - allowing concurrent execution while preventing serialization 
+            conflicts (by locking or aborting)
+    - Timestamps and clocks
+        - used to determine which one of two writes happened later.
+        - See “Relying on Synchronized Clocks” in Chapter 8
+- There is deep connections between ordering, linearizability, and consensus
+
+#### Ordering and Causality
+- Ordering reserves Causality. Exmaples we saw earlier
+    - In Consistent Prefix Reads
+        - There is causal dependency between the question and the answer.
+        - However observer of a conversation saw first the answer to a question
+        - It violates our intuition of cause and effect
+    - In Figure 5-9, 
+        - some writes could “overtake” others due to network delays
+        - there was an update to a row that did not exist
+        - ausality here means that a row must first be created before it can be updated.
+    - In “Detecting Concurrent Writes”
+        - If A and B are concurrent, there is no causal link between them; 
+        - in other words, we are sure that neither knew about the other.
+    - In Snapshot Isolation and Repeatable Read
+        - Read skew (non-repeatable reads, as illustrated in Figure 7-6) 
+        means reading data in a state that violates causality.
+    - In Write skew between transactions (see “Write Skew and Phantoms”)
+        - Figure 7-8, both Alice and Bob go off call
+        - going off call is causally dependent on the observation of who is currently on call.
+        - SSI detects write skew by tracking the causal dependencies between transactions.
+    - In Figure 9-1
+        - Bob got a stale result from the server after hearing Alice exclaim 
+        the result is a causality violation
+
+- Causality imposes an ordering on events => cause comes before effect
+    - question comes before the answer
+    - like in real life, one thing leads to another
+
+- If a system obeys the ordering imposed by causality, we say that it is causally consistent
+- For example, snapshot isolation provides causal consistency:
+    - when you read from the DB, and you see some piece of data, then you must 
+    also be able to see any data that causally precedes it (assuming it has 
+    not been deleted in the meantime).
+
+##### The causal order is not a total order
+- Total Order means
+    - it allows any two elements to be compared
+    - which one is greater and which one is smaller
+    - e.g. natural numbers are totally ordered.
+    - if I give you any two numbers, say 5 and 13, you can tell me that 13 is greater than 5
+    - However, mathematical sets are not totally ordered
+        - is {a, b} greater than {b, c}?
+        - There are incomparable or partially ordered
+
+- The difference between a total order and a partial order is reflected in 
+different DB consistency models
+    - Linearizability
+        - If system is linearizable then we can always say which operation happened first
+    - Causality
+        - Two operations are concurrent if neither happened before the other
+        - see  “The “happens-before” relationship and concurrency"
+        - two events are ordered if they are causally related (one happened before the other), 
+        - but they are incomparable if they are concurrent.
+        - This means that causality defines a partial order, not a total order:
+        - some operations are ordered with respect to each other, but some are incomparable.
+- Therefore, according to this definition, there are no concurrent operations 
+in a linearizable datastore
+
+- Figure 5-14 
+    - is not a straight-line total order
+    - but rather a jumble of different operations going on concurrently. 
+    - The arrows in the diagram indicate causal dependencies—the partial 
+    ordering of operations.
+- In GIT, version histories are very much like the graph of causal dependencies
+
+##### Linearizability is stronger than causal consistency
+- linearizability implies causality: any system that is linearizable will preserve causality correctly
+- linearizable systems are easy to understand and appealing, but harms the system performance
+- For this reason, some distributed data systems have abandoned linearizability, 
+which allows them to achieve better performance but can make them difficult to work with.
+- The good news is that a middle ground is possible. 
+    - There are other ways to preserve causality
+    - E.g. causal consistency is the strongest possible consistency model 
+    that does not slow down due to network delays, and remains available in 
+    the face of network failures
+- In many cases, systems that appear to require linearizability in fact only 
+really require causal consistency, which can be implemented more efficiently.
+
+##### Capturing causal dependencies
+- We won’t go into all the nitty-gritty details of how nonlinearizable 
+systems can maintain causal consistency, but let's see some key ideas
+
+- The techniques for determining which operation happened before which other 
+operation are similar to what we discussed in “Detecting Concurrent Writes”.
+- Causal consistency needs to track causal dependencies across the entire DB, 
+not just for a single key. Version vectors can be generalized to do this
+
+#### Sequence Number Ordering
+- keeping track of all causal dependencies can become impracticable
+    - clients read lots of data before writing something
+    - it is not clear whether the write is causally dependent on all or only 
+    some of those prior reads
+    - tracking all read data is quite large overhead
+- better way => use sequence numbers or timestamps to order events.
+- we can create sequence numbers in a total order that is consistent with causality. 
+- we promise that if operation A causally happened before B, then A occurs 
+before B in the total order
+- A has a lower sequence number than B
+
+- In single-leader replication, replication log defines a total order of 
+write operations that is consistent with causality
+- If follower applies writes in that order, then follower is always causally consistent
+
+##### Noncausal sequence number generators
+- In multi-leader or leaderless database, it is less clear how to generate sequence 
+numbers for operations.  
+- Various methods are used in practice
+    - In sequence number object, reserve some bits for unique node identifier
+    - If timestamps have sufficiently high resolution, then they might be sufficient to totally order operations.
+        - This fact is used in LWW conflict resolution method
+    - Preallocate blocks of sequence numbers. Say Node A uses 1-1000 and Node B uses 1001-2000
+- Above three options all perform better and are more scalable
+- However, they all have a problem 
+    - The sequence numbers they generate are not consistent with causality.
+    - sequence number generated do not correctly capture the ordering of 
+    operations across different nodes
+
+##### Lamport timestamps
+- is a simple method for generating sequence numbers that is consistent with causality
+- proposed in 1978 by Leslie Lamport
+
+ToDo 
+Figure 9-8. Lamport timestamps provide a total ordering consistent with causality.
+
+- The Lamport timestamp is then simply a pair of (counter, node ID).
+- As long as the maximum counter value is carried along with every operation, 
+this scheme ensures that the ordering from the Lamport timestamps is consistent 
+with causality, because every causal dependency results in an increased timestamp.
+
+- Lamport timestamps are sometimes confused with version vectors
+- Although there are some similarities, they have a different purpose
+- version vectors can 
+    - distinguish whether two operations are concurrent or 
+    - whether one is causally dependent on the other
+- Lamport timestamps 
+    - always enforce a total ordering
+    - But you cannot tell whether two operations are concurrent or 
+    whether they are causally dependent.
+    - The advantage of Lamport timestamps over version vectors is that they are more compact.
+
+##### Timestamp ordering is not sufficient
+- Lamport timestamps is not quite sufficient to solve many common problems in distributed systems
+- E.g. system that needs to ensure that a username uniquely identifies a user account.
+- To conclude
+    - in order to implement something like a uniqueness constraint for usernames, 
+    it’s not sufficient to have a total ordering of operations
+    - you also need to know when that order is finalized. 
+    - If you have an operation to create a username, and you are sure that no 
+    other node can insert a claim for the same username ahead of your 
+    operation in the total order, then you can safely declare the operation successful.
+
+- This idea of knowing when your total order is finalized is captured in the 
+topic of total order broadcast.
+
+#### Total Order Broadcast
+- In single CPU core, it is easy to define a total ordering of operations
+- But in distributed systems, getting all nodes to agree on the same total 
+ordering of operations is tricky.
+- single-leader replication
+    - determines a total order of operations by choosing one node as the leader and 
+    - sequencing all operations on a single CPU core on the leader
+- Challenge is how to scale system if throughput is greater than a single leader can handle
+- Also, how to handle failover if the leader fails (see “Handling Node Outages”)
+- In the distributed systems literature, this problem is known as total order 
+broadcast or atomic broadcast
+
+- Total Order Broadcast is usually described as a protocol for exchanging messages between nodes.
+- It requires that two safety properties always 
+    1. Reliable delivery
+        - No messages are lost
+        - if a message is delivered to one node, it is delivered to all nodes.
+    2. Totally ordered delivery
+        - Messages are delivered to every node in the same order.
+
+- A correct algorithm for total order broadcast must ensure that the 
+reliability and ordering properties are always satisfied, even if a node or 
+the network is faulty.
+
+##### Using total order broadcast
+- Consensus services such as ZooKeeper and etcd actually implement total order broadcast.
+- Means there is a strong connection between total order broadcast and consensus
+
+- Total order broadcast can be used to implement serializable transactions 
+(See “Actual Serial Execution”)
+- Total order broadcast is also useful for implementing a lock service that 
+provides fencing tokens (see “Fencing tokens”)
+    - Every request to acquire the lock is appended as a message to the log, 
+    - and all messages are sequentially numbered in the order they appear in the log. 
+    - The sequence number can then serve as a fencing token, because it is 
+    monotonically increasing. 
+    - In ZooKeeper, this sequence number is called zxid
+
+##### Implementing linearizable storage using total order broadcast
+- Is linearizability the same as total order broadcast? Not quite
+- Total order broadcast is asynchronous
+    - messages are guaranteed to be delivered reliably in a fixed order, 
+    - but there is no guarantee about when a message will be delivered 
+    (so one recipient may lag behind the others)
+- By contrast, linearizability is a recency guarantee
+    - a read is guaranteed to see the latest value written.
+- However, if you have total order broadcast, you can build linearizable 
+storage on top of it. 
+    - For example, you can ensure that usernames uniquely identify user accounts.
+
+##### Implementing total order broadcast using linearizable storage
+- In general, if you think hard enough about linearizable sequence number 
+generators, you inevitably end up with a consensus algorithm
+- It can be proved that a linearizable compare-and-set (or increment-and-get) 
+register and total order broadcast are both equivalent to consensus
+
+
 ## Glossary
 - Fanout => In transaction processing systems,number of request to other services that need to make in order to satisfy one incoming request.
 - Latency => is a duration that a req is waiting to be handled. Means during which it is latent, awaiting service
