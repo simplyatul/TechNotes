@@ -3101,6 +3101,97 @@ generators, you inevitably end up with a consensus algorithm
 register and total order broadcast are both equivalent to consensus
 
 
+### Distributed Transactions and Consensus
+- Consensus goal is to get several nodes to agree on something
+- Number of situations in which it is important for nodes to agree. 
+    - Leader Election
+        - single-leader replication, all nodes should agree on which node is a leader
+        - to avoid issues like bad failover and split brain situations
+        - If 2 nodes assumes leadership then both accepts writes and
+            - data would diverge leading to 
+            - inconsistent and data loss
+    - Atomic commit
+        - transactions spanning several nodes or partitions, some transactions 
+        may fail, some succeeds
+        - To maintain transaction atomicity, all transactions must either 
+        fail/abort or succeed on all nodes
+        - This instance of consensus is known as the atomic commit problem
+#### Atomic Commit and Two-Phase Commit (2PC)
+- 2PC is most common way of solving atomic commit
+- Implemented in various DBs, messaging systems and application servers
+- 2PC is a kind of consensus algorithm—but not a very good one
+- By learning from 2PC we will then work our way toward better consensus 
+algorithms, such as those used in ZooKeeper (Zab) and etcd (Raft).
+
+- Atomicity prevents failed transactions from littering the database with 
+half-finished results and half-updated state. 
+- This is imp for multi-object transactions and DBs maintaining secondary indexes
+
+##### From single-node to distributed atomic commit
+- transactions executed at a single DB node, atomicity is commonly implemented 
+by the storage engine. 
+- DB makes transaction's write durable using WAL and then appends commit record
+- Once commit record written successfully, transaction is considered committed
+- Thus, on a single node, transaction commitment crucially depends on the 
+order in which data is durably written to disk
+    - first the data, and 
+    - then the commit record
+- Thus, it is a single device (the controller of one particular disk drive, 
+attached to one particular node) that makes the commit atomic.
+- what if multiple nodes are involved in a transaction?
+- Say you have multi-object transaction in a partitioned database, or a 
+term-partitioned secondary index
+- it is not sufficient to simply send a commit request to all of the nodes 
+and independently commit the transaction on each one. 
+- Reasons being only some nodes commit transactions, but
+    - Some nodes may detect a constraint violation or conflict, aborts transaction
+    - Some of the commit requests might be lost in the network, eventually 
+    aborting due to a timeout
+    - Some nodes may crash before the commit record is fully written and 
+    roll back on recovery
+
+- If any of the above happens, node and data becomes inconsistent.
+- Also, it is not possible to rollback/retracted committed transaction
+- Thumb Rules is A transaction commit must be irrevocable
+    - means not allow to abort once committed
+-  Reason for above rule is
+    - once transaction is committed, it becomes visible to other transactions
+    - other clients may start relying on that data
+
+##### Introduction to two-phase commit
+- is an algorithm for achieving atomic transaction commit across multiple nodes
+- either all nodes commit or all nodes abort
+- 2PC is made available to applications as well in form of XA transactions
+    - supported by Java Transaction API or
+    - via WS-AtomicTransaction for SOAP web services
+- In 2PC, commit and abort process are split into two phases (hence the name)
+
+<img src="/resources/images/ddia/Fig-9-9.png" title="Figure 9-9" style="height: 400px; width:800px;"/>
+Figure 9-9. A successful execution of two-phase commit (2PC).
+
+- Btw 2PC and 2PL are completely difference
+    - 2PL provides serializable isolation.
+    - 2PC provides atomic commit in a distributed DB
+
+- 2PC uses new component => coordinator aka ransaction manager
+- coordinator is often implemented as a library within the same application 
+process that is requesting the transaction (e.g., embedded in a Java EE container)
+- It can be separate process or service as well. E.g
+    - Narayana, JOTM, BTM, or MSDTC.
+- When the application is ready to commit, the coordinator begins phase 1
+- It sends prepare requests to each node asking if they are ready to commit
+- The coordinator then tracks the responses from the participants:
+    - If all participants reply “yes,” indicating they are ready to commit, 
+    then the coordinator sends out a commit request in phase 2, and the 
+    commit actually takes place.
+    - If any of the participants replies “no,” the coordinator sends an 
+    abort request to all nodes in phase 2.
+
+- Above process is somewhat like the traditional marriage ceremony in Western cultures
+
+##### A system of promises
+
+
 ## Glossary
 - Fanout => In transaction processing systems,number of request to other services that need to make in order to satisfy one incoming request.
 - Latency => is a duration that a req is waiting to be handled. Means during which it is latent, awaiting service
