@@ -3190,7 +3190,170 @@ process that is requesting the transaction (e.g., embedded in a Java EE containe
 - Above process is somewhat like the traditional marriage ceremony in Western cultures
 
 ##### A system of promises
+- Why two-phase commit ensures atomicity, while one-phase commit across several nodes does not
+- What makes 2PC different?
+    1. When application want ot begin a distributed transaction, it requests a 
+    transaction ID from the coordinator. This transaction ID is globally unique.
+    2. The application begins a single-node transaction on each of the 
+    participants with globally unique transaction ID
+    3. When the application is ready to commit, the coordinator sends a 
+    prepare request to all participants
+    4. When a participant receives the prepare request, it makes sure that it 
+    can definitely commit the transaction under all circumstances
+    5. On responses from partitcipants, coordinator decides either commit or abort. 
+    Coordinator must must write that decision to its transaction log on disk. This
+    is called the commit point
+    6. After that, coordinator sends commit or abort msg to all participants. 
+    If this request fails or times out, the coordinator must retry forever 
+    until it succeeds. There is no more going back. The decision must be 
+    enforced, no matter how many retries it takes
 
+- Thus, the protocol contains two crucial “points of no return”
+    - when a participant votes “yes,” it promises that it will definitely be 
+    able to commit later
+    - once the coordinator decides, that decision is irrevocable
+    - Above two promises ensure the atomicity of 2PC.
+- Single-node atomic commit lumps above two events into one: 
+    - writing the commit record to the transaction log.
+
+##### Coordinator failure
+- In 2PC,
+    - if any of the prepare requests fail or time out, the coordinator aborts the transaction
+    - if any of the commit or abort requests fail, the coordinator retries them indefinitely
+- Let's see how Coordinator failure is handle
+
+<img src="/resources/images/ddia/Fig-9-10.png" title="Figure 9-10" style="height: 400px; width:800px;"/> 
+Figure 9-10. The coordinator crashes after participants vote “yes.” 
+Database 1 does not know whether to commit or abort.
+
+- If the coordinator crashes or the network fails, the participant can do 
+nothing but wait. A participant’s transaction in this state is 
+called in-doubt or uncertain transaction.
+- if DB 1 unilaterally aborts after a timeout, it will end up inconsistent 
+with DB 2, which has committed. 
+- Similarly, it is not safe to unilaterally commit, because another participant 
+may have aborted.
+- In principle, the participants could communicate among themselves to find 
+out how each participant voted and come to some agreement, but that is not 
+part of the 2PC protocol.
+- The only way 2PC can complete is by waiting for the coordinator to recover. 
+
+##### Three-phase commit
+- Two-phase commit is called a blocking atomic commit protocol due to the 
+fact that 2PC can become stuck waiting for the coordinator to recover.
+- As an alternative to 2PC, 3PC is proposed.
+- However, 3PC assumes a network with bounded delay and nodes with bounded response times
+- But most systems with unbounded n/w delay and process pauses, 3PC cannot guarantee atomicity.
+
+- In general, nonblocking atomic commit requires a perfect failure detector 
+- In a network with unbounded delay a timeout is not a reliable failure detector
+- Therefore 2PC continues to be used, despite the known problem with coordinator failure
+
+#### Distributed Transactions in Practice
+- 2PC is criticized for causing operational problems, killing performance, 
+and promising more than they can deliver 
+- So many cloud services choose not to implement distributed transactions due 
+to the operational problems
+- distributed transactions in MySQL are reported to be over 10 times slower 
+than single-node transactions
+- 2 PC requires additional disk forcing (fsync), required for crash recovery, 
+and the additional network round-trips.
+
+- But before we discard Distributed Transactions, let's be precise about what 
+we mean by “distributed transactions.”
+- Two quite different types of distributed transactions are often conflated:
+
+1. Database-internal distributed transactions
+    - Some distributed DBs support internal transactions among the nodes of that database
+    - E.g VoltDB and MySQL Cluster’s NDB storage engine have such internal transaction support
+    - In this case, all the nodes participating in the transaction are running 
+    the same database software. 
+
+2. Heterogeneous distributed transactions
+    - participants are two or more different technologies
+    - E.g. two databases from different vendors, or even non-database systems 
+    such as message brokers.
+    - A distributed transaction across these systems must ensure atomic commit, 
+    even though the systems may be entirely different under the hood.
+
+- database-internal distributed transactions can often work quite well. 
+- transactions spanning heterogeneous technologies are a lot more challenging.
+
+##### Exactly-once message processing
+- A message queue can be acknowledged as processed if and only if the 
+DB transaction for processing the message was successfully committed
+
+- We will return to the topic of exactly-once message processing in Chapter 11.
+- Let’s look first at the atomic commit protocol that allows such 
+heterogeneous distributed transactions.
+
+##### XA transactions
+- X/Open XA (short for eXtended Architecture) 
+- is a standard for implementing two-phase commit across heterogeneous technologies
+- supported by 
+    - many traditional relational databases and 
+        - PostgreSQL, MySQL, DB2, SQL Server, and Oracle
+    - message brokers 
+        -ActiveMQ, HornetQ, MSMQ, and IBM MQ
+- XA is not a network protocol—it is merely a C API for interfacing with a transaction coordinator. 
+- Bindings in other languages are available too
+    - Java Transaction API (JTA) implements XA transaction
+    - many drivers for DBs using Java Database Connectivity (JDBC) and
+    - drivers for message brokers using the Java Message Service (JMS) APIs.
+- XA assumes that your application uses a network driver or client library to 
+communicate with the participant databases or messaging services
+- The driver also exposes callbacks through which the coordinator can ask the 
+participant to prepare, commit, or abort.
+- The transaction coordinator implements the XA API.
+
+##### Holding locks while in doubt
+- Why do we care so much about a transaction being stuck in doubt?
+- Can't system ignore the in-doubt transaction?
+- The problem is with locking.
+- The database cannot release those locks until the transaction commits or 
+aborts (illustrated as a shaded area in Figure 9-9).
+- Therefore, when using two-phase commit, a transaction must hold onto the 
+locks throughout the time it is in doubt. 
+- While those locks are held, no other transaction can modify those rows
+- This can cause large parts of your application to become unavailable until 
+the in-doubt transaction is resolved.
+
+##### Recovering from coordinator failure
+- In practice, orphaned in-doubt transactions do occur 
+- These transactions cannot be resolved automatically, so they sit forever 
+in the DB, holding locks and blocking other transactions.
+- The only way out is for an administrator to manually decide whether to 
+commit or roll back the transactions. 
+- However, above requirs lot of manual efforts done under high stress to resolve production outage
+- Therefore, Many XA implementations have an emergency escape hatch called heuristic decisions
+    - participants unilaterally decide to abort or commit an in-doubt 
+    transaction without a definitive decision from the coordinator
+    - heuristic decision may violate the system of promises in two-phase commit.
+    - Thus, heuristic decisions are intended only for getting out of catastrophic 
+    situations, and not for regular use.
+
+##### Limitations of distributed transactions
+- XA transactions solve the real and important problem of keeping several 
+participant data systems consistent with each other,
+- But they introduce major operational problems.
+- Key realization is that the transaction coordinator is itself a kind of DB
+- So it needs to be approached with the same care as any other DBs
+
+1. If coordinator is not replicated, becomes single point of failure
+2. Many server-side applications are developed in a stateless model (as favored by HTTP), 
+with all persistent state stored in a database. But when coordinator is part 
+of the application server, it changes the nature of the deployment
+3. Since XA needs to be compatible with a wide range of data systems, 
+it is necessarily a lowest common denominator.
+    - It cannot detect deadlocks across different systems
+    - It does not work with SSI (requirs identifying conflicts across different systems.)
+4. Distributed transactions thus have a tendency of amplifying failures
+
+- So should we give up all hope of keeping several systems consistent?
+- In Chapter 11 and 12, we will see alternative methods that allow us to 
+achieve the same thing without the pain of heterogeneous distributed transactions
+
+#### Fault-Tolerant Consensus
 
 ## Glossary
 - Fanout => In transaction processing systems,number of request to other services that need to make in order to satisfy one incoming request.
