@@ -3354,6 +3354,219 @@ it is necessarily a lowest common denominator.
 achieve the same thing without the pain of heterogeneous distributed transactions
 
 #### Fault-Tolerant Consensus
+- consensus means getting several nodes to agree on something
+- if several people concurrently try to do one/same thing, consensus algorithm could be used.
+    - book last seat on an airplane, or 
+    - the same seat in a theater
+
+- Consensus algorithm must satisfy the following properties
+    - Uniform agreement
+        - No two nodes decide differently.
+    - Integrity
+        - No node decides twice.
+    - Validity
+        - If a node decides value v, then v was proposed by some node.
+        - validity property exists mostly to rule out trivial solutions
+            - E.g. you could have an algorithm that always decides null, 
+            no matter what was proposed by other nodes
+    - Termination
+        - Every node that does not crash eventually decides some value.
+        - formalizes the idea of fault tolerance
+        - Means consensus algorithm cannot simply sit around and do nothing forever
+        - Means it must makes prgress
+
+- Termination is a liveness property, whereas the other three are 
+safety properties (see “Safety and liveness” from Chapter 8)
+- it can be proved that any consensus algorithm requires at least a majority 
+of nodes to be functioning correctly in order to assure termination. 
+That majority can safely form a quorum (see “Quorums for reading and writing”).
+- Most consensus algorithms assume that there are no Byzantine faults
+
+#### Consensus algorithms and total order broadcast
+- The best-known fault-tolerant consensus algorithms are 
+    - Viewstamped Replication (VSR) 
+    - Paxos
+    - Raft
+    - Zab
+- In this book, will not go in much details of this algos, but will see high level ideas
+- Consensus algorithms works based on the principe of total order broadcast
+- Remember that total order broadcast requires messages to be delivered 
+exactly once, in the same order, to all nodes
+- This is equivalent to performing several rounds of consensus
+- So total order broadcast is equivalent to repeated rounds of consensus 
+- Viewstamped Replication, Raft, and Zab implement total order broadcast directly, 
+because that is more efficient than doing repeated rounds of one-value-at-a-time consensus. 
+- In the case of Paxos, this optimization is known as Multi-Paxos.
+
+##### Single-leader replication and consensus
+- If the leader is manually chosen, then  you essentially have a 
+“consensus algorithm” of the dictatorial variety
+    - If leader goes down, it is required to manually select new leader
+    - This does not satisfy the termination property of consensus because it 
+    requires human intervention in order to make progress.
+- Some DB perform automatic leader election and failover, promoting a follower 
+to be the new leader if the old leader fails (see “Handling Node Outages”). 
+This brings us closer to fault-tolerant total order broadcast, and thus to solving consensus.
+
+- But there are issues like split brain.
+- Thus, we need consensus in order to elect a leader.
+- But consensus algo described here is actually total order broadcast
+- And otal order broadcast is like single-leader replication, and single-leader 
+replication requires a leader, then…
+- It seems that in order to elect a leader, we first need a leader. In order 
+to solve consensus, we must first solve consensus. How do we break out of 
+this conundrum?
+
+##### Epoch numbering and quorums
+- Here, we have two rounds of voting: once to choose a leader, and a second 
+time to vote on a leader’s proposal.
+
+##### Limitations of consensus
+- consensus algo bring concrete safety properties (agreement, integrity, and 
+validity) to systems where everything else is uncertain.
+- They provide total order broadcast, and therefore they can also implement 
+linearizable atomic operations in a fault-tolerant way (see “Implementing 
+linearizable storage using total order broadcast”).
+- But they are not used everywhere, because the benefits come at a cost 
+- The process by which nodes vote on proposals before they are decided is a 
+kind of synchronous replication
+- As discussed, DBs are often configured with asynchronous replication.
+    - With this, some committed data can potentially be lost on failover
+    - But many people choose to accept this risk for the sake of better performance.
+- Consensus systems always require a strict majority to operate
+    - Means three nodes required in order to tolerate one failure
+    - Five nodes required in order to tolerate two nodes failure
+
+- Most consensus algorithms assume a fixed set of nodes that participate in voting
+    - means that you can’t just add or remove nodes in the cluster.
+    - Dynamic membership extensions to consensus algorithms exists, but it 
+    is much less well understood than static membership algos
+- Consensus systems generally rely on timeouts to detect failed nodes.
+    - In environments with highly variable network delays, especially 
+    geographically distributed systems, it often happens that a node falsely 
+    believes the leader to have failed due to a transient network issue.
+    - Although this error does not harm the safety properties, frequent 
+    leader elections result in terrible performance
+- Sometimes, consensus algorithms are particularly sensitive to network problems
+- designing consensus algorithm that are more robust to unreliable networks is 
+still an open research problem.
+
+#### Membership and Coordination Services
+- Projects like ZooKeeper or etcd are often described as “distributed key-value 
+stores” or “coordination and configuration services.” 
+- APIs they provide looks much like a DB Service
+- But they are not DBs. So what makes them different from any other kind of DB?
+
+- To understand, first let's briefly explore how a service like ZooKeeper is used. 
+    - Application developer does not directly use ZooKeeper, but uses it indirectly
+    - HBase, Hadoop YARN, OpenStack Nova, and Kafka all rely on ZooKeeper 
+    running in the background
+- ZooKeeper and etcd are designed to hold small amounts of data that can fit 
+entirely in memory 
+    -  small amount of data is replicated across all the nodes using a 
+    fault-tolerant total order broadcast algorithm
+- ZooKeeper is modeled after Google’s Chubby lock service, implemented many features 
+apart from  total order broadcast (and hence consensus)
+    - Linearizable atomic operations
+        - The consensus protocol guarantees that the operation will be atomic 
+        and linearizable, even if a node fails or the network is interrupted 
+        at any point
+        - distributed lock is usually implemented as a lease, which has an 
+        expiry time so that it is eventually released in case the client 
+        fails (see “Process Pauses” in Chapter 8).
+    - Total ordering of operations
+        - Here, fencing tokens are used to prevent clients from conflicting 
+        with each other in the case of a process pause. (see "The leader and the lock”)
+    - Failure detection
+        - Clients maintain a long-lived session on ZooKeeper servers, w/ heartbeats
+        - So temporary n/w break r ZooKeeper node failuire does not terminate session
+        - However, if the heartbeats cease for a duration that is longer 
+        than the session timeout, ZooKeeper declares the session to be dead.
+        - Locks held by session are released once session times out
+        - ZooKeeper calls these ephemeral nodes
+    - Change notifications
+        - Client can watch read locks and valuescreated by another Clients
+        - So client can find out if another client joins or leaves cluster
+        - Subscription mechanism used t avoid frequent polling
+
+- Of these features, only the linearizable atomic operations really require 
+consensus.
+
+##### Allocating work to nodes
+- Apart from electing leader in single-leader DBs, ZooKeeper/Chubby model well in 
+other uses cases as well E.g Job scheduler
+- Another example
+    - when you have some partitioned resource (database, message streams, 
+    file storage, distributed actor system, etc.) 
+    - When a node fails or new node joines, it is needed to decide which 
+    partition to assign to which node
+- These kinds of tasks can be achieved by judicious use of atomic operations, 
+ephemeral nodes, and notifications in ZooKeeper.
+
+- Normally, the kind of data managed by ZooKeeper is quite slow-changing
+- ZooKeeper is not intended for storing the runtime state of the application, 
+which may change thousands or even millions of times per second.
+
+##### Service discovery
+- ZooKeeper, etcd, and Consul are also often used for service discovery
+- When the nodes providing the service are start up, they register their network 
+endpoints in a service registry
+- However, it is less clear whether service discovery actually requires consensus. 
+- DNS is the traditional way of looking up the IP address for a service name, 
+and it uses multiple layers of caching to achieve good performance and availability.
+- Reads from DNS are absolutely not linearizable,
+- Stale results returned by DNS are generally not problematic
+- It is more important that DNS is reliably available and robust to 
+network interruptions.
+- Although service discovery does not require consensus, leader election does
+
+##### Membership services
+- ZooKeeper and friends can be seen as part of a long history of research 
+into membership services, which goes back to the 1980s and has been important 
+for building highly reliable systems, e.g., for air traffic control
+
+### Summary
+- We saw that achieving consensus means deciding something in such a way that 
+all nodes agree on what was decided, and such that the decision is irrevocable.
+- It turns out that a wide range of problems are actually reducible to 
+consensus and are equivalent to each other
+- In the sense that if you have a solution for one of them, you can easily 
+transform it into a solution for one of the others. 
+- Such equivalent problems include:
+    - Linearizable compare-and-set register
+        - The register needs to atomically decide whether to set its value, 
+        based on whether its current value equals the parameter given in 
+        the operation.
+    - Atomic transaction commit
+        - A database must decide whether to commit or abort a distributed 
+        transaction.
+    - Total order broadcast
+        - The messaging system must decide on the order in which to deliver 
+        messages.
+    - Locks and leases
+        - When several clients are racing to grab a lock or lease, the lock 
+        decides which one successfully acquired it.
+    - Membership/coordination service
+        - Given a failure detector (e.g., timeouts), the system must decide 
+        which nodes are alive, and which should be considered dead 
+        because their sessions timed out.
+    - Uniqueness constraint
+        - When several transactions concurrently try to create conflicting 
+        records with the same key, the constraint must decide which one to 
+        allow and which should fail with a constraint violation.
+
+- A single-leader database can provide linearizability without executing a 
+consensus algorithm on every write, it still requires consensus to 
+maintain its leadership and for leadership changes.
+
+- Tools like ZooKeeper play an important role in providing an “outsourced” 
+consensus, failure detection, and membership service that applications can use.
+
+- Not every system necessarily requires consensus: for example, leaderless 
+and multi-leader replication systems typically do not use global consensus.
+- Conflicts can occur (See “Handling Write Conflicts”). 
+- In this case, we simply need to cope without linearizability and learn 
+to work better with data that has branching and merging version histories.
 
 ## Glossary
 - Fanout => In transaction processing systems,number of request to other services that need to make in order to satisfy one incoming request.
