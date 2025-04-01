@@ -158,8 +158,8 @@ half requests take longer than that
 - However, optimizing 99.9th percentile is too expensive.
 - E.g SLA
     - median response time < 200 ms
-    - 99the percentile under 1 sec
-    - service uptime is 99.9%
+    - 99th percentile under 1 sec
+    - service uptime is 99.9% => Downtime allowed 1.44 min/day max Or ~8 Hrs/Year
 - It is also required to measure response time at client side
 
 <img src="/resources/images/ddia/Fig-1-5.png" title="Figure 1-5" style="height: 400px; width:800px;"/>

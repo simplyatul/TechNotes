@@ -17,9 +17,15 @@ ls -l uapi/linux/bpf.h
 
 # enum bpf_prog_type {} and enum bpf_prog_type {}
 ```
-# List of which helper functions are available for each program type
+
+## List of which helper functions are available for each program type
 ```bash
 sudo bpftool feature
 
 # This provides list for your version of the kernel
 ```
+
+## bpftrace example
+```bash
+$ sudo bpftrace -e 'tracepoint:raw_syscalls:sys_enter { @[comm] = count(); }'
+```bash
