@@ -96,6 +96,16 @@ prefix + ,
 ```bash
 prefix + %
 ```
+## Split window in horizontal panes
+```bash
+prefix + "
+```
+
+## Zoom pane to full window
+```bash
+prefix + z
+```
+
 ## Close a pane
 ```bash
 prefix + x
