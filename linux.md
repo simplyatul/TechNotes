@@ -151,3 +151,14 @@ Asia/Kolkata
 ```bash
 sudo timedatectl set-timezone Asia/Kolkata
 ```
+
+## install LLVM/Clang toolchain on Ubuntu
+```bash
+wget -4 https://apt.llvm.org/llvm.sh > llvm.sh
+sudo bash llvm.sh
+
+# By default llvm.sh uses wget. 
+# In case wget do not work with IPv6 then use -4 option 
+```bash
+
+Ref: https://apt.llvm.org/
