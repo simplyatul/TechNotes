@@ -204,6 +204,43 @@ kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/HEAD/examples/m
 kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/HEAD/examples/minikube/sw_l3_l4_l7_policy.yaml
 ```
 
+## Setup Development Environment
+Steps to create a VM in which you can build Cilium and then install built 
+cilium components on a kind k8s cluster
+
+```bash
+git clone
+vagrant up
+
+Setup aliases
+Setup tmux
+
+sudo bash tools-0-install.sh
+kind-install.sh
+kubectl-install.sh
+
+install docker
+
+install go
+sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.24.2.linux-amd64.tar.gz
+PATH=$PATH:/usr/local/go/bin # put this in ~/.bashrc
+
+install llvm
+PATH=$PATH:/usr/lib/llvm-19/bin
+
+install cilium-cli
+https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/#install-the-cilium-cli
+
+clone cilium code 
+git clone --depth 1 --branch 1.17.0 https://github.com/cilium/cilium/
+cd cilium
+make kind
+make kind-image
+make kind-install-cilium-fast
+
+check status
+cilium status
+```
 
 
 
