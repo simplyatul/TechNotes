@@ -205,40 +205,64 @@ kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/HEAD/examples/m
 ```
 
 ## Setup Development Environment
-Steps to create a VM in which you can build Cilium and then install built 
-cilium components on a kind k8s cluster
+Steps are
+- Create a VM (Ubuntu based)
+- Install required softwares
+- Clone cilium code
+- Build and install locally
+
+Clone a repo which has Vagrant file to create cilium-devbox VM
 
 ```bash
-git clone
-vagrant up
+git clone https://github.com/simplyatul/vagrant-vms.git
+cd cilium-devbox
+vagrant up 
+```
+Setup [Aliases](https://github.com/simplyatul/bin) and [Tmux](https://github.com/simplyatul/TechNotes/blob/main/tmux.md#tmux-config-file-content) (both optional)
 
-Setup aliases
-Setup tmux
+Install some useful tools
+```bash
+wget -qO - https://raw.githubusercontent.com/simplyatul/vagrant-vms/refs/heads/main/tools-0-install.sh | sudo bash
+```
 
-sudo bash tools-0-install.sh
-kind-install.sh
-kubectl-install.sh
+Install Kind
+```bash
+wget -qO - https://raw.githubusercontent.com/simplyatul/vagrant-vms/refs/heads/main/kind-install.sh | sudo bash
+```
+Install kubectl
+```bash
+wget -qO - https://raw.githubusercontent.com/simplyatul/vagrant-vms/refs/heads/main/kubectl-install.sh | sudo bash
+```
 
-install docker
+Install [docker](https://github.com/simplyatul/TechNotes/blob/main/docker.md#install-docker-on-ubuntu)
 
-install go
+Install Go/golang
+
+```bash
+# Download go1.24.2.linux-amd64.tar.gz first
 sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.24.2.linux-amd64.tar.gz
-PATH=$PATH:/usr/local/go/bin # put this in ~/.bashrc
+echo "PATH=$PATH:/usr/local/go/bin" >> ~/.bashrc
+```
+Install [Clang/LLVM](https://github.com/simplyatul/TechNotes/blob/main/linux.md#install-llvmclang-toolchain-on-ubuntu) toolchain
 
-install llvm
-PATH=$PATH:/usr/lib/llvm-19/bin
 
-install cilium-cli
-https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/#install-the-cilium-cli
+Install [cilium-cli](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/#install-the-cilium-cli
+)
 
+Clone cilium code, build and install
+
+```bash
 clone cilium code 
 git clone --depth 1 --branch 1.17.0 https://github.com/cilium/cilium/
 cd cilium
 make kind
 make kind-image
-make kind-install-cilium-fast
+make kind-install-cilium
+```
 
-check status
+Check cilium installation status
+
+```bash
 cilium status
 ```
 

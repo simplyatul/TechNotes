@@ -156,9 +156,11 @@ sudo timedatectl set-timezone Asia/Kolkata
 ```bash
 wget -4 https://apt.llvm.org/llvm.sh > llvm.sh
 sudo bash llvm.sh
+PATH=$PATH:/usr/lib/llvm-19/bin
+echo "PATH=$PATH:/usr/lib/llvm-19/bin" >> ~/.bashrc
 
 # By default llvm.sh uses wget. 
 # In case wget do not work with IPv6 then use -4 option 
-```bash
+```
 
 Ref: https://apt.llvm.org/
