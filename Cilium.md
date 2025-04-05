@@ -242,6 +242,34 @@ check status
 cilium status
 ```
 
+## Inspect StateDB Tables 
+```bash
+../code/self/cilium/contrib/k8s/k8s-cilium-exec.sh -e cilium-dbg shell -- db tables
+Available Cilium pods:
+1. cilium-cswp6   kind-control-plane
+2. cilium-fccsh   kind-worker
 
+Do you want to execute the command on a specific pod or (a) all pods?
+Enter your choice (pod number or a): 1
+
+==== Detail from pod cilium-cswp6 on node kind-control-plane ====
+Name                 Object count   Zombie objects   Indexes                 Initializers   Go type                            Last WriteTxn
+health               51             0                identifier, level       []             types.Status                       health (127.0us ago, locked for 50.3us)
+sysctl               25             0                name, status            []             *tables.Sysctl                     sysctl (5.8m ago, locked for 22.3us)
+mtu                  2              0                cidr                    []             mtu.RouteMTU                       mtu (1.9h ago, locked for 4.6us)
+ipsets               0              0                ipsets                  []             *tables.IPSetEntry                 ipset (1.9h ago, locked for 20.9us)
+node-addresses       6              0                id, name, node-port     []             tables.NodeAddress                 node-address (1.9h ago, locked for 12.1us)
+ciliumenvoyconfigs   0              0                name, service           []             *ciliumenvoyconfig.CEC             experimental (1.9h ago, locked for 16.3us)
+nat-stats            0              0                byTuple                 []             stats.NatMapStats                  
+cilium-configs       0              0                key, name               []             dynamicconfig.DynamicConfig        
+dynamic-features     0              0                feature                 []             *dynamiclifecycle.DynamicFeature   dynamic-lifecycle-manager (1.9h ago, locked for 8.6us)
+bandwidth-edts       0              0                endpoint-id             []             bwmap.Edt                          
+l2-announce          0              0                id, origin              []             *tables.L2AnnounceEntry            l2-responder (1.9h ago, locked for 34.7us)
+bandwidth-qdiscs     0              0                id                      []             *tables.BandwidthQDisc             
+devices              6              0                id, name, selected      []             *tables.Device                     devices-controller (6.8s ago, locked for 103.4us)
+routes               39             0                LinkIndex, id           []             *tables.Route                      devices-controller (6.8s ago, locked for 103.4us)
+neighbors            0              0                ID, IPAddr, LinkIndex   []             *tables.Neighbor                   devices-controller (6.8s ago, locked for 103.4us)
+
+```
 
 
