@@ -266,6 +266,10 @@ Check cilium installation status
 cilium status
 ```
 
+Refs:  
+- https://docs.cilium.io/en/stable/contributing/development/dev_setup/
+
+
 ## Inspect StateDB Tables 
 ```bash
 ../code/self/cilium/contrib/k8s/k8s-cilium-exec.sh -e cilium-dbg shell -- db tables
