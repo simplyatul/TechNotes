@@ -158,18 +158,18 @@ kubectl get cep
 - deathstar (bad guy)
     - HTTP webservice on port 80
     - Provides landing services to the empire’s spaceships so that they can request a landing port.
-    - org=empire, class=deathstar
+    - ```org=empire```, ```class=deathstar```
 
 - tiefighter (The Imperial TIE fighter, bad guys)
     - represents landing-request client service on empire ship
-    - org=empire, class=tiefighter
+    - ```org=empire```, ```class=tiefighter```
 
 - xwing (The Rebel, good guys)
     - represents landing-request client service on alliance ship
-    - org=alliance, class=xwing
+    - ```org=alliance```, ```class=xwing```
  
 - deathstar-service
-    - LB traffic to all pds w/ label org=empire, class=deathstar
+    - LB traffic to all pod w/ label ```org=empire```, ```class=deathstar```
 
 
 ```bash
@@ -301,3 +301,34 @@ neighbors            0              0                ID, IPAddr, LinkIndex   [] 
 ```
 
 
+## Random Commands 
+```bash
+k exec -n kube-system cilium-cswp6 -- cilium status
+
+hubble observe --last 10
+
+hubble observe -f --port 53 -o json -t l7
+```
+
+## Enable Hubble 
+```bash
+cilium hubble port-forward &
+
+# OR
+
+kubectl port-forward -n kube-system svc/hubble-relay --address 0.0.0.0 4245:80 &
+
+hubble --server localhost:4245 status # Or hubble status
+Handling connection for 4245
+Healthcheck (via localhost:4245): Ok
+Current/Max Flows: 8,190/8,190 (100.00%)
+Flows/s: 37.87
+Connected Nodes: 2/2
+```
+
+## Port forward Hubble UI
+```bash
+kubectl port-forward -n kube-system svc/hubble-ui --address 0.0.0.0 12000:80 &
+
+
+```
