@@ -308,10 +308,18 @@ k exec -n kube-system cilium-cswp6 -- cilium status
 hubble observe --last 10
 
 hubble observe -f --port 53 -o json -t l7
+
+k exec -n kube-system cilium-6x47r -- hubble observe --last 10
+
+k exec -n kube-system ds/cilium -- cilium identity list
+
+k exec -n kube-system ds/cilium -- cilium encrypt status
 ```
 
 ## Enable Hubble 
 ```bash
+cilium hubble enable
+
 cilium hubble port-forward &
 
 # OR

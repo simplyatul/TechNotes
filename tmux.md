@@ -45,7 +45,12 @@ capture-pane -S -; save-buffer '#P'.log + enter
 # Or
 capture-pane -S -; save-buffer '#{pane_index}'.log + enter
 # #P => pane index (pane_index)
+
+# Or
+capture-pane -S -; save-buffer '#W-#P-#S'.log
 ```
+
+
 
 ## List Sessions
 ```bash

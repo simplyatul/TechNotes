@@ -164,3 +164,15 @@ echo "PATH=$PATH:/usr/lib/llvm-19/bin" >> ~/.bashrc
 ```
 
 Ref: https://apt.llvm.org/
+
+## Check disk usage
+```bash
+du -csm $(ls -A)
+
+# By default, du does not check hidden files.
+# So used ls -A
+
+# -c / --total => produce a grand total
+# -s / --summarize => display only a total for each argument
+# -m => Show size in 1M units => like --block-size=1M
+```

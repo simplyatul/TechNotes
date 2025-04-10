@@ -62,13 +62,20 @@ nsenter => run program in different namespaces
 ## Free up the space
 
 ```bash
-$ docker system prune
+docker system prune -af && \
+docker image prune -af && \
+docker system prune -af --volumes && \
+docker system df
+```
+### Note:
+Even after doing above, sometime /var/lib/docker still consumes space. One solution could be -
 
-This will remove:
-  - all stopped containers
-  - all networks not used by at least one container
-  - all dangling images
-  - all dangling build cache
+```bash
+$ sudo su
+service docker stop
+cd /var/lib/docker
+rm -rf *
+service docker start
 ```
 
 ## List all images
