@@ -50,7 +50,17 @@ capture-pane -S -; save-buffer '#{pane_index}'.log + enter
 capture-pane -S -; save-buffer '#W-#P-#S'.log
 ```
 
+## Clear scroll-back history
+```bash
+Prefix + clear-history
 
+# Or 
+
+tmux clear-history
+
+# above command clears pane history in which it has ran
+
+```
 
 ## List Sessions
 ```bash

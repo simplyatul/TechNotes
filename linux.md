@@ -176,3 +176,8 @@ du -csm $(ls -A)
 # -s / --summarize => display only a total for each argument
 # -m => Show size in 1M units => like --block-size=1M
 ```
+
+## Install yq (yaml parser)
+```bash
+sudo snap instal yq
+```

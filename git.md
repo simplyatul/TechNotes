@@ -87,3 +87,12 @@ gitGraph
  commit id: "C3"
  commit id: "FB1 / squash commit"
 ```
+
+## Pulling tags from parent repo into forked github repo
+```bash
+# Assuming you have cloned https://github.com/simplyatul/cilium/ which is created by forking https://github.com/cilium/cilium.git
+
+cd cilium
+git remote add upstream https://github.com/cilium/cilium.git
+git fetch upstream refs/tags/1.17.0:refs/tags/1.17.0 --no-tags
+```

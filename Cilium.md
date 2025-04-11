@@ -309,9 +309,13 @@ hubble observe --last 10
 
 hubble observe -f --port 53 -o json -t l7
 
+k exec -n kube-system ds/cilium -- cilium identity list
+hubble observe --from-identity 22222
+
+
 k exec -n kube-system cilium-6x47r -- hubble observe --last 10
 
-k exec -n kube-system ds/cilium -- cilium identity list
+
 
 k exec -n kube-system ds/cilium -- cilium encrypt status
 ```
@@ -338,5 +342,22 @@ Connected Nodes: 2/2
 ```bash
 kubectl port-forward -n kube-system svc/hubble-ui --address 0.0.0.0 12000:80 &
 
+
+```
+
+## Code Notes
+
+```text
+Git Tag => v1.17.0
+func (s *LocalObserverServer) Start(...) => pkg/hubble/observer/local_observer.go
+    - Takes event from Event Channel
+    - Decodes it => pkg/hubble/parser/parser.go
+        - p.l34.Decode => pkg/hubble/parser/threefour/parser.go
+        - p.l7.Decode  => pkg/hubble/parser/seven/parser.go
+    - Put decoded event into Ring Buffer
+
+func (s *LocalObserverServer) GetFlows(...)
+    - Picks event from Ring Buffer
+    - Send to grpc Client
 
 ```
