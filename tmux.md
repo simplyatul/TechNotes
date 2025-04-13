@@ -126,12 +126,16 @@ prefix + z
 prefix + x
 ```
 
-
 ## List panes
 ```bash
 tmux list-panes
 ```
 
+## Sample script to create session, windows and panes
+```bash
+wget -4 -O - https://raw.githubusercontent.com/simplyatul/vagrant-vms/refs/heads/main/cilium-devbox/shared-with-vm/tmux-setup.sh > tmux-setup.sh
+bash tmux-setup.sh
+```
 
 # References
 1. https://man7.org/linux/man-pages/man1/tmux.1.html

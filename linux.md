@@ -154,7 +154,7 @@ sudo timedatectl set-timezone Asia/Kolkata
 
 ## install LLVM/Clang toolchain on Ubuntu
 ```bash
-wget -4 https://apt.llvm.org/llvm.sh > llvm.sh
+wget -4 -O - https://apt.llvm.org/llvm.sh > llvm.sh
 sudo bash llvm.sh
 PATH=$PATH:/usr/lib/llvm-19/bin
 echo "PATH=$PATH:/usr/lib/llvm-19/bin" >> ~/.bashrc
