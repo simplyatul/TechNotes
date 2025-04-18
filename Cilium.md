@@ -222,16 +222,20 @@ Setup [Aliases](https://github.com/simplyatul/bin) and [Tmux](https://github.com
 
 Install some useful tools
 ```bash
-wget -qO - https://raw.githubusercontent.com/simplyatul/vagrant-vms/refs/heads/main/tools-0-install.sh | sudo bash
+wget -4 -qO - https://raw.githubusercontent.com/simplyatul/vagrant-vms/refs/heads/main/tools-0-install.sh > /tmp/tools-0-install.sh
+sudo bash /tmp/tools-0-install.sh
 ```
 
 Install Kind
 ```bash
-wget -qO - https://raw.githubusercontent.com/simplyatul/vagrant-vms/refs/heads/main/kind-install.sh | sudo bash
+wget -4 -qO - https://raw.githubusercontent.com/simplyatul/vagrant-vms/refs/heads/main/kind-install.sh > /tmp/kind-install.sh
+sudo bash /tmp/kind-install.sh
+kind version
 ```
 Install kubectl
 ```bash
-wget -qO - https://raw.githubusercontent.com/simplyatul/vagrant-vms/refs/heads/main/kubectl-install.sh | sudo bash
+wget -4 -qO - https://raw.githubusercontent.com/simplyatul/vagrant-vms/refs/heads/main/kubectl-install.sh > /tmp/kubectl-install.sh
+sudo bash /tmp/kubectl-install.sh
 ```
 
 Install [docker](https://github.com/simplyatul/TechNotes/blob/main/docker.md#install-docker-on-ubuntu)
