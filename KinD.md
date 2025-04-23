@@ -20,13 +20,14 @@ kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
   - role: worker
-  - role: worker
   - role: control-plane
 EOF
 ```
 
 ```bash
-kind create cluster --config ./kind-local-k8s-cluster-baremin.yaml --name k8s
+kind create cluster \
+--config ./kind-local-k8s-cluster-baremin.yaml \
+--name k8s
 ```
 Above commands creates three docker containers representing k8s nodes
 ```bash

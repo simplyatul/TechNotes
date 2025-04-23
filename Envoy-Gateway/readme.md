@@ -122,6 +122,50 @@ Handling connection for 8888
 * Connection #0 to host localhost left intact
 ```
 
+#### Note
+- Headers starting w/ ```X-``` are inserted by Envoy Proxy.
+- This indicates curl request has passed via Envoy Proxy.
+- If we do curl directly to backend-service, then you won't see above headers
+```bash
+k port-forward svc/backend-http 3000:3000 &
+
+curl --verbose --header "Host: www.example.com" http://localhost:3000/get
+
+*   Trying 127.0.0.1:3000...
+* Connected to localhost (127.0.0.1) port 3000 (#0)
+> GET /get HTTP/1.1
+Handling connection for 3000
+> Host: www.example.com
+> User-Agent: curl/7.81.0
+> Accept: */*
+> 
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200 OK
+< Content-Type: application/json
+< X-Content-Type-Options: nosniff
+< Date: Sat, 19 Apr 2025 05:04:51 GMT
+< Content-Length: 270
+< 
+{
+ "path": "/get",
+ "host": "www.example.com",
+ "method": "GET",
+ "proto": "HTTP/1.1",
+ "headers": {
+  "Accept": [
+   "*/*"
+  ],
+  "User-Agent": [
+   "curl/7.81.0"
+  ]
+ },
+ "namespace": "default",
+ "ingress": "",
+ "service": "",
+ "pod": "backend-http-5dbc74ccd5-lnk6l"
+* Connection #0 to host localhost left intact
+
+```
 
 ### TLS Passthrough setup and verification
 
@@ -129,13 +173,40 @@ Handling connection for 8888
 ### Create Certs and store it in k8s secrete
 
 ```bash
-openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example Inc./CN=example.com' -keyout TLS-Passthrough/example.com.key -out TLS-Passthrough/example.com.crt
+# First, Create CA certificate for domain example.com
+# This creates 
+# private key => example.com.key
+# PEM encoded cert => example.com.crt
+# ```-newkey``` option generates key for you
+openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 \
+-subj '/O=example Inc./CN=example.com' \
+-keyout TLS-Passthrough/example.com.key \
+-out TLS-Passthrough/example.com.crt
 
-openssl req -out TLS-Passthrough/passthrough.example.com.csr -newkey rsa:2048 -nodes -keyout TLS-Passthrough/passthrough.example.com.key -subj "/CN=passthrough.example.com/O=some organization"
+# Create cert signing request for domain passthrough.example.com
+# This creates - 
+# private key => passthrough.example.com.key
+# cert signing request => passthrough.example.com.csr
+openssl req -out TLS-Passthrough/passthrough.example.com.csr \
+-newkey rsa:2048 -nodes \
+-keyout TLS-Passthrough/passthrough.example.com.key \
+-subj "/CN=passthrough.example.com/O=some organization"
 
-openssl x509 -req -sha256 -days 365 -CA TLS-Passthrough/example.com.crt -CAkey TLS-Passthrough/example.com.key -set_serial 0 -in TLS-Passthrough/passthrough.example.com.csr -out TLS-Passthrough/passthrough.example.com.crt
+# Now use CA's cert (example.com.cert) and key (example.com.key) for signing passthrough's domain request (passthrough.example.com.csr)
+# And generate public certificate for passthrough (passthrough.example.com.crt) 
+openssl x509 -req -sha256 -days 365 \
+-CA TLS-Passthrough/example.com.crt \
+-CAkey TLS-Passthrough/example.com.key -set_serial 0 \
+-in TLS-Passthrough/passthrough.example.com.csr \
+-out TLS-Passthrough/passthrough.example.com.crt
 
-kubectl create secret tls passthrough-server-certs --key=TLS-Passthrough/passthrough.example.com.key --cert=TLS-Passthrough/passthrough.example.com.crt
+# Verify the passthrough's cert
+openssl verify -CAfile example.com.crt passthrough.example.com.crt
+
+# Save's the  passthrough's key ((passthrough.example.com.key) and certificate (passthrough.example.com.crt) in k8s's secret object   
+kubectl create secret tls passthrough-server-certs \
+--key=TLS-Passthrough/passthrough.example.com.key \
+--cert=TLS-Passthrough/passthrough.example.com.crt
 
 ```
 
@@ -160,15 +231,17 @@ kubectl patch gateway eg --type=json --patch '
 ```
 ### Port forward to the Envoy service:
 ```bash
-kubectl -n envoy-gateway-system port-forward service/${ENVOY_SERVICE} 
-6043:6443 &
+kubectl -n envoy-gateway-system port-forward \
+service/${ENVOY_SERVICE} 6043:6443 &
 
 ```
 
 ### Curl the example app through Envoy proxy:
 
 ```bash
-curl -v --resolve "passthrough.example.com:6043:127.0.0.1" https://passthrough.example.com:6043 --cacert TLS-Passthrough/passthrough.example.com.crt
+curl -v --resolve "passthrough.example.com:6043:127.0.0.1" \
+https://passthrough.example.com:6043 \
+--cacert TLS-Passthrough/example.com.crt
 
 * Added passthrough.example.com:6043:127.0.0.1 to DNS cache
 * Hostname passthrough.example.com was found in DNS cache
