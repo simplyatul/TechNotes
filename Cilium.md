@@ -65,11 +65,30 @@ cilium install --set annotateK8sNode=true --set debug.enabled=true
 
 ```
 
-### restarts cilium pods
+### restarts cilium agent/operator/cilium-envoy pods
 Generally requires when you update any config params in cilium-config map
 ```bash
 kubectl -n kube-system delete pod -l k8s-app=cilium
+kubectl -n kube-system delete pod -l name=cilium-operator
+kubectl -n kube-system delete pod -l k8s-app=cilium-envoy
 ```
+## Enable debug logs of Cilium-Envoy proxy.
+Edit the cilium-envoy DeploymentSet and change ```--log-level``` to ```debug``` in ```containers``` section.
+```bash
+k get -n kube-system ds/cilium-envoy
+```
+
+```yaml
+      containers:
+        - args:
+            - --
+            - -c /var/run/cilium/envoy/bootstrap-config.json
+            - --base-id 0
+            - --log-level info # => change to debug
+          command:
+            - /usr/bin/cilium-envoy-starter
+```
+
 
 ## Cilium Projects
 ### Cilium CNI
