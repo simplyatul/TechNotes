@@ -1651,15 +1651,15 @@ most of the keys will need to be moved from one node to another.
     - Dynamic partitioning
 
  ###### Fixed partitioning
-    - Keep fixed number of partitions over N nodes
-    - select number of partitions sufficiently large to accomodate future growth
-    - e.g. 100 nodes, 1000 partitions => each node get 100 partitions
-    - Only entire partitions are moved between nodes. 
-    - The number of partitions does not change, nor does the assignment of 
-    keys to partitions.
-    - Only change is assignment of patitions to nodes
-    - You can also assign more partitions of m/c's with more powerfull h/w
-    - This approach used in Riak, Elasticsearch, Couchbase, and Voldemort.
+- Keep fixed number of partitions over N nodes
+- select number of partitions sufficiently large to accomodate future growth
+- e.g. 100 nodes, 1000 partitions => each node get 100 partitions
+- Only entire partitions are moved between nodes. 
+- The number of partitions does not change, nor does the assignment of 
+keys to partitions.
+- Only change is assignment of patitions to nodes
+- You can also assign more partitions of m/c's with more powerfull h/w
+- This approach used in Riak, Elasticsearch, Couchbase, and Voldemort.
 
 <img src="/resources/images/ddia/Fig-6-6.png" title="Figure 6-6" style="height: 400px; width:800px;"/>
 Figure 6-6. Adding a new node to a database cluster with multiple partitions per node.
@@ -1747,7 +1747,7 @@ implementation and mongos daemons as the routing tier.
     - spread data and query load evenly across nodes
 - Two approaches to partitioning
     - Key range partitioning
-        - keys are srted
+        - keys are sorted
         - partition owns keys from some min to max range
         - makes range queries efficient
         - risk - creating hot spots for frequently accessed keys
@@ -1760,7 +1760,7 @@ implementation and mongos daemons as the routing tier.
         - It is common to create fixed no of partitions in advance
     - Hybrid approach also possible with compund key
         - one key used to find partition
-        - other key for srt order
+        - other key for sort order
 - Socondary indexes need to partitioned as well. Two methds
     - Document-partitioned indexes (local indexes)
         - Write - Socondary indexes stored in same partition as that of key
