@@ -8,6 +8,7 @@ Ctrl + Shift    + F => Search in all files
 Ctrl + Alt      + - => Go Back
 Ctrl + Shift    + - => Go Forward
 Ctrl + Shift    + \ => Match closing/opening brackets
+Ctrl + Shift    + I => Indent/Format Code
 
 ## Workspace/Project setting location
 ```bash
