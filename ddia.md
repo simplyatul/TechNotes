@@ -1332,7 +1332,7 @@ believe it to have.
 - In leader based replication, system need to perform failover
 - In Leaderless Replication, failover does not exists
     - quorum write and quorum read is used
-    - conflicts resolved n reading with versioning support
+    - conflicts resolved on reading with versioning support
 
 <img src="/resources/images/ddia/Fig-5-10.png" title="Figure 5-10" style="height: 400px; width:800px;"/>
 Figure 5-10. A quorum write, quorum read, and read repair after a node outage
