@@ -3569,8 +3569,8 @@ and multi-leader replication systems typically do not use global consensus.
 to work better with data that has branching and merging version histories.
 
 # Part III: Derived Data
-- No one DB can satify today's different needs simulataneously.
-- So Apps generally combination of several different datastores, indexes, 
+- No single DB can satify today's different needs simulataneously.
+- So Apps generally use combination of several different datastores, indexes, 
 caches, analytics systems, etc
 - So data moved from one store to another
 - In this part, we will examine the issues around integrating multiple 
@@ -3584,7 +3584,7 @@ to be done in a nontrivial application.
 - aka source of truth
 - holds the authoritative version of your data.
 - Each fact is represented exactly once
-- In case of discrepancies, value in system of record is (by definition) the correct one.
+- In case of discrepancies, value in system of record (by definition) is the correct one.
 ### Derived Data
 - Data in a derived system is result of taking some existing data from another system and transforming or processing it in some way
 - If you lose derived data, you can recreate it from the original source
@@ -3605,7 +3605,8 @@ on the tool, but on how you use it in your application.
 
 ## Chapter 11 Stream Processing
 ```
-A complex system that works is invariably found to have evolved from a simple system that works. The inverse proposition also appears to be true: 
+A complex system that works is invariably found to have evolved from a simple system that works. 
+The inverse proposition also appears to be true: 
 A complex system designed from scratch never works and cannot be made to work.
 
 John Gall, Systemantics (1975)
@@ -3621,7 +3622,7 @@ John Gall, Systemantics (1975)
 - But in reality, a lot of data is unbounded because it arrives gradually over time
 - Using batch processing, we can process the data in specific window duration
 - For Example, every days data
-- We can reduce this window, say per every minute or amy may be more granular
+- We can reduce this window, say per every minute or may be more granular
 - Or we can do porcessing continuously, abandoning the fixed time slices entirely 
 and simply processing every event as it happens.
 That is the idea behind stream processing. 
@@ -3642,6 +3643,11 @@ a topic or stream
     - Consumer requires to poll for events, if any
     - The more often you poll, the lower the percentage of requests that return 
     new events, and thus the higher the overheads become.
+        - Say you poll 10 times.
+        - It generally happens that new event is returned in 2 polls only
+        - In 8 polls, no new event is returned
+        - Means 20% poll yields new events
+        - As you poll more, this percentage goes down even more
     - Instead, it is better for consumers to be notified when new events appear.
 - DBs do not support such kind of notifications natively.
 - Triggers is one option (which can react to a change), but there are limits you can do with triggers
@@ -3666,21 +3672,21 @@ two questions
         - are any messages lost?
         - Similar to DB, durability may require some combination of writing to 
         disk and/or replication which has a cost
-        - if you afford to sometimes lose messages, you  you can probably get 
+        - if you afford to sometimes lose messages, you can probably get 
         higher throughput and lower latency on the same hardware.
 
 ##### Direct messaging from producers to consumers
-Produce and consumer communicate w/o going via intermediary nodes:
-    - UDP multicast
-        - used in the financial industry for streams such as stock market feeds
-        - low latency is important
-        - Since UDP is unrelible, application protocol can recover lost packets
-        - Producer should support restranmitting packets on demand
-    - Brokerless messaging libraries such as ZeroMQ and nanomsg
-        - Implements publish/subscribe messaging over TCP or IP multicast.
-    - StatsD and Brubeck use unreliable UDP messaging for collecting metrics
-    - If the consumer exposes a service on the network, producers can make a direct 
-    HTTP or RPC request
+Produce and consumer communicate w/o going via intermediary nodes.
+- UDP multicast
+    - used in the financial industry for streams such as stock market feeds
+    - low latency is important
+    - Since UDP is unrelible, application protocol can recover lost packets
+    - Producer should support restranmitting packets on demand
+- Brokerless messaging libraries such as ZeroMQ and nanomsg
+    - Implements publish/subscribe messaging over TCP or IP multicast.
+- StatsD and Brubeck use unreliable UDP messaging for collecting metrics
+- If the consumer exposes a service on the network, producers can make a direct 
+HTTP or RPC request
 
 - In above direct messaging systems, applications need to aware of possible 
 message loss
