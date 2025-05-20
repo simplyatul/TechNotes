@@ -3852,10 +3852,234 @@ to nodes in the consumer group.
     - messages may be expensive to process
     - you want to parallelize processing on a message-by-message basis
     - message ordering is not so important
-- Use Log-based message brokers works well when
+- Log-based message brokers works well when
     - high message throughput is required
     - each message is fast to process
     - message ordering is important
+
+##### Consumer offsets
+- Consuming a partition sequentially makes it easy to tell which messages have 
+been processed
+- all messages with an offset less than a consumer’s current offset have 
+already been processed
+- broker does not need to track acknowledgments for every single message—it 
+only needs to periodically record the consumer offsets
+- This reduces  bookkeeping overhead
+- The batching and pipelining in this approach help increase the throughput of 
+log-based systems
+- This offset is in fact very similar to the log sequence number that is 
+commonly found in single-leader database replication.
+- Thus Message broker behaves like a leader database, and the consumer like a follower
+- If a consumer node fails, another consumer node is assigned to partition
+    - In this, another consumer may process few messages again depending on 
+    when last consumer node has recorded the offset 
+
+##### Disk space usage
+- To reclaim disk space, the log is actually divided into segments
+- From time to time old segments are deleted or moved to archive storage. 
+- The log implements a bounded-size buffer that discards old messages when it 
+gets full, also known as a circular buffer or ring buffer
+- However, since that buffer is on disk, it can be quite large. 
+- A back-of-the-envelope calculation looks like:
+    - A typical large hard drive has 
+        - 6 TB capacity
+        - 150 MB/s write throughput
+    - So at 150 MB/s write speed, it will take ~11 hours to fill the drive
+        - 150 MB/s * 60 = 9000 MB/min => 9 GB/min => 540 GB/Hr
+        - 6000 / 540 = ~11 Hrs
+    - Generally deployments rarely use the full write bandwidth of the disk
+    - so the log can typically keep a buffer of several days’ or even weeks’ 
+    worth of messages
+- Regardless of how long you retain messages, the throughput of a log remains 
+more or less constant
+- This is in contrast to Q based messaging systems
+- Q based messaging systems 
+    - keeps messages in RAM by default
+    - only writes to Disk if Q grows too large
+    - such systems are fast when queues are short and become much slower when 
+    they start writing to disk
+    - So throughput depends on the amount of history retained
+
+##### When consumers cannot keep up with producers
+- log-based approach is a form of buffering with a large but fixed-size buffer 
+(limited by the available disk space).
+- You can monitor how far a consumer is behind the head of the log, and 
+raise an alert if it falls behind significantly
+- As the buffer is large, there is enough time for a human operator to fix 
+the slow consumer and allow it to catch up before it starts missing messages.
+- Slow consumer does not disrupt the service for other consumers.
+- This has big operational advantage
+- But in traditional Q based message broker systems
+    - you need to careful to delete any queues whose consumers have been shut down
+    - Else they continue unnecessarily accumulating messages and taking away 
+    memory from consumers that are still active.
+##### Replaying old messages
+- In AMQP/JSM style brokers, reading message is destructive operation.
+    - broker deletes the message as soon as it is consumed
+- In log-based brokers, reading messages is just like rteading a record in file
+    - consumer can go back and read the messages again
+    - offset is under consumer's control
+- Above features of log-based broker system allows more experimentation and easier
+ recovery from errors and bugs, making it a good tool for integrating dataflows 
+ within an organization 
+
+### Database and Streams
+- we saw that log-based message brokers have been successful in taking ideas 
+from databases and applying them to messaging
+- We can also go in reverse: take ideas from messaging and streams, and apply 
+them to databases
+- The fact that something was written to a database is an event that can be 
+captured, stored, and processed
+- In fact, a replication log (see “Implementation of Replication Logs”) is a 
+stream of database write events, produced by the leader as it processes transactions
+- The events in the replication log describe the data changes that occurred.
+- We also came across the state machine replication principle in 
+“Total Order Broadcast”, which states:
+    - if every event represents a write to the database, and every replica 
+    processes the same events in the same order,
+    - then the replicas will all end up in the same final state.
+    - (Processing an event is assumed to be a deterministic operation.) 
+    It’s just another case of event streams
+- In this section we will first look at a problem that arises in 
+heterogeneous data systems, and then explore how we can solve it by 
+bringing ideas from event streams to databases.
+
+#### Keeping Systems in Sync
+- most nontrivial applications need to combine several different technologies 
+in order to satisfy their requirements. For example
+    - using an OLTP database to serve user requests
+    - a cache to speed up common requests
+    - a full-text index to handle search queries
+    - a data warehouse for analytics
+- Above systems are required to be kept in sync with one another.
+- If an item is updated in the database, it also needs to be updated in the 
+cache, search indexes, and data warehouse
+- How to keep all systems in sync
+- One solution dual writes
+    - Application writes to DB first and then updates search index, cache, etc
+- However, dual writes has some serious problems which leads to race conditions
+
+ToDo Figure 11-4
+
+- post sequence mentioned in Figure 11-4, the two systems (DB and search index) 
+are now permanently inconsistent with each other, even though no error occurred
+- Another problem with dual writes is that one of the writes may fail while 
+the other succeeds
+    - This is a fault-tolerance problem rather than a concurrency problem
+    - Ensuring that dual writes either both succeed or both fail is a case of 
+    the atomic commit problem
+    - atomic commit problem is expensive to solve (see 
+    “Atomic Commit and Two-Phase Commit (2PC)”).
+
+#### Change Data Capture (CDC)
+- Historically, replication logs are considered internal implementation of DB
+rather a public API
+- DBs don't have documented way of getting the log of changes written to them
+- So it was difficult to take all the changes made in a database and replicate 
+them to a different storage technology such as a search index, cache, or data warehouse.
+- But more recently, DBs are started supporting CDC mechanism
+
+ToDo Fifure 11-5
+
+##### Implementing change data capture
+- The data stored in the search index and the data warehouse is just another 
+view onto the data in the system of record
+- CDC makes DB a leader and turns others into followers
+- A log-based message broker is well suited for transporting the change events 
+from the source database to the derived systems, since it preserves the 
+ordering of messages (avoiding the reordering issue of Figure 11-2).
+- DB triggers can also used to implement CDC
+- But triggers tend to be fragile and have significant performance overheads
+- Parsing the replication log can be a more robust approach, although it also 
+comes with challenges, such as handling schema changes.
+
+- Bottled Water implements CDC for PostgreSQL using an API that decodes 
+the write-ahead log
+- Maxwell and Debezium do something similar for MySQL by parsing the binlog
+- Mongoriver reads the MongoDB oplog
+- GoldenGate provides similar facilities for Oracle.
+- The Kafka Connect framework offers further CDC connectors for various DBs.
+- Like message brokers, change data capture is usually asynchronous
+    - System of record DB does not wait for the change to be applied to 
+    consumers before committing it
+    - This design has operational advantages
+        - slow consumer not to affect system of record
+    - But has downside that all the issues of replication lag apply 
+    (see “Problems with Replication Lag”).
+
+##### Initial snapshot
+- To add a derived system at any point of time, it needs to sync up with 
+system of record DB
+- But DB can keep limited number of replication log entries
+- Solution is to start from a consistent snapshot as previously discussed in 
+“Setting Up New Followers”.
+
+##### Log compaction
+- In a log-structured storage engine, an update with a special null value 
+(a tombstone) indicates that a key was deleted, and causes it to be removed 
+during log compaction
+- But as long as a key is not overwritten or deleted, it stays in the log forever
+- If the same key is frequently overwritten, previous values will eventually 
+be garbage-collected, and only the latest value will be retained
+- The same idea works in the context of log-based message brokers and CDC
+- whenever you want to rebuild a derived data system such as a search index, 
+you can start a new consumer from offset 0 of the log-compacted topic, and 
+sequentially scan over all messages in the log. 
+- The log is guaranteed to contain the most recent value for every key in the 
+database (and maybe some older values)
+- in other words, you can use it to obtain a full copy of the database contents 
+without having to take another snapshot of the CDC source database
+- This log compaction feature is supported by Apache Kafka. 
+    - It allows the message broker to be used for durable storage, not just 
+    for transient messaging.
+
+##### API support for change streams
+- Increasingly, DBs are beginning to support change streams as a first-class 
+interface, rather than the typical retrofitted and reverse-engineered CDC efforts
+    -  RethinkDB allows queries to subscribe to notifications when the results 
+    of a query change
+    - Firebase and CouchDB provide data synchronization based on a change feed 
+    that is also made available to applications
+    - Meteor uses the MongoDB oplog to subscribe to data changes and update 
+    the user interface
+    - VoltDB allows transactions to continuously export data from a database 
+    in the form of a stream
+    - Kafka Connect is an effort to integrate change data capture tools for 
+    a wide range of DB systems with Kafka
+
+#### Event Sourcing
+- is a technique that was developed in the domain-driven design (DDD) community
+- Similarly to CDC, event sourcing involves storing all changes to the 
+application state as a log of change events. 
+The biggest difference is that event sourcing applies the idea at a different 
+level of abstraction:
+- In CDC
+    - log of changes is extracted from the database at a low level. 
+    - The application writing to the database does not need to be aware that 
+    CDC is occurring
+- In event sourcing
+    - the application logic is explicitly built on the basis of immutable 
+    events that are written to an event log
+    - event store is append-only
+    - updates or deletes are discouraged or prohibited
+    - Events are designed to reflect things that happened at the application 
+    level, rather than low-level state changes.
+- Event sourcing is a powerful technique for data modeling
+    - from an application point of view it is more meaningful to record the 
+    user’s actions as immutable events, rather than recording the effect of 
+    those actions on a mutable database
+- Event sourcing helps with debugging by making it easier to understand 
+after the fact why something happened
+- For example
+    - storing the event “student cancelled their course enrollment” clearly 
+    expresses the intent of a single action in a neutral fashion
+    - whereas the side effects “one entry was deleted from the enrollments 
+    table, and one cancellation reason was added to the student feedback table” 
+    embed a lot of assumptions about the way the data is later going to be used.
+    - If a new application feature is introduced, for example, 
+    “the place is offered to the next person on the waiting list”, 
+    the event sourcing approach allows that new side effect to easily be 
+    chained off the existing event.
 
 ## Glossary
 - Fanout => In transaction processing systems,number of request to other services that need to make in order to satisfy one incoming request.
