@@ -113,6 +113,8 @@ Figure 1-3. Twitter’s data pipeline for delivering tweets to followers, with l
 
 #### Describing Performance
 
+<img src="/resources/images/ddia/Fig-1-4.png" title="Figure 1-4" style="height: 400px; width:800px;"/>
+
 Figure 1-4. Illustrating mean and percentiles: response times for a sample of 100 requests to a service.
 
 - Look at it using Two ways
@@ -3706,7 +3708,154 @@ clients that come and go (connect, disconnect, and crash),
     - producer does not wait till consumer consumes the message
 
 ##### Message brokers Vs DBs
+Some message brokers can even participate in two-phase commit protocols using XA or JTA.
+This is something similar in nature to DB.
+However, there are still important practical differences between message brokers and databases
 
+- DBs keep the data until it is explicitly deleted, whereas most message brokers
+delete the data as soon as it is delivered to consumer
+- message brokers assumes their working set is fairly small => Qs are short
+    - If they need to persist/buffer data bec the consumers are slow then
+        - each individual message may take longer time to process
+        - overall throughput may degrade
+- Databases often support secondary indexes and various ways of searching for data, 
+while message brokers often support some way of subscribing to a subset of topics 
+matching some pattern
+- DBs support arbitrary queries, while message brokers don't. But they do notify 
+clients when data changes (i.e., when new messages become available).
+
+- This is traditional view of message brokers 
+    - encapsulated in standards like JMS [14] and AMQP [15] 
+    - and implemented in software like 
+        - RabbitMQ, ActiveMQ, HornetQ, Qpid, 
+        - TIBCO Enterprise Message Service, 
+        - IBM MQ, Azure Service Bus, and Google Cloud Pub/Sub
+
+##### Multiple consumers
+ToDo Figure 11-1
+
+- When multiple consumers read messages in the same topic, two main patterns of messaging are used, as illustrated in Figure 11-1
+    - Load balancing
+        - Each message is delivered to one of the consumers
+        - consumers can share the work of processing the messages in the topic.
+        - In AMQP, you can implement load balancing by having multiple clients 
+        consuming from the same queue
+        - and in JMS it is called a shared subscription.
+    - Fan-out
+        - Each message is delivered to all of the consumers
+        - This feature is provided by topic subscriptions in JMS, and exchange 
+        bindings in AMQP.
+- The two patterns can be combined
+    - two separate groups of consumers may each subscribe to a topic
+    - such that each group collectively receives all messages
+    - but within each group only one of the nodes receives each message
+
+##### Acknowledgments and redelivery
+- What is Consumers crash in bet processing of message?
+- broker delivers the message to consumer, but it fails to process it
+- To address above, message brokers use acknowledgments
+- On receiving acks from client, message brokers deletes the message
+- On n/w connection failure or timeout, message brokers assume message was not 
+processed and delivers it again
+    - it could happen that the message actually was fully processed
+    - but the ack was lost in the network
+    - Handling this case requires an atomic commit protocol,
+    - See "Distributed Transactions in Practice"
+- When combined with load balancing, this redelivery behavior has an interesting 
+effect on the ordering of messages. See Figure 11-2
+
+ToDo Figure 11-2
+
+- Bec the consumer 2 crashed bef sending ack to ```m3```, broker delivers it to consumer 1.
+- consumer 1 processes messages in the order ```m4```, ```m3```, ```m5```
+- The above overder is not the same as that producer that produced.
+- Even if the JMS and AMQP standards mandates broker to preserve order of messages,
+the combination of load balancing with redelivery inevitably leads to messages 
+being reordered
+- To avoid above issues, you can use a separate queue per consumer => no LB
+- But this requires messages to be independent of each other
+- Hwoever, this will not work if there are causal dependencies between messages 
+
+#### Partitioned Logs
+- Messages brokers are buit around transient messaging mindset
+    - even if they durably write messages to disk quickly delete them again 
+    after they have been delivered to consumers
+- DB/File systems take opposite approach
+    - They keep the data until someone deletes them explicitely
+- In Batch Processing
+    - It never touches the input data
+    - So you can run batch processing repeatedly.
+- Messages brokers takes destructive approach to delete the messages
+- If you add new consumer, they receives new messages after they have been registered
+    - they can not process old messages
+- Why can we not have a hybrid approach?
+    - combining the durable storage approach of databases and
+    - low-latency notification facilities of messaging? 
+    - This is the idea behind log-based message brokers
+
+##### Using logs for message storage
+- A log is simply an append-only sequence of records on disk. 
+- We previously discussed logs in the context of 
+    - log-structured storage engines and write-ahead logs in Chapter 3,
+    - replication in Chapter 5.
+- The same structure can be used to implement a message broker
+    - producer's messages are appended to the log
+    - consumer receives messages by reading log sequentially
+    - When consumer reaches end of log, it waits for new message notification
+    - Unix tool ```tail -f``` works on similar principle
+- In order to scale to higher throughput than a single disk can offer, the log 
+can be partitioned
+    - Different partitions can then be hosted on different machines
+    - each partition becomes a separate log that can be read and written 
+    independently from other partitions
+    - A topic can then be defined as a group of partitions that all carry 
+    messages of the same type.
+- Figure 11-3 illustrates above approach
+
+ToDo Figure 11-3
+
+- Within each partition, the broker assigns a monotonically increasing 
+sequence number, or offset, to every message
+- Bec partition is append only, messages within a partition are totally ordered
+- There is no ordering guarantee across different partitions
+- Apache Kafka, Amazon Kinesis Streams, and Twitter’s DistributedLog are 
+log-based message brokers
+-  Google Cloud Pub/Sub is architecturally similar but exposes a JMS-style API 
+rather than a log abstraction
+- Even though these message brokers write all messages to disk, they are able 
+to achieve throughput of millions of messages per second by partitioning across 
+multiple machines, and fault tolerance by replicating messages
+
+##### Logs compared to traditional messaging
+- The log-based approach trivially supports fan-out messaging, because several 
+consumers can independently read the log without affecting each other
+- To achieve load balancing across a group of consumers, instead of assigning 
+individual messages to consumer clients, the broker can assign entire partitions 
+to nodes in the consumer group.
+- Each consumer client then consumes all the messages in the partitions it has been assigned
+- This coarse-grained load balancing approach has some downsides:
+    - The number of nodes sharing the work of consuming a topic can be at most 
+    the number of log partitions in that topic, because messages within the 
+    same partition are delivered to the same node.
+        - It’s possible to create a load balancing scheme in which two consumers 
+        share the work of processing a partition by having both read the full 
+        set of messages, but one of them only considers messages with 
+        even-numbered offsets while the other deals with the odd-numbered offsets.
+        - Alternatively, you could spread message processing over a thread pool,
+        but that approach complicates consumer offset management.
+        - In general, single-threaded processing of a partition is preferable, 
+        and parallelism can be increased by using more partitions.
+    - If a single message is slow to process, it holds up the processing of 
+    subsequent messages in that partition (a form of head-of-line blocking; see “Describing Performance”).
+
+- So JMS/AMQP style of message broker is preferable when
+    - messages may be expensive to process
+    - you want to parallelize processing on a message-by-message basis
+    - message ordering is not so important
+- Use Log-based message brokers works well when
+    - high message throughput is required
+    - each message is fast to process
+    - message ordering is important
 
 ## Glossary
 - Fanout => In transaction processing systems,number of request to other services that need to make in order to satisfy one incoming request.
