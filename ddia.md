@@ -3732,7 +3732,10 @@ clients when data changes (i.e., when new messages become available).
         - IBM MQ, Azure Service Bus, and Google Cloud Pub/Sub
 
 ##### Multiple consumers
-ToDo Figure 11-1
+
+<img src="/resources/images/ddia/Fig-11-1.png" title="Figure 11-1" style="height: 400px; width:800px;"/>
+Figure 11-1. (a) Load balancing: sharing the work of consuming a topic among 
+consumers; (b) fan-out: delivering each message to multiple consumers.
 
 - When multiple consumers read messages in the same topic, two main patterns of messaging are used, as illustrated in Figure 11-1
     - Load balancing
@@ -3764,7 +3767,8 @@ processed and delivers it again
 - When combined with load balancing, this redelivery behavior has an interesting 
 effect on the ordering of messages. See Figure 11-2
 
-ToDo Figure 11-2
+<img src="/resources/images/ddia/Fig-11-2.png" title="Figure 11-2" style="height: 400px; width:800px;"/>
+Figure 11-2. Consumer 2 crashes while processing m3, so it is redelivered to consumer 1 at a later time.
 
 - Bec the consumer 2 crashed bef sending ack to ```m3```, broker delivers it to consumer 1.
 - consumer 1 processes messages in the order ```m4```, ```m3```, ```m5```
@@ -3812,7 +3816,9 @@ can be partitioned
     messages of the same type.
 - Figure 11-3 illustrates above approach
 
-ToDo Figure 11-3
+<img src="/resources/images/ddia/Fig-11-3.png" title="Figure 11-3" style="height: 400px; width:800px;"/>
+Figure 11-3. Producers send messages by appending them to a topic-partition file, 
+and consumers read these files sequentially.
 
 - Within each partition, the broker assigns a monotonically increasing 
 sequence number, or offset, to every message
@@ -3959,7 +3965,9 @@ cache, search indexes, and data warehouse
     - Application writes to DB first and then updates search index, cache, etc
 - However, dual writes has some serious problems which leads to race conditions
 
-ToDo Figure 11-4
+<img src="/resources/images/ddia/Fig-11-4.png" title="Figure 11-4" style="height: 400px; width:800px;"/>
+Figure 11-4. In the database, X is first set to A and then to B, while at the 
+search index the writes arrive in the opposite order.
 
 - post sequence mentioned in Figure 11-4, the two systems (DB and search index) 
 are now permanently inconsistent with each other, even though no error occurred
