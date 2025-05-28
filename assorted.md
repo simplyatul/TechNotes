@@ -91,7 +91,31 @@ dd if=/dev/urandom of=sample.txt bs=1M count=1024 iflag=fullblock
 dpkg -S /usr/bin/dig
 bind9-dnsutils: /usr/bin/dig
 ```
-
+## Check/List contents of .deb file
+```bash
+dpkg -c imager_1.8.5_amd64.deb
+drwxr-xr-x root/root         0 2024-01-20 21:06 ./
+drwxr-xr-x root/root         0 2024-01-20 21:06 ./usr/
+drwxr-xr-x root/root         0 2024-01-20 21:06 ./usr/bin/
+-rwxr-xr-x root/root   1493416 2024-01-20 21:06 ./usr/bin/rpi-imager
+drwxr-xr-x root/root         0 2024-01-20 21:06 ./usr/share/
+drwxr-xr-x root/root         0 2024-01-20 21:06 ./usr/share/applications/
+-rw-r--r-- root/root       159 2023-10-21 14:43 ./usr/share/applications/org.raspberrypi.rpi-imager.desktop
+drwxr-xr-x root/root         0 2024-01-20 21:06 ./usr/share/doc/
+drwxr-xr-x root/root         0 2024-01-20 21:06 ./usr/share/doc/rpi-imager/
+-rw-r--r-- root/root      3532 2024-01-20 21:06 ./usr/share/doc/rpi-imager/changelog.gz
+-rw-r--r-- root/root      1464 2023-10-21 14:43 ./usr/share/doc/rpi-imager/copyright
+drwxr-xr-x root/root         0 2024-01-20 21:06 ./usr/share/icons/
+drwxr-xr-x root/root         0 2024-01-20 21:06 ./usr/share/icons/hicolor/
+drwxr-xr-x root/root         0 2024-01-20 21:06 ./usr/share/icons/hicolor/128x128/
+drwxr-xr-x root/root         0 2024-01-20 21:06 ./usr/share/icons/hicolor/128x128/apps/
+-rw-r--r-- root/root     11542 2023-11-16 02:36 ./usr/share/icons/hicolor/128x128/apps/rpi-imager.png
+drwxr-xr-x root/root         0 2024-01-20 21:06 ./usr/share/man/
+drwxr-xr-x root/root         0 2024-01-20 21:06 ./usr/share/man/man1/
+-rw-r--r-- root/root      1413 2024-01-20 21:06 ./usr/share/man/man1/rpi-imager.1.gz
+drwxr-xr-x root/root         0 2024-01-20 21:06 ./usr/share/metainfo/
+-rw-r--r-- root/root      2540 2024-01-20 21:06 ./usr/share/metainfo/rpi-imager.metainfo.xml
+```
 ## Location of installed packages (.deb files) in Ubuntu
 ```bash
 ls /var/cache/apt/archives/
