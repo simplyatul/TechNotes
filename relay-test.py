@@ -1,4 +1,5 @@
 #! /usr/bin/python
+# Control Unit cables are connected to NC and Common
 led1 = 21
 sleep_time = 5
 import RPi.GPIO as GPIO
