@@ -78,7 +78,7 @@ Figure 1-1. One possible architecture for a data system that combines several co
     - Avg => 4.6k req/sec
     - Peak => 12k req/sec
 - View Home timeline
-    - user view tweets by people s/he follows
+    - user views tweets by people s/he follows
     - 300k req/sec
 
 - Twitter faces main challenge due to Fanout (fetching user's home timeline)
@@ -139,7 +139,7 @@ Figure 1-4. Illustrating mean and percentiles: response times for a sample of 10
     - page faults resulting in disk seek/read
     - mechanical vibrations in server racks
 
-- median response time = 200 ms => half od request returns in < 200 ms and
+- median response time = 200 ms => half of request returns in < 200 ms and
 half requests take longer than that
 - median => 50th percentile => P50
 - tail latencies => Higher percentile of response time => how bad your outliers are
@@ -182,7 +182,7 @@ Figure 1-5. When several backend calls are needed to serve a request, it takes j
     - System designed to handle 100,000 req/sec each of size 1 kB
         - 10^5 * 10^3 = 10^8 B/sec
     - System designed to handle 3 req/min each of size 2 GB
-        - (3*2*10^9) / 60 = 10^8 B/sec
+        - (3 * 2 * 10^9) / 60 = 10^8 B/sec
 
 ### Maintainability
 - Majority cost of s/w is it's ongoing maintenance and not the initial development cost
@@ -268,7 +268,7 @@ Figure 2-1. Representing a LinkedIn profile using a relational schema. Photo of 
         - many people live in one particular region Or
         - many people work in one particular industry
     - joins are not needed for one-to-many tree structure
-    - and support for joins is often weak (but RethinkDB and ConchDB supports them to some extend)
+    - and support for joins is often weak (but RethinkDB and CouchDB supports them to some extend)
 
 - Data has a tendency of becoming more interconnected as features are added to applications.
 
@@ -354,7 +354,7 @@ Figure 3-1. Storing a log of key-value pairs in a CSV-like format, indexed with 
 
 - Above approach used in Bitcask (the default storage engine in Riak)
 - Bitcask offers high-performance reads and writes, subject to the requirement that all the keys fit in the available RAM
-    - uses case value of each key updated frequently
+    - uses case => value of each key updated frequently
 
 - How to avoid running out of disk space when using single append-only log file
     - on a threshold, break the log into certain size segment file
@@ -408,7 +408,7 @@ Figure 3-3. Performing compaction and segment merging simultaneously.
 - Makes two requirements to the format of our segment files
     1. key-value pairs should be sorted by key
         - called this format as Sorted String Table (SSTable)
-    2. Each key only only appears once withing merged segment file
+    2. Each key only appears once withing merged segment file
         - compaction process ensures this
 <img src="/resources/images/ddia/Fig-3-4.png" title="Figure 3-4" style="height: 400px; width:800px;"/>
 Figure 3-4. Merging several SSTable segments, retaining only the most recent value for each key.
@@ -600,13 +600,13 @@ Figure 3-7. Growing a B-tree by splitting a page.
 
 ### Storing values with indexes
 - heap file
-    - the place where rows are stored DB
+    - the place where rows are stored in DB
     - stores data in no particular order
     - The heap file approach is common because it avoids duplicating data when multiple secondary indexes are present: each index just references a location in the heap file, and the actual data is kept in one place.
 
 - Sometimes extra hop from index to heap file can reduce performance
 - So it can be desirable to store the indexed row directly within an index.
-- This is known as a clustered index
+    - aka clustered index
 - In MySQL’s InnoDB storage engine
     - primary key of a table is always a clustered index
     - secondary indexes refer to the primary key (rather than a heap file location)
@@ -714,7 +714,8 @@ Figure 3-10. Storing relational data by column, rather than by row.
 
 #### Column Compression
 - column-oriented storage often lends itself very well to compression.
-- Check values for each column Figure 3-10. They often look quite repetitive, which is a good sign for compression.
+- Check values for each column in Figure 3-10. They often look quite repetitive, 
+which is a good sign for compression.
 - Diff compression techniques can be used depending on data
     - bitmap encoding
 
