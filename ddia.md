@@ -830,9 +830,9 @@ which is a good sign for compression.
     - schema for above record looks like
         ```
         message Person {
-        required string user_name       = 1;
-        optional int64  favorite_number = 2;
-        repeated string interests       = 3;
+            required string user_name       = 1;
+            optional int64  favorite_number = 2;
+            repeated string interests       = 3;
         }
         ```
 - Thrift
@@ -841,9 +841,9 @@ which is a good sign for compression.
     - IDL for above record looks like
         ```
         struct Person {
-        1: required string       userName,
-        2: optional i64          favoriteNumber,
-        3: optional list<string> interests
+            1: required string       userName,
+            2: optional i64          favoriteNumber,
+            3: optional list<string> interests
         }
         ```
     - has two binary encoding format
@@ -861,7 +861,7 @@ which is a good sign for compression.
             - there is no compilation step
     - supports in various programming languages 
 
-It is reasonable to assume that all the servers will be updated first, and all the clients second.
+- It is reasonable to assume that all the servers will be updated first, and all the clients second.
     - Thus, you only need backward compatibility on requests
     - and forward compatibility on responses.
 
@@ -893,7 +893,7 @@ Why to distribute a DB?
 - Scalability
     - if data volume, read load or write load grows.
 - Fault tolerance / High Availability 
-    - Application on m/c fails r n/w went down or entire DC goes down
+    - Application on m/c fails or n/w went down or entire DC goes down
 - Latency
     - Keep the DB closer to user location for min latency
 
@@ -906,7 +906,7 @@ Why to distribute a DB?
         - m/c twice the size may not necessarily handle high load
         - limited fault tolerance
         - limited single geo location
-- Horizontal Scaling / / Scaling Out
+- Horizontal Scaling / Scaling Out
     - aka shared-nothing architecture
     - Adv
         - No special h/w required
