@@ -1199,8 +1199,8 @@ Figure 5-6. Multi-leader replication across multiple datacenters.
         that DC may observer higher latency
         - multi-leader => less latency as leader is available in each DC to accept write requests
     - Tolerance of datacenter outages
-        - single-leader => If DC hosting leader fails, failover to follower i another DC
-        - multi-leader => DC can operate independently than other DC
+        - single-leader => If DC hosting leader fails, failover to follower in another DC
+        - multi-leader => DC can operate independently than other DCs
     - Tolerance of network problems
         - multi-leader => with asynchronous replication can usually tolerate network problems better
 - Some DBs support multi-leader configurations by default
@@ -1210,7 +1210,7 @@ Figure 5-6. Multi-leader replication across multiple datacenters.
     - GoldenGate for Oracle
 
 - Big downside of multi-leader configs
-    - same data same data may be concurrently modified in two different datacenters
+    - Same data may be concurrently modified in two different datacenters
     - Those write conflicts must be resolved.
     - Also, has subtle configuration pitfalls
         - autoincrementing keys, triggers, and integrity constraints can be problematic
@@ -1258,7 +1258,7 @@ Figure 5-7. A write conflict caused by two leaders concurrently updating the sam
         - On read
             - all the conflicting writes are stored
             - On read, these multiple versions of data is returned to application to resolve
-            - Application prompt user or amy resolve conflict automatically
+            - Application prompt user or may resolve conflict automatically
             - CouchDB works this way
         - Note that conflict resolution usually applies at the level of an 
         individual row or document, not for an entire transaction. 
@@ -1277,7 +1277,7 @@ a replicated system.
 
 #### Multi-Leader Replication Topologies
 - A replication topology describes path => how writes are propagated from one node to another
-- If there are only two leaders (Figure 5-7), one one possible topology exists
+- If there are only two leaders (Figure 5-7), one possible topology exists
 - If more than two leaders, diff topologies exists
 
 <img src="/resources/images/ddia/Fig-5-8.png" title="Figure 5-8" style="height: 400px; width:800px;"/>
@@ -1361,28 +1361,29 @@ Figure 5-10. A quorum write, quorum read, and read repair after a node outage
     from some replicas => reduced durability
 
 ##### Quorums for reading and writing
-- n => number of replicas
-- w => nodes confirming writes
-- n => nodes confirming reads
+- ```n``` => number of replicas
+- ```w``` => nodes confirming writes
+- ```n``` => nodes confirming reads
 - Configs with which reads are up-to-date
-    - w + r > n
-- Reads and writes that obey these r and w values are called quorum reads and write
-- One can adjust n,w,n as per use case
+    - ```w``` + ```r``` > ```n```
+- Reads and writes that obey these ```r``` and ```w``` values are called quorum reads and write
+- One can adjust ```n```,```w```,```n``` as per use case
 - workload w/ few writes and many reads
-    - w = n and r = 1
+    - ```w``` = ```n``` and ```r``` = 1
         - makes reads faster
-        - but one node fail will cause all writes t fail
+        - but one node fail will cause all writes to fail
 
-- With w + r > n tolerates unavailable nodes as follows
+- With ```w``` + ```r``` > ```n``` tolerates unavailable nodes as follows
 
 <img src="/resources/images/ddia/Fig-5-11.png" title="Figure 5-11" style="height: 400px; width:800px;"/>
-Figure 5-11. If w + r > n, at least one of the r replicas you read from must have seen the most recent successful write.
+Figure 5-11. If ```w``` + ```r``` > ```n```, at least one of the ```r``` 
+replicas you read from must have seen the most recent successful write.
 
 ##### Limitations of Quorum Consistency
-- w + r > n => tolerates up to n/2 node failures
-- You may also set w and r to smaller numbers => w + r ≤ n
+- ```w``` + ```r``` > ```n``` => tolerates up to ```n/2``` node failures
+- You may also set ```w``` and ```r``` to smaller numbers => ```w + r ≤ n```
     - quorum condition is not satisfied
-    - reads and writes will still be sent to n nodes, but a smaller number of 
+    - reads and writes will still be sent to ```n``` nodes, but a smaller number of 
     successful responses is required for the operation to succeed.
     - allows lower latency and higher availability
 
@@ -1390,7 +1391,7 @@ Figure 5-11. If w + r > n, at least one of the r replicas you read from must hav
 value, in practice it is not so simple
 - Dynamo-style DBs are generally optimized for use cases that can tolerate 
 eventual consistency. 
-- w and r allow you to adjust the probability of stale values being read, 
+- ```w``` and ```r``` allow you to adjust the probability of stale values being read, 
 but it’s wise to not take them as absolute guarantees
 - In particular, you usually do not get the guarantees discussed in 
 “Problems with Replication Lag” (reading your writes, monotonic reads, or 
@@ -1414,23 +1415,23 @@ of metrics for databases
 - With appropriately configured quorums
     - can tolerate node failures w/o need for failover
     - also tolerate individual nodes going slow (bec of overload), bec 
-    requests don’t have to wait for all n nodes to respond
-        - requests can return when w/r nodes have responded
+    requests don’t have to wait for all ```n``` nodes to respond
+        - requests can return when ```w```/```r``` nodes have responded
 
-- Above chars suits systems requiring high availability and low latency
+- Above characteristics suits systems requiring high availability and low latency
     - provided systems can tolerate occasional stale reads.
 
-- However, n/w breaks may prevent clients to reach w/r nodes
+- However, n/w breaks may prevent clients to reach ```w```/```r``` nodes
 - In large clusters (with more n nodes), during n/w interruption, client can connect to some nodes, 
 but not required Quorums
 - Two trade-offs to consider
     - return error
-    - allow writes to some w nodes, not necessarily from quorum => Sloppy Quorums
+    - allow writes to some ```w``` nodes, not necessarily from quorum => Sloppy Quorums
 - Sloppy Quorums
-    - writes and reads still require w and r successful responses, but those 
-    may include nodes that are not among the designated n “home” nodes for a value. 
+    - writes and reads still require ```w``` and ```r``` successful responses, but those 
+    may include nodes that are not among the designated ```n``` “home” nodes for a value. 
     - once n/w recovers, nodes can send writes to appropriate home nodes => Hinted Handoff
-    - uses full t increase write availability
+    - usesfull for increasing write availability
     - But clients are not sure to read latest value
     - So Sloppy Quorum is just assurance to durability
     - Sloppy Quorum is optional in all Dynamo (Cassandra and Voldemort) implementations
@@ -1443,7 +1444,7 @@ it is designed to
     - Network interruptions and 
     - latency spikes (some nodes going slow)
 - Each write is send to all replicas in all DCs, but 
-- client client usually only waits for acknowledgment from a quorum of nodes 
+- client usually only waits for acknowledgment from a quorum of nodes 
 within its local datacenter
 - higher-latency writes to other datacenters are often configured to happen asynchronously
 
@@ -1468,7 +1469,7 @@ toward the same value. How ?
         - An optional feature in Riak
         - LWW achieves eventual convergence, but at the cost of durability
         - If loosing data is not acceptable then LWW is not suitable
-    - Virsion Vectors
+    - Version Vectors
         - Ensures data is not lost
 
 <img src="/resources/images/ddia/Fig-5-13.png" title="Figure 5-13" style="height: 400px; width:800px;"/>
@@ -1621,8 +1622,8 @@ Figure 6-5. Partitioning secondary indexes by term.
 - aka global index => covers data in all partitions
 - A global index must also be partitioned, but it can be partitioned 
 differently from the primary key index
-- In above fig, car colors starting with the letters a to r appear in partition 0 
-and colors starting with s to z appear in partition 1
+- In above fig, car colors starting with the letters ```a``` to ```r``` appear in partition ```0``` 
+and colors starting with ```s``` to ```z``` appear in partition ```1```
 - This is useful for range scans => makes read more efficient
 - DisAdv
     - writes are slow and more complicated
@@ -1656,7 +1657,8 @@ most of the keys will need to be moved from one node to another.
  ###### Fixed partitioning
 - Keep fixed number of partitions over N nodes
 - select number of partitions sufficiently large to accomodate future growth
-- e.g. 100 nodes, 1000 partitions => each node get 100 partitions
+- e.g. DB running on cluster of 10 nodes may be split into 1000 partitions 
+    - So each node gets 100 partitions
 - Only entire partitions are moved between nodes. 
 - The number of partitions does not change, nor does the assignment of 
 keys to partitions.
@@ -1670,7 +1672,7 @@ Figure 6-6. Adding a new node to a database cluster with multiple partitions per
 - There are trade-offs how large partition should be...
     - large partitions => expensive rebalancing and recovery from node failure
     - small partitions => incurs too much overheads
-    - if dataset is highly variable (e.g. staets small, but grows very rapidly), 
+    - if dataset is highly variable (e.g. starts small, but grows very rapidly), 
     it is difficult to choose partition size
 
 ###### Dynamic partitioning
@@ -1681,7 +1683,7 @@ then you may end up having data in one partition and other partitions being empt
 - If partition grows over threshold, it splits it int two
 - Conversely, if data shrinks below threshold, it merges with an adjacent partition
 - Adv 
-    - no of partitions adapat t dataset size / data volume
+    - no of partitions adapat to dataset size / data volume
 - DisAdv
     - Empty DB starts with single partition and all queries server by single node only
     - Sol => HBase and MongoDB allows to set initial set of partitions, aka pre-splitting
@@ -1726,7 +1728,7 @@ Figure 6-7. Three different ways of routing a request to the right node.
     of the nodes, or the routing tier, or the client) learn about changes 
     in the assignment of partitions to nodes?
 
-- Most systems ely on a separate coordination service such as ZooKeeper to 
+- Most systems rely on a separate coordination service such as ZooKeeper to 
 keep track of this cluster metadata. See Figure 6-8
 <img src="/resources/images/ddia/Fig-6-8.png" title="Figure 6-8" style="height: 400px; width:800px;"/>
 Figure 6-8. Using ZooKeeper to keep track of assignment of partitions to nodes.
@@ -1739,7 +1741,7 @@ implementation and mongos daemons as the routing tier.
 
 - Cassandra and Riak take a different approach
     - use a gossip protocol among the nodes to disseminate any changes in cluster state. 
-    - This model puts more more complexity in the database nodes but avoids 
+    - This model puts more complexity in the DB nodes but avoids 
     dependency on an external coordination service such as ZooKeeper.
 - Couchbase does not rebalance automatically,
     - Normally it is configured with a routing tier called moxi
