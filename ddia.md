@@ -2199,8 +2199,8 @@ Figure 7-8. Example of write skew causing an application bug.
 - This anomaly is called Write Skew
 
 #### Characterizing write skew
-- This is neither dirty write or lost update
-- Bec tow transactions updating diff objects (Alice’s and Bob’s on-call records, respectively)
+- This is neither dirty write nor lost update
+- Bec two transactions updating diff objects (Alice’s and Bob’s on-call records, respectively)
 - if the two transactions had run one after another, the second doctor would 
 have been prevented from going off call.
 - The anomalous behavior was only possible because the transactions ran concurrently.
@@ -2260,7 +2260,7 @@ our options are more restricted:
     - But lock doesn’t prevent players from moving two different figures to 
     the same position on the board
 - Claiming a username
-    - Two users trying to create an accunt with same username
+    - Two users trying to create an account with same username
     - Fortunately, a unique constraint is a simple solution here
 - Preventing double-spending
     - A service that allows users to spend money or points needs to check 
@@ -2272,7 +2272,7 @@ our options are more restricted:
 
 - All above examples follow a similar pattern:
     1. SELECT query checks some requirement is satisfied
-        - at least two Drs are on call
+        - at least two Dr's are on call
         - no existing booking for meeting room
         - username isn't already taken
         - positive and sufficient money in the account
@@ -2298,7 +2298,7 @@ to particularly tricky cases of write skew.
 - materializing conflicts => it takes a phantom and turns it into a lock 
 conflict on a concrete set of rows that exist in the database
 - Unfortunately, it can be hard and error-prone to figure out how to materialize conflicts,
-- Therefre materializing conflicts should be considered a last resort if no 
+- Therefore materializing conflicts should be considered a last resort if no 
 alternative is possible
 - A serializable isolation level is much preferable in most cases.
 
@@ -2352,7 +2352,7 @@ procedure can execute very fast, without waiting for any network or disk I/O.
         - lacks echosystem of libraries
     - Code running in DB is diff to manage, harder to debug and awkward to 
     keep in VCS, diff to deploy, test
-    - Diff to integrate w/ metrics collection system for monitoring.
+    - Difficult to integrate w/ metrics collection system for monitoring.
     - Since DB is much more senstitive to performance, badly written stored procedure code
     cause more throuble than equivalent badly written code in an application server.
 
@@ -2372,7 +2372,7 @@ processor can become a serious bottleneck.
 - You need to partition the data in order to scale to multiple CPUs and nodes
 - Partition data in such way that read and write happens on same partition
 - This way each CPU code can handle one partition
-- Cross partition transaction require to coordinate t avoid race conditions
+- Cross partition transaction require to coordinate to avoid race conditions
 - VolDB's cross partition write throughput is 1000 / sec which is orders of 
 magnitude below its single-partition throughput
     - Also, it can not increased by adding more m/cs
@@ -2380,9 +2380,9 @@ magnitude below its single-partition throughput
 - But data w/ multiple secondary indexes likely require cross parition coordination
 
 ##### Summary of serial execution
-You can acheive erializable isolation within certain constraints
+You can acheive serializable isolation within certain constraints
 - Every transaction must be small and fast bec a slow transaction stalls others
-- Active data set can fit in RAM. One solution can be used anti-caching
+- Active data set can fit in RAM. Following solution can be used (aka anti-caching)
     - If transaction needs data from disk, then abort it
     - fetch data from disk in background
     - restart the transaction
@@ -2466,7 +2466,7 @@ concurrency control techniques tend to perform better than pessimistic ones.
     - bec the data may have been modified in the meantime.
     - means transaction is taking an action based on a premise
     - And by the time, transaction commits, the premise has changed.
-    - See Drs on-call example in Figure 7-8
+    - See Dr's on-call example in Figure 7-8
 - How DB know if a query result might have changed? There are two cases to consider:
     - Detecting reads of a stale MVCC object version (uncommitted write 
     occurred before the read)
@@ -2489,9 +2489,9 @@ Figure 7-11. In serializable snapshot isolation, detecting when one transaction
 modifies another transaction’s reads.
 
 - T43 notifies T42 that its prior read is outdated, and vice versa. 
-- T2 successfully commits first 
-- When T43 want to commit, conflicting write from 42 has already been 
-committed, so 43 must abort.
+- T42 successfully commits first 
+- When T43 want to commit, conflicting write from T42 has already been 
+committed, so T43 must abort.
 
 ##### Performance of serializable snapshot isolation
 - In SSI, all transactions reads and writes are tracked.
