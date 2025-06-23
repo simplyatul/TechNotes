@@ -214,7 +214,9 @@ Host: echo-server-clusterip-service.default.svc.cluster.local
 Accept: */*
 User-Agent: curl/8.14.1
 
-k exec pods/curl -- curl --silent http://echo-server-clusterip-service.default.svc.cluster.local
+k exec pods/curl -- curl --silent \
+    http://echo-server-clusterip-service.default.svc.cluster.local
+
 Request served by echo-server-replicaset-sgk8p
 
 GET / HTTP/1.1
@@ -224,7 +226,177 @@ Accept: */*
 User-Agent: curl/8.14.1
 
 ```
-Endpoints are selected in RR fashion
+- Notes
+    - one can drop ```svc.cluster.local``` from URL.
+    - if calling pod is in same namespace, then you can drop namespace 
+    name ```default``` as well
+        ```bash
+        k exec pods/curl -- curl --silent \
+            http://echo-server-clusterip-service
+        ```
+
+### External Service
+- service consists of only a reference to an external name 
+- kubedns or equivalent will return as a CNAME record
+- no exposing or proxying of any pods involved.
+
+```bash
+cat << EOF >> external-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-service
+spec:
+  type: ExternalName
+  externalName: google.co.in
+  ports:
+  - port: 80
+EOF
+
+k apply -f external-service.yaml
+```
+
+Just attach netshoot container in any of the running service as ephemeral container
+
+```bash
+kubectl debug echo-server-pod -it --image=nicolaka/netshoot
+
+echo-server-pod~ nslookup external-service
+Server:         10.96.0.10
+Address:        10.96.0.10#53
+
+external-service.default.svc.cluster.local      canonical name = google.co.in.
+Name:   google.co.in
+Address: 142.250.192.35
+Name:   google.co.in
+Address: 2404:6800:4009:803::2003
+
+```
+
+### NodePort Service
+- Make Kubernetes reserve a port on all its nodes
+- NodePort service can be accessed using Node's IP:port along with service's 
+internal cluster IP
+
+```bash
+cat <<EOF >> echo-server-service-nodeport.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo-server-nodeport-service
+spec:
+  type: NodePort
+  ports:
+  - port: 80                 # port of the service’s internal cluster IP.
+    targetPort: 8080         # target port of backing pod
+    nodePort: 30123          # node's port on which service is accessible
+  selector:
+    app: echo-server-rs
+EOF
+
+k apply -f echo-server-service-nodeport.yaml
+```
+
+Access the service using nodeport
+```bash
+kubectl get services -o wide
+NAME                            TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)        AGE    SELECTOR
+echo-server-clusterip-service   ClusterIP      10.96.217.253   <none>         80/TCP         174m   app=echo-server-rs
+echo-server-nodeport-service    NodePort       10.96.160.8     <none>         80:30123/TCP   18s    app=echo-server-rs
+external-service                ExternalName   <none>          google.co.in   80/TCP         19m    <none>
+kubernetes                      ClusterIP      10.96.0.1       <none>         443/TCP        11d    <none>
+
+kubectl get nodes -o wide
+NAME                 STATUS   ROLES           AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION     CONTAINER-RUNTIME
+demo-control-plane   Ready    control-plane   11d   v1.26.3   172.20.0.3    <none>        Ubuntu 22.04.2 LTS   6.8.0-60-generic   containerd://1.6.19-46-g941215f49
+demo-worker          Ready    <none>          11d   v1.26.3   172.20.0.2    <none>        Ubuntu 22.04.2 LTS   6.8.0-60-generic   containerd://1.6.19-46-g941215f49
+
+curl http://172.20.0.2:30123/
+Request served by echo-server-replicaset-f9ksh
+
+GET / HTTP/1.1
+
+Host: 172.20.0.2:30123
+Accept: */*
+User-Agent: curl/8.5.0
+
+curl http://172.20.0.3:30123/
+Request served by echo-server-replicaset-f9ksh
+
+GET / HTTP/1.1
+
+Host: 172.20.0.3:30123
+Accept: */*
+User-Agent: curl/8.5.0
+
+```
+
+### Headless Service
+- Such service won't get dedicated Cluster IP
+- Instead, it returns DNS A records of backing pods
+
+```bash
+cat <<EOF >> echo-server-service-headless.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo-server-headless-service
+spec:
+  clusterIP: None
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: echo-server-rs
+EOF
+
+k apply -f echo-server-service-headless.yaml
+```
+
+Check service
+```bash
+kubectl get services -o wide
+NAME                            TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)        AGE     SELECTOR
+echo-server-clusterip-service   ClusterIP      10.96.217.253   <none>         80/TCP         3h30m   app=echo-server-rs
+echo-server-headless-service    ClusterIP      None            <none>         80/TCP         5m7s    app=echo-server-rs
+echo-server-nodeport-service    NodePort       10.96.160.8     <none>         80:30123/TCP   36m     app=echo-server-rs
+external-service                ExternalName   <none>          google.co.in   80/TCP         55m     <none>
+kubernetes                      ClusterIP      10.96.0.1       <none>         443/TCP        11d     <none>
+```
+
+See the nslookup output on ClusterIP and headless service
+```bash
+kubectl debug echo-server-pod -it --image=nicolaka/netshoot
+
+echo-server-pod~ nslookup  echo-server-headless-service  
+Server:         10.96.0.10
+Address:        10.96.0.10#53
+
+Name:   echo-server-headless-service.default.svc.cluster.local
+Address: 10.244.1.14
+Name:   echo-server-headless-service.default.svc.cluster.local
+Address: 10.244.1.15
+Name:   echo-server-headless-service.default.svc.cluster.local
+Address: 10.244.1.16
+
+
+echo-server-pod~ nslookup  echo-server-clusterip-service
+Server:         10.96.0.10
+Address:        10.96.0.10#53
+
+Name:   echo-server-clusterip-service.default.svc.cluster.local
+Address: 10.96.217.253
+```
+- curl on headless service will fail
+```bash
+k exec pods/curl -- curl --silent http://echo-server-headless-service
+command terminated with exit code 7
+```
+
+- A headless services still provides load balancing across pods
+- It does it through the DNS round-robin mechanism
+- Call nslookup on echo-server-headless-service multiple times and you will 
+see pod IP addresses are returned in RR fashion
 
 
 ## Run a pod and delete it once the command finishes
