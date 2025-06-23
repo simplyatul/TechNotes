@@ -1,5 +1,232 @@
 # Documenting k8s/kubernetes commands/notes 
 
+## Examples of sidecar containers
+- log rotators and collectors
+- data processors
+- communication adapters
+
+## Echo Server Pod
+```bash
+cat <<EOF >> echo-server-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: echo-server-pod
+  labels:
+    app: echo-server-pod
+spec:
+  containers:
+  - name: echo-server-container
+    image: jmalloc/echo-server:latest
+    ports:
+    - containerPort: 8080
+    env:
+    - name: LOG_HTTP_HEADERS
+      value: "true"
+    - name: LOG_HTTP_BODY
+      value: "true"
+EOF
+```
+
+```bash
+k apply -f echo-server-pod.yaml
+k port-forward echo-server-pod 8080:8080 &
+```
+
+Access echo service using either 
+```bash
+curl http://localhost:8080/
+Request served by echo-server-pod
+
+GET / HTTP/1.1
+
+Host: localhost:8080
+Accept: */*
+User-Agent: curl/8.5.0
+```
+Or
+```bash
+ECHO_SERVER_POD_IP=$(kubectl get pod echo-server-pod -o jsonpath='{.status.podIP}')
+kubectl exec pod/curl -- curl --silent http://$ECHO_SERVER_POD_IP:8080/
+Request served by echo-server-pod
+
+GET / HTTP/1.1
+
+Host: 10.244.1.9:8080
+Accept: */*
+User-Agent: curl/8.14.1
+```
+
+## Replica Set 
+- Vs ReplicationController (RC)
+    - behaves exactly same as RC, but has more expressive pod selectors
+    - ReplicaSet’s selector also allows matching pods that lack a certain label 
+    or pods that include a certain label key, regardless of its value
+
+```bash
+cat <<EOF >> echo-server-replicaset.yaml 
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: echo-server-replicaset
+  labels:
+    app: echo-server-rs
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: echo-server-rs
+  template:
+    metadata:
+      labels:
+        app: echo-server-rs
+    spec:
+      containers:
+      - name: echo-server-container
+        image: jmalloc/echo-server:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: LOG_HTTP_HEADERS
+          value: "true"
+        - name: LOG_HTTP_BODY
+          value: "true"
+EOF
+
+k apply -f ./echo-server-replicaset.yaml
+```
+
+List pods
+```bash
+kubectl get pod -o wide
+NAME                           READY   STATUS    RESTARTS      AGE     IP            NODE          NOMINATED NODE   READINESS GATES
+curl                           1/1     Running   1 (35m ago)   35m     10.244.1.12   demo-worker   <none>           <none>
+echo-server-pod                1/1     Running   0             4m39s   10.244.1.13   demo-worker   <none>           <none>
+echo-server-replicaset-f9ksh   1/1     Running   0             2m33s   10.244.1.16   demo-worker   <none>           <none>
+echo-server-replicaset-ldmdx   1/1     Running   0             2m33s   10.244.1.14   demo-worker   <none>           <none>
+echo-server-replicaset-sgk8p   1/1     Running   0             2m33s   10.244.1.15   demo-worker   <none>           <none>
+```
+
+Access one of echo-server's replica
+
+```bash
+k port-forward echo-server-replicaset-f9ksh 8090:8080 &
+
+curl http://localhost:8090/
+Request served by echo-server-replicaset-f9ksh
+
+GET / HTTP/1.1
+
+Host: localhost:8090
+Accept: */*
+User-Agent: curl/8.5.0
+```
+
+Replica Set info
+```bash
+k describe replicasets.apps 
+Name:         echo-server-replicaset
+Namespace:    default
+Selector:     app=echo-server-rs
+Labels:       app=echo-server-rs
+Annotations:  <none>
+Replicas:     3 current / 3 desired
+Pods Status:  3 Running / 0 Waiting / 0 Succeeded / 0 Failed
+Pod Template:
+  Labels:  app=echo-server-rs
+  Containers:
+   echo-server-container:
+    Image:      jmalloc/echo-server:latest
+    Port:       8080/TCP
+    Host Port:  0/TCP
+    Environment:
+      LOG_HTTP_HEADERS:  true
+      LOG_HTTP_BODY:     true
+    Mounts:              <none>
+  Volumes:               <none>
+Events:
+  Type    Reason            Age    From                   Message
+  ----    ------            ----   ----                   -------
+  Normal  SuccessfulCreate  5m56s  replicaset-controller  Created pod: echo-server-replicaset-ldmdx
+  Normal  SuccessfulCreate  5m56s  replicaset-controller  Created pod: echo-server-replicaset-sgk8p
+  Normal  SuccessfulCreate  5m56s  replicaset-controller  Created pod: echo-server-replicaset-f9ksh
+```
+
+## K8s Service
+### ClusterIP Service
+Create service which acts as a front-end to ```echo-server-replicaset```
+
+```bash
+cat << EOF >> cat echo-server-service-clusterip.yaml 
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo-server-clusterip-service
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: echo-server-rs
+EOF
+
+k apply -f echo-server-service-clusterip.yaml 
+```
+
+List services
+```bash
+kubectl get services -o wide
+NAME                            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE   SELECTOR
+echo-server-clusterip-service   ClusterIP   10.96.217.253   <none>        80/TCP    16m   app=echo-server-rs
+kubernetes                      ClusterIP   10.96.0.1       <none>        443/TCP   11d   <none>
+```
+
+Describe Service
+```bash
+k describe service/echo-server-clusterip-service 
+Name:              echo-server-clusterip-service
+Namespace:         default
+Labels:            <none>
+Annotations:       <none>
+Selector:          app=echo-server-rs
+Type:              ClusterIP
+IP Family Policy:  SingleStack
+IP Families:       IPv4
+IP:                10.96.217.253
+IPs:               10.96.217.253
+Port:              <unset>  80/TCP
+TargetPort:        8080/TCP
+Endpoints:         10.244.1.14:8080,10.244.1.15:8080,10.244.1.16:8080
+Session Affinity:  None
+Events:            <none>
+```
+
+See IPs listed in Endpoints matches to Pods IPs of ```echo-server-rs```
+
+Access the Service
+```bash
+k exec pods/curl -- curl --silent http://echo-server-clusterip-service.default.svc.cluster.local
+Request served by echo-server-replicaset-ldmdx
+
+GET / HTTP/1.1
+
+Host: echo-server-clusterip-service.default.svc.cluster.local
+Accept: */*
+User-Agent: curl/8.14.1
+
+k exec pods/curl -- curl --silent http://echo-server-clusterip-service.default.svc.cluster.local
+Request served by echo-server-replicaset-sgk8p
+
+GET / HTTP/1.1
+
+Host: echo-server-clusterip-service.default.svc.cluster.local
+Accept: */*
+User-Agent: curl/8.14.1
+
+```
+Endpoints are selected in RR fashion
+
+
 ## Run a pod and delete it once the command finishes
 ```bash
 kubectl run -i -n default --rm --restart=Never dummy --image=curlimages/curl --command -- sh -c 'cat /etc/resolv.conf'
@@ -14,7 +241,7 @@ pod "dummy" deleted
 kubectl run -n default nginx --image=nginx
 pod/nginx created
 
-Or
+# Or
 
 kubectl run alpine-pod --image alpine --restart Never -- /bin/sleep 999999
 pod/alpine-pod created
@@ -24,9 +251,8 @@ PID   USER     TIME  COMMAND
     1 root      0:00 /bin/sleep 999999
    13 root      0:00 ps aux
 
-```
-Or
-```bash
+# Or
+
 kubectl run -n default curl --image=curlimages/curl -i --tty -- sh
 If you don't see a command prompt, try pressing enter.
 / $ 
@@ -49,7 +275,7 @@ kubectl get pods -A -o custom-columns=NS:metadata.namespace,NAME:metadata.name,I
 kubectl api-resources -o wide
 ```
 
-## Interactive with specific cluster
+## Interact with specific cluster
 ```bash
 kubectl cluster-info --context <cluster-name>
 ```
@@ -60,12 +286,6 @@ Check  ~/.kube/config for the cluster-name
 ```bash
 kubectl explain pod
 kubectl explain pod.spec
-```
-
-## Forwarding a local network port to a port in the pod
-
-```bash
-kubectl port-forward pod/godevsetup-575fcd74d5-9k6d9 8888:8080
 ```
 
 ## Show the labels
