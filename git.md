@@ -28,6 +28,18 @@ List the number of lines added, removed by a particular user
 git log --author="Atul Thosar" --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf "added lines: %s removed lines: %s total lines: %s\n", add, subs, loc }'
 ```
 
+## Tag operations
+```bash
+# Create tag
+git tag v1.0
+
+# List tags
+git tag
+
+# Push tag to remote
+git push origin v1.0
+```
+
 ## Merge Vs Rebase
 
 ```mermaid
