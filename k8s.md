@@ -442,6 +442,11 @@ kubectl attach curl -c curl -i -t -n default
 kubectl get pods -A -o custom-columns=NS:metadata.namespace,NAME:metadata.name,IP:status.podIP,NODE:spec.nodeName
 ```
 
+## Delete pod immediately
+```bash
+k delete pod <pod-name> --force --grace-period=0
+```
+
 ## List k8s API Resources
 ```bash
 kubectl api-resources -o wide
