@@ -62,10 +62,10 @@ nsenter => run program in different namespaces
 ## Free up the space
 
 ```bash
-docker system prune -af && \
-docker image prune -af && \
-docker system prune -af --volumes && \
-docker system df
+sudo docker system prune -af && \
+sudo docker image prune -af && \
+sudo docker volume prune -af && \
+sudo docker system df
 ```
 ### Note:
 Even after doing above, sometime /var/lib/docker still consumes space. One solution could be -
