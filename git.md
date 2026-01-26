@@ -108,3 +108,8 @@ cd cilium
 git remote add upstream https://github.com/cilium/cilium.git
 git fetch upstream refs/tags/1.17.0:refs/tags/1.17.0 --no-tags
 ```
+
+## gitk remote branch
+```bash
+gitk origin/main &
+```
