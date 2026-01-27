@@ -1,5 +1,11 @@
 # Documenting git commands/notes 
 
+## Set remote url with your email
+This is useful when pushing code from your office laptop where office github account is different
+
+```bash
+git remote set-url origin https://atulthosar@github.com/simplyatul/front-end-tech.git
+```
 ## Set name and email
 
 ```bash
