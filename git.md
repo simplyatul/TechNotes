@@ -119,3 +119,9 @@ git fetch upstream refs/tags/1.17.0:refs/tags/1.17.0 --no-tags
 ```bash
 gitk origin/main &
 ```
+
+## Comapre two branches
+```bash
+git difftool -t meld -d <origin/main> <origin/br-1>
+```
+-d => opens meld in directory comparison mode, showing all changed files side by side.
