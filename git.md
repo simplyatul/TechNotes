@@ -125,3 +125,27 @@ gitk origin/main &
 git difftool -t meld -d <origin/main> <origin/br-1>
 ```
 -d => opens meld in directory comparison mode, showing all changed files side by side.
+
+## Log only commit id and message
+```bash
+git log --oneline
+```
+
+## Merge w/o commit + squashing
+
+```bash
+git merge --squash origin/br-name
+git commit -m "Your commit message here"
+```
+
+## Combine/Squash last few commits and force push to remote
+
+```bash
+git rebase -i HEAD~3 => combines last 3 commits
+# This will open an editor. Change the second and third lines from pick to squash (or s), keeping the first one as pick:
+# save and close
+# Force push to the remote
+git push --force-with-lease
+
+# Use --force-with-lease instead of --force as a safety measure — it will fail if someone else has pushed to the branch in the meantime.
+```

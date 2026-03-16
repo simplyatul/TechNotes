@@ -7,7 +7,7 @@ Ctrl + Shift    + P => Opens Command Palette
 Ctrl + Shift    + F => Search in all files
 Ctrl + Alt      + - => Go Back
 Ctrl + Shift    + - => Go Forward
-Ctrl + Shift    + \ => Match closing/opening brackets
+Ctrl/Cmd + Shift    + \ => Match closing/opening brackets
 Ctrl + Shift    + I => Indent/Format Code
 Ctrl + .            => Spell suggestions (Code Spell Checker)
 
